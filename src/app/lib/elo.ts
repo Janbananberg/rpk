@@ -276,3 +276,112 @@ export function computeH2HElo(sessions: GameSession[], eloResetTimestamp?: numbe
 
   return netElo;
 }
+
+// ── Tournament Elo (no decay, no peak) and head-to-head records ──
+// Used by the tournament bracket for win probabilities and Tale of the Tape.
+// Shares constants and pot distribution with computeElo above.
+
+export interface EloRating {
+  name: string;
+  elo: number;
+  matches: number;
+}
+
+export function computeEloRatings(sessions: GameSession[], eloResetTimestamp?: number | null): Record<string, EloRating> {
+  const ratings: Record<string, { elo: number; matches: number }> = {};
+
+  const ensure = (name: string) => {
+    if (!ratings[name]) ratings[name] = { elo: ELO_START, matches: 0 };
+  };
+
+  const sorted = [...sessions].sort((a, b) => a.date - b.date);
+
+  for (const session of sorted) {
+    if (eloResetTimestamp && session.date < eloResetTimestamp) continue;
+
+    for (const player of session.players) ensure(player);
+
+    for (const round of session.rounds) {
+      if (round.finalists.length !== 2 || !round.winner) continue;
+      const roundPlayers = round.players ?? session.players;
+      const N = roundPlayers.length;
+      const [p1, p2] = round.finalists;
+      const winner = round.winner;
+      const loser = winner === p1 ? p2 : p1;
+
+      // Ensure all round participants exist BEFORE accessing ratings
+      for (const player of roundPlayers) ensure(player);
+      ensure(winner);
+      ensure(loser);
+
+      // Compute pot distribution (use pre-ante ratings)
+      const rWinner = ratings[winner].elo;
+      const rLoser = ratings[loser].elo;
+      const { winnerDelta, loserDelta } = computePotDistribution(rWinner, rLoser, N);
+
+      // Apply: non-finalists lose ante, finalists get pot share
+      for (const player of roundPlayers) {
+        ensure(player);
+        if (player !== winner && player !== loser) {
+          ratings[player].elo -= ELO_ANTE;
+        }
+        ratings[player].matches++;
+      }
+      ratings[winner].elo += winnerDelta;
+      ratings[loser].elo += loserDelta;
+    }
+  }
+
+  const result: Record<string, EloRating> = {};
+  for (const [name, r] of Object.entries(ratings)) {
+    result[name] = { name, elo: r.elo, matches: r.matches };
+  }
+  return result;
+}
+
+export function eloWinProbability(elo1: number, elo2: number): number {
+  return 1 / (1 + Math.pow(10, (elo2 - elo1) / 400));
+}
+
+/** Head-to-head record between two players */
+export interface H2HRecord {
+  wins1: number;
+  wins2: number;
+  total: number;
+}
+
+export function computeH2H(sessions: GameSession[], p1: string, p2: string): H2HRecord {
+  let wins1 = 0, wins2 = 0;
+  for (const session of sessions) {
+    for (const round of session.rounds) {
+      if (round.finalists.length !== 2 || !round.winner) continue;
+      const has1 = round.finalists.includes(p1);
+      const has2 = round.finalists.includes(p2);
+      if (has1 && has2) {
+        if (round.winner === p1) wins1++;
+        else if (round.winner === p2) wins2++;
+      }
+    }
+  }
+  return { wins1, wins2, total: wins1 + wins2 };
+}
+
+/** Compute H2H for all player pairs */
+export function computeAllH2H(sessions: GameSession[], players: string[]): Record<string, H2HRecord> {
+  const map: Record<string, H2HRecord> = {};
+  for (let i = 0; i < players.length; i++) {
+    for (let j = i + 1; j < players.length; j++) {
+      const key = `${players[i]}:${players[j]}`;
+      map[key] = computeH2H(sessions, players[i], players[j]);
+    }
+  }
+  return map;
+}
+
+export function getH2H(map: Record<string, H2HRecord>, p1: string, p2: string): H2HRecord {
+  const key1 = `${p1}:${p2}`;
+  if (map[key1]) return map[key1];
+  const key2 = `${p2}:${p1}`;
+  if (map[key2]) return { wins1: map[key2].wins2, wins2: map[key2].wins1, total: map[key2].total };
+  return { wins1: 0, wins2: 0, total: 0 };
+}

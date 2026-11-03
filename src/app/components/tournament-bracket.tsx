@@ -14,15 +14,13 @@ import {
   ChampionConfetti,
   TournamentProgressBar,
   AnimatedConnectorDot,
-  computeEloRatings,
-  computeAllH2H,
-  getH2H,
   computeMVP,
   MVPBadge,
   TaleOfTape,
   UpsetAlert,
 } from "./tournament-enhancements";
-import type { EloRating, H2HRecord } from "./tournament-enhancements";
+import { computeAllH2H, computeEloRatings, getH2H } from "../lib/elo";
+import type { EloRating, H2HRecord } from "../lib/elo";
 
 type MatchKey = "qf1" | "qf2" | "qf3" | "qf4" | "semi1" | "semi2" | "final";
 

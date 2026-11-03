@@ -1,6 +1,7 @@
 /* Shared types + logic — used by both the mini card and the fullscreen view */
 
-import { isGoldenSet, PlayerAvatar, WinProbBadge } from "./tournament-enhancements";
+import { PlayerAvatar, WinProbBadge } from "./tournament-enhancements";
+import { isGoldenSet } from "../lib/golden-set";
 
 export interface PlayerScore {
   name: string;
