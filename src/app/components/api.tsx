@@ -1,32 +1,18 @@
 /**
- * API client for Supabase-backed betting system.
+ * API client for the betting and tournament system.
  *
- * SECURITY ARCHITECTURE:
- * - Only the Supabase ANON (public) key is used in the frontend.
- *   The SUPABASE_SERVICE_ROLE_KEY never leaves the server (Edge Function).
- * - All state-mutating operations go through the Hono server, which acts
- *   as the security boundary. The KV store is accessed with the service
- *   role key server-side only.
- * - Admin actions require an admin session token (obtained via password login).
- *   The password is never stored client-side after login; only the opaque
- *   session token is kept in sessionStorage.
- * - Bettor writes (profile updates, bet placement) require a bettor token,
- *   scoped per-user. The token is issued at registration, stored in localStorage,
- *   and sent via the X-Bettor-Token header.
- * - Balance changes and bet resolution happen entirely server-side.
- *   The client cannot manipulate balances or payouts.
- * - Read endpoints are public (leaderboard, odds, tournament state).
+ * Backend URL is read from VITE_API_URL (see .env.example). No backend is
+ * configured yet, so requests fail until one is provided.
  *
- * IMPORTANT: Row Level Security (RLS) is enabled on the kv_store_f8fcdf1d table.
- * The server uses the service role key which bypasses RLS for internal operations.
- * All user-facing access is mediated through authenticated server routes.
+ * - Admin actions send an admin session token (X-Admin-Token), kept in sessionStorage.
+ * - Bettor writes send a per-user token (X-Bettor-Token), kept in localStorage.
  */
-import { projectId, publicAnonKey } from "../../../utils/supabase/info";
 import type { BettorProfile } from "./betting-store";
 import type { MatchOdds } from "./betting-store";
 import type { TournamentWinnerOdds } from "./betting-store";
 
-const BASE = `https://${projectId}.supabase.co/functions/v1/make-server-f8fcdf1d`;
+export const API_BASE: string = import.meta.env.VITE_API_URL ?? "";
+const BASE = API_BASE;
 
 // ════════════════════════════════════════════════════════════════════════
 //  TOKEN MANAGEMENT
@@ -62,14 +48,12 @@ export function setBettorToken(token: string | null) {
 
 // ════════════════════════════════════════════════════════════════════════
 //  HEADER BUILDERS
-//  The Authorization header uses the Supabase ANON key (public, safe to expose).
 //  Admin/bettor tokens are sent via custom headers, never in the request body.
 // ════════════════════════════════════════════════════════════════════════
 
-/** Base headers: uses only the public ANON key. */
+/** Base headers. */
 const baseHeaders = (): Record<string, string> => ({
   "Content-Type": "application/json",
-  Authorization: `Bearer ${publicAnonKey}`,
 });
 
 /** Headers for admin-authenticated requests. */

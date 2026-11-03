@@ -1,6 +1,6 @@
 /**
  * Shared betting data store — types, cosmetics catalog, and helpers.
- * Actual persistence is handled by api.tsx (Supabase) with localStorage fallback.
+ * Actual persistence is handled by api.tsx with localStorage fallback.
  */
 
 export interface EquippedCosmetics {

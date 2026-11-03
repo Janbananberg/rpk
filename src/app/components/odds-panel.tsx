@@ -31,7 +31,7 @@ export function OddsPanel({ semi1, semi2, final_ }: OddsPanelProps) {
 
   const champion = final_.winner || null;
 
-  // Load saved odds from Supabase on mount
+  // Load saved odds from the backend on mount
   useEffect(() => {
     (async () => {
       try {

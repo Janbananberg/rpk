@@ -91,7 +91,7 @@ import {
   resetEloRatings,
 } from "./api";
 import type { TournamentHistoryEntry, SavedPlayerAchievements, SavedAchievement } from "./api";
-import { projectId, publicAnonKey } from "../../../utils/supabase/info";
+import { API_BASE } from "./api";
 import { H2HMatrix, WeekdayHeatmap } from "./highscore-insights";
 
 const FONT = "'Titillium Web', sans-serif";
@@ -2798,7 +2798,7 @@ export function HighscorePage() {
         "KINGTESTEN": { wins: 0, finals: 0, gamesPlayed: 0 },
       };
       // NOTE: We intentionally do NOT clear monthList or monthly sessions here.
-      // If a re-seed ever fires (e.g. after Supabase reconnect resets the seed
+      // If a re-seed ever fires (e.g. after a backend reset clears the seed
       // flag), wiping monthList would orphan all historical months. The seed
       // is meant to set baseline players/stats only, not destroy real history.
       await Promise.all([
@@ -3194,7 +3194,7 @@ export function HighscorePage() {
     URL.revokeObjectURL(url);
   }
 
-  // ── Achievement sync: persist newly earned achievements to Supabase ──
+  // ── Achievement sync: persist newly earned achievements ──
   const achievementSyncRef = useRef(false);
   const savedAchievementsRef = useRef(savedAchievements);
   savedAchievementsRef.current = savedAchievements;
@@ -6627,12 +6627,14 @@ export function HighscorePage() {
       {/* ── API Info Modal ── */}
       <AnimatePresence>
         {showApiModal && (() => {
-          const baseUrl = `https://${projectId}.supabase.co/functions/v1/make-server-f8fcdf1d/api/stats`;
+          const baseUrl = `${API_BASE}/api/stats`;
           const exampleTotal = `${baseUrl}?month=total`;
           const exampleMonth = `${baseUrl}?month=2026-03`;
           // Browser test uses fetch with auth header + blob URL (apikey query param not supported by Edge Functions)
-          const curlExample = `curl -H "Authorization: Bearer ${publicAnonKey}" \\\n  "${exampleTotal}"`;
-          const fetchExample = `const res = await fetch(\n  "${baseUrl}?month=2026-03",\n  {\n    headers: {\n      "Authorization": "Bearer ${publicAnonKey}"\n    }\n  }\n);\nconst data = await res.json();\nconsole.log(data.players);`;
+          const curlExample = `curl "${exampleTotal}"`;
+          const fetchExample = `const res = await fetch("${baseUrl}?month=2026-03");
+const data = await res.json();
+console.log(data.players);`;
           const copyToClipboard = (text: string, label: string) => {
             navigator.clipboard.writeText(text);
             setApiCopied(label);
@@ -6743,26 +6745,6 @@ export function HighscorePage() {
                     </div>
                   </div>
 
-                  {/* Auth */}
-                  <div>
-                    <h3 style={{ fontFamily: FONT, fontSize: "var(--text-sm)", fontWeight: "var(--font-weight-semibold)" as any, color: "var(--foreground)", marginBottom: 6 }}>
-                      Autentisering
-                    </h3>
-                    <p style={{ fontFamily: FONT, fontSize: "var(--text-xs)", color: "var(--on-surface-variant)", marginBottom: 8 }}>
-                      Skicka med Supabase anon-nyckeln i <code style={{ fontFamily: "'Courier New', monospace", background: "var(--surface-container-lowest)", padding: "1px 5px", borderRadius: 4 }}>Authorization</code>-headern:
-                    </p>
-                    <div style={codeBlockStyle}>
-                      Authorization: Bearer {publicAnonKey.slice(0, 20)}...{publicAnonKey.slice(-8)}
-                      <button
-                        onClick={() => copyToClipboard(`Bearer ${publicAnonKey}`, "key")}
-                        className="absolute top-2 right-2 p-1.5 rounded-md hover:opacity-80 transition-opacity cursor-pointer"
-                        style={{ background: "var(--surface-container-high)", color: apiCopied === "key" ? "var(--primary)" : "var(--on-surface-variant)" }}
-                      >
-                        {apiCopied === "key" ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
-                      </button>
-                    </div>
-                  </div>
-
                   {/* cURL example */}
                   <div>
                     <h3 style={{ fontFamily: FONT, fontSize: "var(--text-sm)", fontWeight: "var(--font-weight-semibold)" as any, color: "var(--foreground)", marginBottom: 6 }}>
@@ -6843,9 +6825,7 @@ export function HighscorePage() {
                         setApiLoading(true);
                         setApiPreview(null);
                         try {
-                          const res = await fetch(exampleTotal, {
-                            headers: { "Authorization": `Bearer ${publicAnonKey}` },
-                          });
+                          const res = await fetch(exampleTotal);
                           const json = await res.json();
                           setApiPreview(JSON.stringify(json, null, 2));
                         } catch (err) {
