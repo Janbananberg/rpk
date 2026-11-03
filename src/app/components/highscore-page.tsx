@@ -40,6 +40,7 @@ import { computeStats, sortStats } from "../lib/stats";
 import type { SortTab, PlayerStats } from "../lib/stats";
 import { ELO_START, computeLastPlayed, applyEloDecay, computeElo, computeEloHistory, computeH2HElo } from "../lib/elo";
 import { computeRevengeData, computeSeasonSummary, generateFunFacts, computePlayerInsights, computeH2HInsights } from "../lib/insights";
+import { buildStatsCsv } from "../lib/stats-csv";
 import { ALL_ACHIEVEMENTS, MYTHIC_COMPLETIONIST, computePlayerAchievements, syncAchievements } from "../lib/achievements";
 import { FONT } from "./highscore/constants";
 import type { RegStep } from "./highscore/constants";
@@ -570,60 +571,7 @@ export function HighscorePage() {
   const sortedStats = useMemo(() => sortStats(stats, sortTab, sortDir, eloRatings, monthlyEloDelta, monthlyRoundsPlayed), [stats, sortTab, sortDir, eloRatings, monthlyEloDelta, monthlyRoundsPlayed]);
 
   function exportStatsCsv() {
-    const headers = [
-      "Namn", "Elo", "Vinster", "Finaler", "Spelat", "Vinst%", "Final%", "Finalvinst%",
-      "Bästa streak", "Kall streak", "Gula kort", "Röda kort", "Turneringsvinster",
-      "Nemesis", "Prey",
-      "Bästa dag", "Bästa dag vinst%", "Sämsta dag", "Sämsta dag vinst%",
-      "Tidspreferens", "Peak-timme",
-      "Före lunch spel", "Före lunch vinst%", "Efter lunch spel", "Efter lunch vinst%",
-      "Folkpreferens", "Median gruppstorlek",
-      "Stor grupp vinst%", "Liten grupp vinst%",
-      "Omgångar", "H2H (motståndare:V-F)"
-    ];
-    const rows = sortedStats.map((s) => {
-      const elo = eloRatings[s.name]?.elo ?? ELO_START;
-      const insights = computePlayerInsights(stripEmoji(s.name), activeSessions);
-      const h2hEntries = Object.entries(s.h2h)
-        .filter(([, r]) => r.wins + r.losses > 0)
-        .sort((a, b) => (b[1].wins + b[1].losses) - (a[1].wins + a[1].losses))
-        .map(([opp, r]) => `${stripEmoji(opp)}:${r.wins}-${r.losses}`)
-        .join(" | ");
-      return [
-        stripEmoji(s.name),
-        elo,
-        s.wins,
-        s.finals,
-        s.gamesPlayed,
-        s.bwp.toFixed(1),
-        s.finalPct.toFixed(1),
-        s.vfPct.toFixed(1),
-        s.bestStreak,
-        s.worstColdStreak,
-        s.yellowCards,
-        s.redCards,
-        s.tournamentWins,
-        s.nemesis ? stripEmoji(s.nemesis) : "",
-        s.prey ? stripEmoji(s.prey) : "",
-        insights.bestWeekday?.day ?? "",
-        insights.bestWeekday ? insights.bestWeekday.winRate.toFixed(1) : "",
-        insights.worstWeekday?.day ?? "",
-        insights.worstWeekday ? insights.worstWeekday.winRate.toFixed(1) : "",
-        insights.timePreference === "morning" ? "Förmiddag" : insights.timePreference === "afternoon" ? "Eftermiddag" : "Ingen",
-        insights.peakHourLabel ?? "",
-        insights.beforeLunch.games,
-        insights.beforeLunch.winRate.toFixed(1),
-        insights.afterLunch.games,
-        insights.afterLunch.winRate.toFixed(1),
-        insights.crowdPreference === "extrovert" ? "Stor grupp" : insights.crowdPreference === "introvert" ? "Liten grupp" : "Ingen",
-        insights.medianPlayerCount,
-        insights.largeCrowd.winRate.toFixed(1),
-        insights.smallCrowd.winRate.toFixed(1),
-        insights.sessionCount,
-        h2hEntries,
-      ].join(";");
-    });
-    const csv = "\uFEFF" + [headers.join(";"), ...rows].join("\n");
+    const csv = buildStatsCsv(sortedStats, eloRatings, activeSessions);
     const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");

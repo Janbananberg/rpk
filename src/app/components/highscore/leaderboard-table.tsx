@@ -9,7 +9,7 @@ import { FormDots } from "./form-dots";
 
 interface LeaderboardTableProps {
   sortedStats: PlayerStats[];
-  hasFormData: true;
+  hasFormData: boolean;
   handleHeaderSort: (key: SortTab) => void;
   sortTab: SortTab;
   isMonthView: boolean;
@@ -22,7 +22,7 @@ interface LeaderboardTableProps {
   monthlyEloDelta: Record<string, number> | undefined;
   monthlyRoundsPlayed: Record<string, number> | undefined;
   eloHistory: Record<string, number[]>;
-  hasStreakData: true;
+  hasStreakData: boolean;
 }
 
 export function LeaderboardTable({

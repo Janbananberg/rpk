@@ -15,6 +15,8 @@ import {
 import type { EloEntry } from "../app/lib/elo";
 import { matchPlayerName, stripEmoji } from "../app/lib/players";
 import { computePlayerPercentile, getCSGORank } from "../app/lib/rank";
+import { computeStats } from "../app/lib/stats";
+import { buildStatsCsv } from "../app/lib/stats-csv";
 import { isGoldenSet } from "../app/lib/golden-set";
 
 function session(date: number, players: string[], rounds: [string, string, string][]): GameSession {
@@ -273,5 +275,20 @@ describe("spelarnamn", () => {
     expect(matchPlayerName("anna", "🏓 Anna")).toBe(true);
     expect(matchPlayerName("Lodnart", "Lodnert")).toBe(true);
     expect(matchPlayerName("Bert", "Anna")).toBe(false);
+  });
+});
+
+describe("buildStatsCsv", () => {
+  it("skriver BOM, rubrikrad och en rad per spelare utan emoji", () => {
+    const sessions = [session(1, ["🏓 A", "B", "C", "D", "E"], [["🏓 A", "B", "🏓 A"]])];
+    const stats = computeStats(sessions, ["🏓 A", "B", "C", "D", "E"]);
+    const csv = buildStatsCsv(stats, computeElo(sessions), sessions);
+    expect(csv.startsWith("﻿")).toBe(true);
+    const [header, ...rows] = csv.slice(1).split("\n");
+    expect(header.split(";")).toHaveLength(31);
+    expect(rows).toHaveLength(5);
+    const a = rows.find((r) => r.startsWith("A;"))!.split(";");
+    expect(a.slice(0, 5)).toEqual(["A", "1007", "1", "1", "1"]);
+    expect(a[30]).toBe("B:1-0");
   });
 });

@@ -6,7 +6,7 @@ import { FONT } from "./constants";
 
 interface HeroStatsProps {
   topPlayer: PlayerStats;
-  hasStreakData: true;
+  hasStreakData: boolean;
   hotPlayer: PlayerStats;
   coldPlayer: PlayerStats;
   funFacts: string[];
