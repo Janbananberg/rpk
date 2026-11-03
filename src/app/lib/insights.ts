@@ -1,5 +1,5 @@
 import type { GameSession } from "../components/api";
-import { computeElo, computePotDistribution } from "./elo";
+import { computeElo, replayElo } from "./elo";
 import { stripEmoji } from "./players";
 import type { PlayerStats } from "./stats";
 import { toLuleaDate, WEEKDAY_NAMES_SV, WEEKDAY_SHORT_SV } from "./dates";
@@ -130,34 +130,16 @@ export function computeSeasonSummary(
 
   // Biggest upset: lowest-Elo player beating highest-Elo in a final
   let biggestUpset: SeasonSummary["biggestUpset"] = null;
-  // Build running Elo as we go through the month
-  const runningElo = computeElo(allSessionsBeforeMonth, undefined, eloResetTimestamp);
+  // Replay Elo up to and through the month, so each final is judged on the ratings at the time.
+  const monthSessions = new Set(sessions);
   const sortedSessions = [...sessions].sort((a, b) => a.date - b.date);
-  for (const session of sortedSessions) {
-    for (const round of session.rounds) {
-      if (round.finalists.length !== 2 || !round.winner) continue;
-      const [p1, p2] = round.finalists;
-      const elo1 = runningElo[p1]?.elo ?? 1000;
-      const elo2 = runningElo[p2]?.elo ?? 1000;
-      const loser = round.finalists.find((f) => f !== round.winner)!;
-      const winnerElo = round.winner === p1 ? elo1 : elo2;
-      const loserElo = round.winner === p1 ? elo2 : elo1;
-      const diff = loserElo - winnerElo; // positive = underdog won
-      if (diff > 0 && (!biggestUpset || diff > biggestUpset.eloDiff)) {
-        biggestUpset = { winner: round.winner, loser, eloDiff: diff, date: session.date };
-      }
-      // Update running Elo using pot system
-      if (!runningElo[p1]) runningElo[p1] = { name: p1, elo: 1000, peakElo: 1000, matches: 0, delta: 0 };
-      if (!runningElo[p2]) runningElo[p2] = { name: p2, elo: 1000, peakElo: 1000, matches: 0, delta: 0 };
-      const N = session.players.length;
-      const rW = runningElo[round.winner === p1 ? p1 : p2].elo;
-      const rL = runningElo[round.winner === p1 ? p2 : p1].elo;
-      const potResult = computePotDistribution(rW, rL, N);
-      // Non-finalists lose ante (not tracked here), finalists get pot share
-      runningElo[round.winner === p1 ? p1 : p2].elo += potResult.winnerDelta;
-      runningElo[round.winner === p1 ? p2 : p1].elo += potResult.loserDelta;
+  replayElo([...allSessionsBeforeMonth, ...sessions], { eloResetTimestamp }, ({ session, winner, loser, rWinner, rLoser }) => {
+    if (!monthSessions.has(session)) return;
+    const diff = rLoser - rWinner; // positive = underdog won
+    if (diff > 0 && (!biggestUpset || diff > biggestUpset.eloDiff)) {
+      biggestUpset = { winner, loser, eloDiff: diff, date: session.date };
     }
-  }
+  });
 
   // Fun superlatives for each active player
   const superlativePool: { test: (n: string) => boolean; title: string; emoji: string; detail: (n: string) => string }[] = [
@@ -248,7 +230,7 @@ export function computeSeasonSummary(
   const dayCounts: Record<string, number> = {};
   const dayNames = ["Söndag", "Måndag", "Tisdag", "Onsdag", "Torsdag", "Fredag", "Lördag"];
   for (const s of sessions) {
-    const d = new Date(s.date);
+    const d = toLuleaDate(s.date);
     const dayName = dayNames[d.getDay()];
     dayCounts[dayName] = (dayCounts[dayName] || 0) + 1;
   }
@@ -342,7 +324,7 @@ export function generateFunFacts(
   const dayCounts = [0, 0, 0, 0, 0, 0, 0];
   let totalDayRounds = 0;
   for (const session of sessions) {
-    const day = new Date(session.date).getDay();
+    const day = toLuleaDate(session.date).getDay();
     dayCounts[day] += session.rounds.length;
     totalDayRounds += session.rounds.length;
   }

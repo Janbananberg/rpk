@@ -1,4 +1,4 @@
-import type { GameSession } from "../components/api";
+import type { GameRound, GameSession } from "../components/api";
 
 // ── Elo Rating System — "Elo-potten" ──
 // Each player antes 3 Elo into a shared pot (N × 3).
@@ -106,174 +106,146 @@ export function applyEloDecay(ratings: Record<string, EloEntry>, lastPlayed: Rec
   return result;
 }
 
-export function computeElo(sessions: GameSession[], allPlayers?: string[], eloResetTimestamp?: number | null): Record<string, EloEntry> {
-  const ratings: Record<string, { elo: number; peak: number; matches: number; delta: number }> = {};
+/** One played round, as seen by `replayElo` after the round's Elo changes have been applied. */
+export interface EloRoundStep {
+  session: GameSession;
+  round: GameRound;
+  /** Everyone who paid the ante this round. */
+  roundPlayers: string[];
+  winner: string;
+  loser: string;
+  /** Finalists' ratings before the round. */
+  rWinner: number;
+  rLoser: number;
+  winnerDelta: number;
+  loserDelta: number;
+  /** Elo change for any participant this round. */
+  deltaFor: (player: string) => number;
+  /** Ratings after the round. Shared and mutated by the replay — copy before keeping. */
+  ratings: Readonly<Record<string, number>>;
+}
 
+export interface ReplayOptions {
+  /** Elo reset point. Sessions before it are skipped unless `keepHistoryBeforeReset` is set. */
+  eloResetTimestamp?: number | null;
+  /** Replay sessions before the reset too, and put everyone back to the start rating at the reset. */
+  keepHistoryBeforeReset?: boolean;
+  /** Players who start at the start rating even without having played. */
+  allPlayers?: string[];
+}
+
+/**
+ * Replays the Elo pot system over all sessions in date order. Every Elo computation in the app
+ * goes through here, so the rules live in one place. Return `true` from `onRound` to stop early.
+ */
+export function replayElo(
+  sessions: GameSession[],
+  options: ReplayOptions = {},
+  onRound?: (step: EloRoundStep) => boolean | void,
+): Record<string, number> {
+  const { eloResetTimestamp, keepHistoryBeforeReset = false, allPlayers } = options;
+  const ratings: Record<string, number> = {};
   const ensure = (name: string) => {
-    if (!ratings[name]) ratings[name] = { elo: ELO_START, peak: ELO_START, matches: 0, delta: 0 };
+    if (ratings[name] === undefined) ratings[name] = ELO_START;
   };
-
-  if (allPlayers) {
-    for (const player of allPlayers) ensure(player);
-  }
+  if (allPlayers) for (const player of allPlayers) ensure(player);
 
   const sorted = [...sessions].sort((a, b) => a.date - b.date);
+  let resetApplied = !eloResetTimestamp;
 
   for (const session of sorted) {
-    if (eloResetTimestamp && session.date < eloResetTimestamp) continue;
+    if (!resetApplied && session.date >= eloResetTimestamp!) {
+      for (const name of Object.keys(ratings)) ratings[name] = ELO_START;
+      resetApplied = true;
+    }
+    if (!resetApplied && !keepHistoryBeforeReset) continue;
 
     for (const player of session.players) ensure(player);
 
     for (const round of session.rounds) {
       if (round.finalists.length !== 2 || !round.winner) continue;
-
-      // Use per-round players if available, otherwise fall back to session players
       const roundPlayers = round.players ?? session.players;
-      const N = roundPlayers.length;
-
       const [p1, p2] = round.finalists;
       const winner = round.winner;
       const loser = winner === p1 ? p2 : p1;
 
-      // 1. All participants in this round pay ante
+      // Finalists may be missing from the player lists in older data — they still need a rating.
+      for (const player of roundPlayers) ensure(player);
+      ensure(winner);
+      ensure(loser);
+
+      const rWinner = ratings[winner];
+      const rLoser = ratings[loser];
+      const { winnerDelta, loserDelta } = computePotDistribution(rWinner, rLoser, roundPlayers.length);
+
       for (const player of roundPlayers) {
-        ensure(player);
-        ratings[player].delta = -ELO_ANTE;
-        ratings[player].matches++;
+        if (player !== winner && player !== loser) ratings[player] -= ELO_ANTE;
       }
+      ratings[winner] += winnerDelta;
+      ratings[loser] += loserDelta;
 
-      // 2. Compute pot distribution between finalists (use pre-ante ratings)
-      const rWinner = ratings[winner].elo;
-      const rLoser = ratings[loser].elo;
-      const { winnerDelta, loserDelta } = computePotDistribution(rWinner, rLoser, N);
-
-      // 3. Apply: non-finalists lose ante, finalists get pot share
-      for (const player of roundPlayers) {
-        if (player !== winner && player !== loser) {
-          ratings[player].elo -= ELO_ANTE;
-        }
-      }
-      ratings[winner].elo += winnerDelta;
-      ratings[winner].delta = winnerDelta;
-
-      ratings[loser].elo += loserDelta;
-      ratings[loser].delta = loserDelta;
-
-      // Update peaks
-      for (const player of roundPlayers) {
-        ratings[player].peak = Math.max(ratings[player].peak, ratings[player].elo);
+      if (onRound) {
+        const deltaFor = (player: string) =>
+          player === winner ? winnerDelta : player === loser ? loserDelta : roundPlayers.includes(player) ? -ELO_ANTE : 0;
+        const stop = onRound({ session, round, roundPlayers, winner, loser, rWinner, rLoser, winnerDelta, loserDelta, deltaFor, ratings });
+        if (stop === true) return ratings;
       }
     }
   }
+  return ratings;
+}
+
+/** Participants of a round, including finalists missing from the round's player list. */
+function roundParticipants(step: EloRoundStep): string[] {
+  const list = [...step.roundPlayers];
+  if (!list.includes(step.winner)) list.push(step.winner);
+  if (!list.includes(step.loser)) list.push(step.loser);
+  return list;
+}
+
+export function computeElo(sessions: GameSession[], allPlayers?: string[], eloResetTimestamp?: number | null): Record<string, EloEntry> {
+  const extra: Record<string, { peak: number; matches: number; delta: number }> = {};
+  const get = (name: string) => (extra[name] ??= { peak: ELO_START, matches: 0, delta: 0 });
+
+  const ratings = replayElo(sessions, { eloResetTimestamp, allPlayers }, (step) => {
+    for (const player of step.roundPlayers) get(player).matches++;
+    for (const player of roundParticipants(step)) {
+      const e = get(player);
+      e.delta = step.deltaFor(player);
+      e.peak = Math.max(e.peak, step.ratings[player]);
+    }
+  });
 
   const result: Record<string, EloEntry> = {};
-  for (const [name, r] of Object.entries(ratings)) {
-    result[name] = { name, elo: r.elo, peakElo: r.peak, matches: r.matches, delta: r.delta };
+  for (const [name, elo] of Object.entries(ratings)) {
+    const e = get(name);
+    result[name] = { name, elo, peakElo: e.peak, matches: e.matches, delta: e.delta };
   }
   return result;
 }
 
 // ── Elo History (sparkline data) ──
 export function computeEloHistory(sessions: GameSession[], allPlayers?: string[], eloResetTimestamp?: number | null): Record<string, number[]> {
-  const ratings: Record<string, number> = {};
   const history: Record<string, number[]> = {};
-  const ensure = (name: string) => {
-    if (ratings[name] === undefined) { ratings[name] = ELO_START; history[name] = [ELO_START]; }
-  };
-  if (allPlayers) {
-    for (const player of allPlayers) ensure(player);
-  }
-  const sorted = [...sessions].sort((a, b) => a.date - b.date);
-  for (const session of sorted) {
-    if (eloResetTimestamp && session.date < eloResetTimestamp) continue;
-
-    for (const player of session.players) ensure(player);
-
-    for (const round of session.rounds) {
-      if (round.finalists.length !== 2 || !round.winner) continue;
-      const roundPlayers = round.players ?? session.players;
-      const N = roundPlayers.length;
-      const [p1, p2] = round.finalists;
-      const winner = round.winner;
-      const loser = winner === p1 ? p2 : p1;
-
-      // Compute pot distribution (use pre-ante ratings)
-      const rWinner = ratings[winner];
-      const rLoser = ratings[loser];
-      const { winnerDelta, loserDelta } = computePotDistribution(rWinner, rLoser, N);
-
-      // Apply: non-finalists lose ante, finalists get pot share
-      for (const player of roundPlayers) {
-        ensure(player);
-        if (player !== winner && player !== loser) {
-          ratings[player] -= ELO_ANTE;
-        }
-      }
-      ratings[winner] += winnerDelta;
-      ratings[loser] += loserDelta;
-
-      // Record history point for all participants in this round
-      for (const player of roundPlayers) {
-        history[player].push(ratings[player]);
-      }
+  const ratings = replayElo(sessions, { eloResetTimestamp, allPlayers }, (step) => {
+    for (const player of roundParticipants(step)) {
+      (history[player] ??= [ELO_START]).push(step.ratings[player]);
     }
-  }
+  });
+  for (const name of Object.keys(ratings)) history[name] ??= [ELO_START];
   return history;
 }
 
-/**
- * Compute net Elo exchanged between each pair of players across all finals.
- * Returns a nested map: h2hElo[playerA][playerB] = net Elo that playerA gained from matches vs playerB.
- * This replays the full Elo simulation so deltas reflect the actual ratings at the time of each match.
- */
+/** Net Elo each player has won or lost against each opponent in finals */
 export function computeH2HElo(sessions: GameSession[], eloResetTimestamp?: number | null): Record<string, Record<string, number>> {
-  const ratings: Record<string, number> = {};
   const netElo: Record<string, Record<string, number>> = {};
-
-  const ensure = (name: string) => {
-    if (ratings[name] === undefined) ratings[name] = ELO_START;
-    if (!netElo[name]) netElo[name] = {};
-  };
-
-  const sorted = [...sessions].sort((a, b) => a.date - b.date);
-
-  for (const session of sorted) {
-    if (eloResetTimestamp && session.date < eloResetTimestamp) continue;
-
-    for (const player of session.players) ensure(player);
-
-    for (const round of session.rounds) {
-      if (round.finalists.length !== 2 || !round.winner) continue;
-
-      const roundPlayers = round.players ?? session.players;
-      const N = roundPlayers.length;
-
-      const [p1, p2] = round.finalists;
-      const winner = round.winner;
-      const loser = winner === p1 ? p2 : p1;
-
-      // Compute pot distribution (use pre-ante ratings)
-      const rWinner = ratings[winner];
-      const rLoser = ratings[loser];
-      const { winnerDelta, loserDelta } = computePotDistribution(rWinner, rLoser, N);
-
-      // Apply: non-finalists lose ante, finalists get pot share
-      for (const player of roundPlayers) {
-        ensure(player);
-        if (player !== winner && player !== loser) {
-          ratings[player] -= ELO_ANTE;
-        }
-      }
-      ratings[winner] += winnerDelta;
-      ratings[loser] += loserDelta;
-
-      if (!netElo[winner][loser]) netElo[winner][loser] = 0;
-      if (!netElo[loser][winner]) netElo[loser][winner] = 0;
-      netElo[winner][loser] += winnerDelta;
-      netElo[loser][winner] += loserDelta;
-    }
-  }
-
+  const ratings = replayElo(sessions, { eloResetTimestamp }, ({ winner, loser, winnerDelta, loserDelta }) => {
+    const w = (netElo[winner] ??= {});
+    const l = (netElo[loser] ??= {});
+    w[loser] = (w[loser] ?? 0) + winnerDelta;
+    l[winner] = (l[winner] ?? 0) + loserDelta;
+  });
+  for (const name of Object.keys(ratings)) netElo[name] ??= {};
   return netElo;
 }
 
@@ -288,53 +260,13 @@ export interface EloRating {
 }
 
 export function computeEloRatings(sessions: GameSession[], eloResetTimestamp?: number | null): Record<string, EloRating> {
-  const ratings: Record<string, { elo: number; matches: number }> = {};
-
-  const ensure = (name: string) => {
-    if (!ratings[name]) ratings[name] = { elo: ELO_START, matches: 0 };
-  };
-
-  const sorted = [...sessions].sort((a, b) => a.date - b.date);
-
-  for (const session of sorted) {
-    if (eloResetTimestamp && session.date < eloResetTimestamp) continue;
-
-    for (const player of session.players) ensure(player);
-
-    for (const round of session.rounds) {
-      if (round.finalists.length !== 2 || !round.winner) continue;
-      const roundPlayers = round.players ?? session.players;
-      const N = roundPlayers.length;
-      const [p1, p2] = round.finalists;
-      const winner = round.winner;
-      const loser = winner === p1 ? p2 : p1;
-
-      // Ensure all round participants exist BEFORE accessing ratings
-      for (const player of roundPlayers) ensure(player);
-      ensure(winner);
-      ensure(loser);
-
-      // Compute pot distribution (use pre-ante ratings)
-      const rWinner = ratings[winner].elo;
-      const rLoser = ratings[loser].elo;
-      const { winnerDelta, loserDelta } = computePotDistribution(rWinner, rLoser, N);
-
-      // Apply: non-finalists lose ante, finalists get pot share
-      for (const player of roundPlayers) {
-        ensure(player);
-        if (player !== winner && player !== loser) {
-          ratings[player].elo -= ELO_ANTE;
-        }
-        ratings[player].matches++;
-      }
-      ratings[winner].elo += winnerDelta;
-      ratings[loser].elo += loserDelta;
-    }
-  }
-
+  const matches: Record<string, number> = {};
+  const ratings = replayElo(sessions, { eloResetTimestamp }, ({ roundPlayers }) => {
+    for (const player of roundPlayers) matches[player] = (matches[player] ?? 0) + 1;
+  });
   const result: Record<string, EloRating> = {};
-  for (const [name, r] of Object.entries(ratings)) {
-    result[name] = { name, elo: r.elo, matches: r.matches };
+  for (const [name, elo] of Object.entries(ratings)) {
+    result[name] = { name, elo, matches: matches[name] ?? 0 };
   }
   return result;
 }

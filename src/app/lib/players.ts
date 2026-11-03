@@ -22,21 +22,25 @@ export function matchPlayerName(tournamentName: string, highscoreName: string): 
   const ntn = normalize(tn);
   const nhn = normalize(hn);
   if (ntn === nhn) return true;
-  // Levenshtein-like: allow 1-char difference for names > 4 chars
+  // Allow one typo for names > 4 chars: a changed, added, removed or swapped letter
   if (ntn.length > 4 && nhn.length > 4 && Math.abs(ntn.length - nhn.length) <= 1) {
-    let diffs = 0;
-    const shorter = ntn.length <= nhn.length ? ntn : nhn;
-    const longer = ntn.length <= nhn.length ? nhn : ntn;
-    let j = 0;
-    for (let i = 0; i < longer.length && j < shorter.length; i++) {
-      if (longer[i] !== shorter[j]) {
-        diffs++;
-        if (longer.length > shorter.length) continue; // skip char in longer
-      }
-      j++;
-    }
-    diffs += shorter.length - j;
-    if (diffs <= 1) return true;
+    if (editDistance(ntn, nhn) <= 1) return true;
   }
   return false;
+}
+
+/** Optimal string alignment distance: Levenshtein where swapping two adjacent letters counts as one edit */
+function editDistance(a: string, b: string): number {
+  const d: number[][] = Array.from({ length: a.length + 1 }, (_, i) => [i, ...new Array(b.length).fill(0)]);
+  for (let j = 0; j <= b.length; j++) d[0][j] = j;
+  for (let i = 1; i <= a.length; i++) {
+    for (let j = 1; j <= b.length; j++) {
+      const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+      d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + cost);
+      if (i > 1 && j > 1 && a[i - 1] === b[j - 2] && a[i - 2] === b[j - 1]) {
+        d[i][j] = Math.min(d[i][j], d[i - 2][j - 2] + 1);
+      }
+    }
+  }
+  return d[a.length][b.length];
 }

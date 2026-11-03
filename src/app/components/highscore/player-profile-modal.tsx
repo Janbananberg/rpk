@@ -46,6 +46,7 @@ interface PlayerProfileModalProps {
   h2hElo: Record<string, Record<string, number>>;
   allSessions: GameSession[];
   savedAchievements: SavedPlayerAchievements;
+  eloResetTimestamp: number | null;
   achievementOwnerCounts: Record<string, number>;
   showLockedAchievements: boolean;
   setShowLockedAchievements: React.Dispatch<React.SetStateAction<boolean>>;
@@ -84,6 +85,7 @@ export function PlayerProfileModal({
   h2hElo,
   allSessions,
   savedAchievements,
+  eloResetTimestamp,
   achievementOwnerCounts,
   showLockedAchievements,
   setShowLockedAchievements,
@@ -316,7 +318,7 @@ export function PlayerProfileModal({
 
                 {/* ── Achievements (persistent) ── */}
                 <AchievementDisplay
-                  unlocked={computePlayerAchievements(selectedPlayer, allSessions, eloRatings, stats, savedAchievements)}
+                  unlocked={computePlayerAchievements(selectedPlayer, allSessions, eloRatings, stats, savedAchievements, eloResetTimestamp)}
                   allAchievements={[...ALL_ACHIEVEMENTS, MYTHIC_COMPLETIONIST]}
                   achievementOwnerCounts={achievementOwnerCounts}
                   showLocked={showLockedAchievements}

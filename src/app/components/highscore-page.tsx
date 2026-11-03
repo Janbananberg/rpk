@@ -30,6 +30,7 @@ import {
   fetchPlayerAchievements,
   savePlayerAchievements,
   fetchEloResetTimestamp,
+  API_BASE,
 } from "./api";
 import type { TournamentHistoryEntry, SavedPlayerAchievements } from "./api";
 import { stripEmoji, PLAYER_EMOJIS } from "../lib/players";
@@ -425,6 +426,8 @@ export function HighscorePage() {
 
   useEffect(() => {
     loadData();
+    // Without a backend every poll answers empty and would wipe what was just added locally.
+    if (!API_BASE) return;
     const interval = setInterval(loadData, 5000);
     return () => clearInterval(interval);
   }, [loadData]);
@@ -589,7 +592,7 @@ export function HighscorePage() {
   useEffect(() => {
     if (stats.length === 0 || Object.keys(eloRatings).length === 0) return;
     if (achievementSyncRef.current) return;
-    const { updated, hasNew } = syncAchievements(stats, allSessions, eloRatings, savedAchievementsRef.current);
+    const { updated, hasNew } = syncAchievements(stats, allSessions, eloRatings, savedAchievementsRef.current, eloResetTimestamp);
     if (hasNew) {
       setSavedAchievements(updated);
       achievementSyncRef.current = true;
@@ -598,7 +601,7 @@ export function HighscorePage() {
       });
     }
 
-  }, [stats, eloRatings, allSessions]);
+  }, [stats, eloRatings, allSessions, eloResetTimestamp]);
 
   // Achievement ownership counts: how many players have each achievement
   const achievementOwnerCounts = useMemo(() => {
@@ -608,13 +611,13 @@ export function HighscorePage() {
     }
     const activePlayers = stats.filter((p) => p.gamesPlayed > 0);
     for (const player of activePlayers) {
-      const unlocked = computePlayerAchievements(player, allSessions, eloRatings, stats, savedAchievements);
+      const unlocked = computePlayerAchievements(player, allSessions, eloRatings, stats, savedAchievements, eloResetTimestamp);
       for (const a of unlocked) {
         counts[a.id] = (counts[a.id] || 0) + 1;
       }
     }
     return counts;
-  }, [stats, allSessions, eloRatings, savedAchievements]);
+  }, [stats, allSessions, eloRatings, savedAchievements, eloResetTimestamp]);
 
   // Session attendance: how many sessions each player attended
   const sessionAttendance = useMemo(() => {
@@ -1283,6 +1286,7 @@ export function HighscorePage() {
         h2hElo={h2hElo}
         allSessions={allSessions}
         savedAchievements={savedAchievements}
+        eloResetTimestamp={eloResetTimestamp}
         achievementOwnerCounts={achievementOwnerCounts}
         showLockedAchievements={showLockedAchievements}
         setShowLockedAchievements={setShowLockedAchievements}

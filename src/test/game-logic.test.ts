@@ -5,13 +5,18 @@ import {
   applyEloDecay,
   computeAllH2H,
   computeElo,
+  computeEloHistory,
   computeEloRatings,
   computeH2H,
+  computeH2HElo,
   computePotDistribution,
   eloWinProbability,
   getH2H,
+  replayElo,
   weightedDelta,
 } from "../app/lib/elo";
+import { computePerMonthEloDeltas, hasLostToMuchLowerElo, hasWonFinalBelowElo } from "../app/lib/achievements";
+import { computeSeasonSummary } from "../app/lib/insights";
 import type { EloEntry } from "../app/lib/elo";
 import { matchPlayerName, stripEmoji } from "../app/lib/players";
 import { computePlayerPercentile, getCSGORank } from "../app/lib/rank";
@@ -276,6 +281,13 @@ describe("spelarnamn", () => {
     expect(matchPlayerName("Lodnart", "Lodnert")).toBe(true);
     expect(matchPlayerName("Bert", "Anna")).toBe(false);
   });
+
+  it("tål en bokstav som bytt plats, men inte två fel", () => {
+    expect(matchPlayerName("Herstö", "🏓 Hertsö")).toBe(true);
+    expect(matchPlayerName("Andresson", "Andersson")).toBe(true);
+    expect(matchPlayerName("Lodnarts", "Lodnart")).toBe(true);
+    expect(matchPlayerName("Karlsson", "Larsson")).toBe(false);
+  });
 });
 
 describe("buildStatsCsv", () => {
@@ -290,5 +302,64 @@ describe("buildStatsCsv", () => {
     const a = rows.find((r) => r.startsWith("A;"))!.split(";");
     expect(a.slice(0, 5)).toEqual(["A", "1007", "1", "1", "1"]);
     expect(a[30]).toBe("B:1-0");
+  });
+});
+
+describe("finalister som saknas i spelarlistan", () => {
+  // Older data can have a finalist who is in neither session.players nor round.players.
+  const broken: GameSession[] = [{ id: "x", date: 1, players: ["A", "B", "C"], rounds: [{ finalists: ["A", "Z"], winner: "Z" }] }];
+
+  it("kraschar inte och ger giltiga tal", () => {
+    const elo = computeElo(broken);
+    expect(Number.isFinite(elo.Z.elo)).toBe(true);
+    expect(elo.Z.elo).toBeGreaterThan(1000);
+    expect(computeEloHistory(broken).Z.every(Number.isFinite)).toBe(true);
+    expect(Number.isFinite(computeH2HElo(broken).Z.A)).toBe(true);
+  });
+
+  it("räknar likadant i highscore och turnering", () => {
+    const highscore = computeElo(broken);
+    const tournament = computeEloRatings(broken);
+    for (const name of ["A", "B", "C", "Z"]) expect(highscore[name].elo).toBe(tournament[name].elo);
+  });
+});
+
+describe("Elo-återställning", () => {
+  const before = session(1, ["A", "B", "C", "D"], [["A", "B", "A"], ["A", "B", "A"], ["A", "B", "A"]]);
+  const after = session(10, ["A", "B", "C", "D"], [["A", "B", "B"]]);
+
+  it("börjar om från startvärdet vid återställningen", () => {
+    const ratings = replayElo([before, after], { eloResetTimestamp: 5, keepHistoryBeforeReset: true });
+    expect(ratings).toEqual(replayElo([after]));
+  });
+
+  it("bedömer achievements på Elo som gällde efter återställningen", () => {
+    // Without the reset B would sit well below A when beating them; with it they are level.
+    expect(hasLostToMuchLowerElo("A", [before, after], 10)).toBe(true);
+    expect(hasLostToMuchLowerElo("A", [before, after], 10, 5)).toBe(false);
+  });
+
+  it("räknar fortfarande Elo från före återställningen", () => {
+    const lowSession = session(1, ["A", "B", "C", "D"], [["A", "B", "A"], ["A", "C", "A"], ["A", "D", "A"]]);
+    expect(hasWonFinalBelowElo("B", [lowSession, session(10, ["A", "B"], [["A", "B", "B"]])], 1000, 5)).toBe(false);
+    expect(hasWonFinalBelowElo("B", [lowSession, session(3, ["A", "B"], [["A", "B", "B"]])], 1000, 5)).toBe(true);
+  });
+
+  it("summerar månadens förändring per månad", () => {
+    const nov = new Date("2026-11-10T12:00:00Z").getTime();
+    const deltas = computePerMonthEloDeltas("A", [session(nov, ["A", "B", "C", "D"], [["A", "B", "A"]])]);
+    expect(deltas).toEqual({ "2026-11": 5 });
+  });
+});
+
+describe("säsongssammanfattningens största skräll", () => {
+  it("använder samma Elo som topplistan, med insatsen från alla spelare", () => {
+    const players = ["A", "B", "C", "D", "E", "F"];
+    const before = [session(1, players, [["A", "B", "A"], ["A", "B", "A"], ["A", "B", "A"]])];
+    const month = [session(100, ["A", "C"], [["A", "C", "C"]])];
+    const elo = computeElo(before);
+    const summary = computeSeasonSummary("1970-01", month, before, players);
+    expect(summary?.biggestUpset?.winner).toBe("C");
+    expect(summary?.biggestUpset?.eloDiff).toBe(elo.A.elo - elo.C.elo);
   });
 });

@@ -1,5 +1,6 @@
 import type { GameSession, SavedAchievement, SavedPlayerAchievements } from "../components/api";
-import { computePotDistribution, ELO_ANTE, ELO_START } from "./elo";
+import { replayElo } from "./elo";
+import { toLuleaDate } from "./dates";
 import type { EloEntry } from "./elo";
 import { stripEmoji } from "./players";
 import type { PlayerStats } from "./stats";
@@ -27,6 +28,7 @@ export interface AchievementContext {
   eloEntry: EloEntry | null;
   eloRatings: Record<string, EloEntry>;
   allStats: PlayerStats[];
+  eloResetTimestamp?: number | null;
 }
 
 /** Count how many sessions a player participated in */
@@ -63,7 +65,7 @@ export function countWinsInFilteredSessions(playerName: string, sessions: GameSe
 export function getUniqueMonths(playerName: string, sessions: GameSession[]): Set<string> {
   const months = new Set<string>();
   for (const s of getPlayerSessions(playerName, sessions)) {
-    const d = new Date(s.date);
+    const d = toLuleaDate(s.date);
     months.add(`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`);
   }
   return months;
@@ -83,7 +85,7 @@ export function getISOWeek(d: Date): string {
 export function hasConsecutiveWeeks(playerName: string, sessions: GameSession[], count: number): boolean {
   const weeks = new Set<string>();
   for (const s of getPlayerSessions(playerName, sessions)) {
-    weeks.add(getISOWeek(new Date(s.date)));
+    weeks.add(getISOWeek(toLuleaDate(s.date)));
   }
   const sorted = Array.from(weeks).sort();
   let streak = 1;
@@ -97,49 +99,21 @@ export function hasConsecutiveWeeks(playerName: string, sessions: GameSession[],
 }
 
 /** Check if a player ever won a final while their Elo was below a threshold (replays Elo history) */
-export function hasWonFinalBelowElo(playerName: string, sessions: GameSession[], threshold: number): boolean {
+export function hasWonFinalBelowElo(playerName: string, sessions: GameSession[], threshold: number, eloResetTimestamp?: number | null): boolean {
   const stripped = stripEmoji(playerName).toLowerCase().trim();
-  const ratings: Record<string, number> = {};
-  const ensure = (name: string) => { if (!(name in ratings)) ratings[name] = ELO_START; };
-  const sorted = [...sessions].sort((a, b) => a.date - b.date);
-
-  for (const session of sorted) {
-    for (const player of session.players) ensure(player);
-    for (const round of session.rounds) {
-      if (round.finalists.length !== 2 || !round.winner) continue;
-      const roundPlayers = round.players ?? session.players;
-      const N = roundPlayers.length;
-      const [p1, p2] = round.finalists;
-      const winner = round.winner;
-      const loser = winner === p1 ? p2 : p1;
-
-      ensure(winner);
-      ensure(loser);
-
-      // Check BEFORE applying deltas: did our player win while below threshold?
-      const winnerStripped = stripEmoji(winner).toLowerCase().trim();
-      if (winnerStripped === stripped && ratings[winner] < threshold) return true;
-
-      // Apply Elo changes (mirrors computeElo)
-      for (const player of roundPlayers) {
-        ensure(player);
-        if (player !== winner && player !== loser) {
-          ratings[player] -= ELO_ANTE;
-        }
-      }
-      const { winnerDelta, loserDelta } = computePotDistribution(ratings[winner], ratings[loser], N);
-      ratings[winner] += winnerDelta;
-      ratings[loser] += loserDelta;
-    }
-  }
-  return false;
+  let found = false;
+  replayElo(sessions, { eloResetTimestamp, keepHistoryBeforeReset: true }, ({ winner, rWinner }) => {
+    found = stripEmoji(winner).toLowerCase().trim() === stripped && rWinner < threshold;
+    return found;
+  });
+  return found;
 }
 
 /** Count unique weekdays a player has played on */
 export function countUniqueWeekdays(playerName: string, sessions: GameSession[]): number {
   const days = new Set<number>();
   for (const s of getPlayerSessions(playerName, sessions)) {
-    days.add(new Date(s.date).getDay());
+    days.add(toLuleaDate(s.date).getDay());
   }
   return days.size;
 }
@@ -160,69 +134,31 @@ export function hasConsecutiveFirstRoundExits(playerName: string, sessions: Game
 }
 
 /** Compute per-month Elo deltas for a player by walking through all sessions */
-export function computePerMonthEloDeltas(playerName: string, sessions: GameSession[]): Record<string, number> {
+export function computePerMonthEloDeltas(playerName: string, sessions: GameSession[], eloResetTimestamp?: number | null): Record<string, number> {
   const stripped = stripEmoji(playerName).toLowerCase().trim();
-  const ratings: Record<string, number> = {};
-  const ensure = (name: string) => { if (ratings[name] === undefined) ratings[name] = ELO_START; };
-  const sorted = [...sessions].sort((a, b) => a.date - b.date);
   const monthDeltas: Record<string, number> = {};
-  for (const session of sorted) {
-    const month = `${new Date(session.date).getFullYear()}-${String(new Date(session.date).getMonth() + 1).padStart(2, "0")}`;
-    for (const player of session.players) ensure(player);
-    for (const round of session.rounds) {
-      if (round.finalists.length !== 2 || !round.winner) continue;
-      const roundPlayers = round.players ?? session.players;
-      const N = roundPlayers.length;
-      const [p1, p2] = round.finalists;
-      const winner = round.winner;
-      const loser = winner === p1 ? p2 : p1;
-      for (const player of roundPlayers) ensure(player);
-      const beforeRatings: Record<string, number> = {};
-      for (const player of roundPlayers) beforeRatings[player] = ratings[player];
-      const { winnerDelta, loserDelta } = computePotDistribution(ratings[winner], ratings[loser], N);
-      for (const player of roundPlayers) {
-        if (player !== winner && player !== loser) ratings[player] -= ELO_ANTE;
-      }
-      ratings[winner] += winnerDelta;
-      ratings[loser] += loserDelta;
-      for (const player of roundPlayers) {
-        if (stripEmoji(player).toLowerCase().trim() === stripped) {
-          monthDeltas[month] = (monthDeltas[month] ?? 0) + (ratings[player] - beforeRatings[player]);
-        }
+  replayElo(sessions, { eloResetTimestamp, keepHistoryBeforeReset: true }, (step) => {
+    const d = toLuleaDate(step.session.date);
+    const month = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
+    const participants = new Set([...step.roundPlayers, step.winner, step.loser]);
+    for (const player of participants) {
+      if (stripEmoji(player).toLowerCase().trim() === stripped) {
+        monthDeltas[month] = (monthDeltas[month] ?? 0) + step.deltaFor(player);
       }
     }
-  }
+  });
   return monthDeltas;
 }
 
 /** Check if a player lost a final to someone with 100+ lower Elo */
-export function hasLostToMuchLowerElo(playerName: string, sessions: GameSession[], eloGap: number): boolean {
+export function hasLostToMuchLowerElo(playerName: string, sessions: GameSession[], eloGap: number, eloResetTimestamp?: number | null): boolean {
   const stripped = stripEmoji(playerName).toLowerCase().trim();
-  const ratings: Record<string, number> = {};
-  const ensure = (name: string) => { if (ratings[name] === undefined) ratings[name] = ELO_START; };
-  const sorted = [...sessions].sort((a, b) => a.date - b.date);
-  for (const session of sorted) {
-    for (const player of session.players) ensure(player);
-    for (const round of session.rounds) {
-      if (round.finalists.length !== 2 || !round.winner) continue;
-      const roundPlayers = round.players ?? session.players;
-      const N = roundPlayers.length;
-      const [p1, p2] = round.finalists;
-      const winner = round.winner;
-      const loser = winner === p1 ? p2 : p1;
-      for (const player of roundPlayers) ensure(player);
-      if (stripEmoji(loser).toLowerCase().trim() === stripped) {
-        if (ratings[loser] - ratings[winner] >= eloGap) return true;
-      }
-      const { winnerDelta, loserDelta } = computePotDistribution(ratings[winner], ratings[loser], N);
-      for (const player of roundPlayers) {
-        if (player !== winner && player !== loser) ratings[player] -= ELO_ANTE;
-      }
-      ratings[winner] += winnerDelta;
-      ratings[loser] += loserDelta;
-    }
-  }
-  return false;
+  let found = false;
+  replayElo(sessions, { eloResetTimestamp, keepHistoryBeforeReset: true }, ({ loser, rWinner, rLoser }) => {
+    found = stripEmoji(loser).toLowerCase().trim() === stripped && rLoser - rWinner >= eloGap;
+    return found;
+  });
+  return found;
 }
 
 /** Check if a player lost to the same opponent N times in a row in finals */
@@ -378,13 +314,13 @@ export const ALL_ACHIEVEMENTS: AchievementCheck[] = [
 
   // ── TIME-BASED COMMON ──
   { achievement: { id: "morning_bird", name: "Morgonpigg", description: "Spela en omgång som startar före kl 09:00", emoji: "🌅", rarity: "common" }, check: (p, ctx) => {
-    return getPlayerSessions(p.name, ctx.sessions).some((s) => new Date(s.date).getHours() < 9);
+    return getPlayerSessions(p.name, ctx.sessions).some((s) => toLuleaDate(s.date).getHours() < 9);
   }},
   { achievement: { id: "overtime", name: "Övertidsarbete", description: "Spela en omgång som startar efter kl 16:00", emoji: "🦉", rarity: "common" }, check: (p, ctx) => {
-    return getPlayerSessions(p.name, ctx.sessions).some((s) => new Date(s.date).getHours() >= 16);
+    return getPlayerSessions(p.name, ctx.sessions).some((s) => toLuleaDate(s.date).getHours() >= 16);
   }},
   { achievement: { id: "friday_fighter", name: "Fredagskämpen", description: "Spela i 5+ fredagsomgångar", emoji: "🍻", rarity: "common" }, check: (p, ctx) => {
-    return getPlayerSessions(p.name, ctx.sessions).filter((s) => new Date(s.date).getDay() === 5).length >= 5;
+    return getPlayerSessions(p.name, ctx.sessions).filter((s) => toLuleaDate(s.date).getDay() === 5).length >= 5;
   }},
 
   // ── NEW UNCOMMON (5) ──
@@ -401,12 +337,12 @@ export const ALL_ACHIEVEMENTS: AchievementCheck[] = [
   // ── TIME-BASED UNCOMMON ──
   { achievement: { id: "weekday_routine", name: "Veckorutinen", description: "Spela omgångar på 4+ olika veckodagar", emoji: "📅", rarity: "uncommon" }, check: (p, ctx) => countUniqueWeekdays(p.name, ctx.sessions) >= 4 },
   { achievement: { id: "after_work", name: "After Work", description: "Vinn en final i en omgång mellan kl 16–19", emoji: "🍸", rarity: "uncommon" }, check: (p, ctx) => {
-    return countWinsInFilteredSessions(p.name, ctx.sessions, (s) => { const h = new Date(s.date).getHours(); return h >= 16 && h < 19; }) > 0;
+    return countWinsInFilteredSessions(p.name, ctx.sessions, (s) => { const h = toLuleaDate(s.date).getHours(); return h >= 16 && h < 19; }) > 0;
   }},
   { achievement: { id: "back_again", name: "Tillbaka Igen", description: "Spela omgångar 3 veckor i rad", emoji: "🔁", rarity: "uncommon" }, check: (p, ctx) => hasConsecutiveWeeks(p.name, ctx.sessions, 3) },
   { achievement: { id: "twin_souls", name: "Tvillingsjälar", description: "Möt samma motståndare i 10+ finaler", emoji: "👯", rarity: "uncommon" }, check: (p) => Object.values(p.h2h).some((r) => r.wins + r.losses >= 10) },
   { achievement: { id: "comeback_kid", name: "Comeback Kid", description: "Vinn en final med under 950 Elo", emoji: "🦸", rarity: "uncommon" }, check: (p, ctx) => {
-    return hasWonFinalBelowElo(p.name, ctx.sessions, 950);
+    return hasWonFinalBelowElo(p.name, ctx.sessions, 950, ctx.eloResetTimestamp);
   }},
 
   // ── NEW RARE (5) ──
@@ -425,7 +361,7 @@ export const ALL_ACHIEVEMENTS: AchievementCheck[] = [
   { achievement: { id: "ironman_week", name: "Ironman-veckan", description: "Spela omgångar 3+ dagar inom samma kalendervecka", emoji: "💪", rarity: "rare" }, check: (p, ctx) => {
     const weekDays: Record<string, Set<number>> = {};
     for (const s of getPlayerSessions(p.name, ctx.sessions)) {
-      const d = new Date(s.date);
+      const d = toLuleaDate(s.date);
       const week = getISOWeek(d);
       if (!weekDays[week]) weekDays[week] = new Set();
       weekDays[week].add(d.getDay());
@@ -459,7 +395,7 @@ export const ALL_ACHIEVEMENTS: AchievementCheck[] = [
   // ── TIME-BASED LEGENDARY ──
   { achievement: { id: "club_365", name: "365-klubben", description: "Spela omgångar under 12 olika kalendermånader", emoji: "📆", rarity: "legendary" }, check: (p, ctx) => getUniqueMonths(p.name, ctx.sessions).size >= 12 },
   { achievement: { id: "friday_dancer", name: "Fredagsdansen", description: "Vinn 10+ finaler på fredagar", emoji: "🪩", rarity: "legendary" }, check: (p, ctx) => {
-    return countWinsInFilteredSessions(p.name, ctx.sessions, (s) => new Date(s.date).getDay() === 5) >= 10;
+    return countWinsInFilteredSessions(p.name, ctx.sessions, (s) => toLuleaDate(s.date).getDay() === 5) >= 10;
   }},
   { achievement: { id: "ice_age", name: "Ice Age", description: "Förlora 20+ finaler i rad", emoji: "🧊", rarity: "legendary" }, check: (p) => {
     let streak = 0;
@@ -471,10 +407,10 @@ export const ALL_ACHIEVEMENTS: AchievementCheck[] = [
   // Rare
   { achievement: { id: "swing_door", name: "Svängdörren", description: "Åk ut i första rundan 10 omgångar i rad utan att nå en final", emoji: "🚪", rarity: "rare" }, check: (p, ctx) => hasConsecutiveFirstRoundExits(p.name, ctx.sessions, 10) },
   { achievement: { id: "monthly_freefall", name: "Fritt Fall", description: "Tappa 50+ Elo under en enskild kalendermånad", emoji: "📉", rarity: "rare" }, check: (p, ctx) => {
-    const deltas = computePerMonthEloDeltas(p.name, ctx.sessions);
+    const deltas = computePerMonthEloDeltas(p.name, ctx.sessions, ctx.eloResetTimestamp);
     return Object.values(deltas).some((d) => d <= -50);
   }},
-  { achievement: { id: "the_clown", name: "Klovnen", description: "Förlora en final mot någon med 100+ lägre Elo", emoji: "🤡", rarity: "rare" }, check: (p, ctx) => hasLostToMuchLowerElo(p.name, ctx.sessions, 100) },
+  { achievement: { id: "the_clown", name: "Klovnen", description: "Förlora en final mot någon med 100+ lägre Elo", emoji: "🤡", rarity: "rare" }, check: (p, ctx) => hasLostToMuchLowerElo(p.name, ctx.sessions, 100, ctx.eloResetTimestamp) },
   { achievement: { id: "yellow_magnet", name: "Gula Magneten", description: "Samla 5+ gula kort totalt", emoji: "🧲", rarity: "rare" }, check: (p) => p.yellowCards >= 5 },
   { achievement: { id: "groundhog_day", name: "Groundhog Day", description: "Förlora mot samma person 5 gånger i rad i finaler", emoji: "🔄", rarity: "rare" }, check: (p, ctx) => hasGroundhogDay(p.name, ctx.sessions, 5) },
   { achievement: { id: "smaltisen", name: "Smältisen", description: "Förlora 3+ finaler under samma omgång", emoji: "🫠", rarity: "rare" }, check: (p, ctx) => hasSmaltisen(p.name, ctx.sessions, 3) },
@@ -487,7 +423,7 @@ export const ALL_ACHIEVEMENTS: AchievementCheck[] = [
     return qualified.every((e) => ctx.eloEntry!.elo <= e.elo);
   }},
   { achievement: { id: "dark_side", name: "Mörka Sidan", description: "Negativ Elo-delta 3 kalendermånader i rad", emoji: "🌑", rarity: "legendary" }, check: (p, ctx) => {
-    const deltas = computePerMonthEloDeltas(p.name, ctx.sessions);
+    const deltas = computePerMonthEloDeltas(p.name, ctx.sessions, ctx.eloResetTimestamp);
     const months = Object.keys(deltas).sort();
     let streak = 0;
     for (const m of months) {
@@ -513,8 +449,9 @@ export function computePlayerAchievements(
   eloRatings: Record<string, EloEntry>,
   allStats: PlayerStats[],
   savedAchievements: SavedPlayerAchievements = {},
+  eloResetTimestamp?: number | null,
 ): Achievement[] {
-  const ctx: AchievementContext = { sessions, eloEntry: eloRatings[player.name] || null, eloRatings, allStats };
+  const ctx: AchievementContext = { sessions, eloEntry: eloRatings[player.name] || null, eloRatings, allStats, eloResetTimestamp };
   const saved = savedAchievements[player.name] || [];
   const savedMap = new Map<string, SavedAchievement>(saved.map((s) => [s.achievementId, s]));
 
@@ -567,6 +504,7 @@ export function syncAchievements(
   sessions: GameSession[],
   eloRatings: Record<string, EloEntry>,
   savedAchievements: SavedPlayerAchievements,
+  eloResetTimestamp?: number | null,
 ): { updated: SavedPlayerAchievements; hasNew: boolean } {
   const updated = { ...savedAchievements };
   let hasNew = false;
@@ -578,6 +516,7 @@ export function syncAchievements(
       eloEntry: eloRatings[player.name] || null,
       eloRatings,
       allStats: stats,
+      eloResetTimestamp,
     };
     const existing = updated[player.name] || [];
     const existingIds = new Set(existing.map((e) => e.achievementId));
