@@ -1,6 +1,6 @@
 import { motion } from "motion/react";
 import {
-  Clock, Check, X, Trophy, TrendingUp, TrendingDown, Ticket, CalendarDays,
+  Clock, Check, X, TrendingUp, TrendingDown, Ticket, CalendarDays,
 } from "lucide-react";
 import type { PlacedBet } from "./api";
 

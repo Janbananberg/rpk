@@ -1,5 +1,5 @@
 import { useState, useMemo, useCallback } from "react";
-import { AnimatePresence, motion } from "motion/react";
+import { motion } from "motion/react";
 import {
   Users,
   Trophy,
@@ -38,75 +38,6 @@ type PointsPerRound = 16 | 21 | 24 | 32;
 /* ── Helpers ── */
 
 /** Generate all unique pairings from players */
-function generateRoundRobin(players: string[]): AmericanoRound[] {
-  const n = players.length;
-  if (n < 4) return [];
-
-  // Shuffle players for randomized pairings
-  const shuffled = [...players].sort(() => Math.random() - 0.5);
-
-  // For americano: each round has teams of 2, rotating partners
-  // We generate rounds where everyone plays with different partners
-  const rounds: AmericanoRound[] = [];
-  const usedPairings = new Set<string>();
-
-  // Generate rounds using a rotation algorithm
-  const list = [...shuffled];
-  const isOdd = n % 2 !== 0;
-  if (isOdd) list.push("__BYE__");
-  const count = list.length;
-  const numRounds = count - 1;
-
-  for (let round = 0; round < numRounds; round++) {
-    const matchups: [string, string][] = [];
-    for (let i = 0; i < count / 2; i++) {
-      const p1 = list[i];
-      const p2 = list[count - 1 - i];
-      if (p1 !== "__BYE__" && p2 !== "__BYE__") {
-        matchups.push([p1, p2]);
-      }
-    }
-
-    // Now pair the matchups into americano matches (2v2)
-    // Group pairs of matchups into team matches
-    if (matchups.length >= 2) {
-      const matches: AmericanoMatch[] = [];
-      const sitOut = isOdd ? list.find((p) => {
-        const inMatch = matchups.some(([a, b]) => a === p || b === p);
-        return !inMatch;
-      }) : undefined;
-
-      for (let i = 0; i + 1 < matchups.length; i += 2) {
-        matches.push({
-          team1: matchups[i],
-          team2: matchups[i + 1],
-          score1: 0,
-          score2: 0,
-          completed: false,
-        });
-      }
-
-      // If odd number of matchups, last pair sits as team with no opponent — skip
-      if (matches.length > 0) {
-        rounds.push({ matches, sitOut: sitOut || undefined });
-      }
-    }
-
-    // Rotate: fix first element, rotate rest
-    const fixed = list[0];
-    const rest = list.slice(1);
-    rest.unshift(rest.pop()!);
-    list.splice(0, list.length, fixed, ...rest);
-  }
-
-  // If we got too few rounds, generate additional with shuffled partners
-  if (rounds.length < 3 && n >= 4) {
-    return generateSimpleRounds(players);
-  }
-
-  return rounds;
-}
-
 /** Simpler round generation for americano — ensures all play */
 function generateSimpleRounds(players: string[]): AmericanoRound[] {
   const n = players.length;
@@ -171,7 +102,6 @@ function calculateStandings(
   rounds.forEach((round) => {
     round.matches.forEach((m) => {
       if (!m.completed) return;
-      const allPlayers = [...new Set([...m.team1, ...m.team2])];
       const isDouble = m.team1[0] !== m.team1[1];
 
       if (isDouble) {
@@ -646,7 +576,6 @@ export function AmericanoTournament() {
 /* ── Match Card ── */
 function MatchCard({
   match,
-  maxPoints,
   onScore,
   onComplete,
 }: {

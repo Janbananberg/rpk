@@ -135,7 +135,8 @@ export function MusicPlayerBar({ onNostalgiaToggle, nostalgiaActive }: MusicPlay
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio || !currentTrack) return;
-    isPlaying ? audio.play().catch(() => {}) : audio.pause();
+    if (isPlaying) audio.play().catch(() => {});
+    else audio.pause();
   }, [isPlaying, currentTrack]);
 
   // volume
@@ -211,7 +212,6 @@ export function MusicPlayerBar({ onNostalgiaToggle, nostalgiaActive }: MusicPlay
   };
 
   const progress = duration > 0 ? (currentTime / duration) * 100 : 0;
-  const hasTracks = tracks.length > 0;
 
   return (
     <>

@@ -2,9 +2,8 @@ import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import {
   Shield, Lock, Eye, EyeOff, Users, Ticket, TrendingUp, Trophy,
-  Trash2, RotateCcw, AlertTriangle, Check, X,
-  Play, Pause, Database, Settings, ChevronDown, ChevronUp, Clock, LogOut,
-  Swords, Circle, CheckCircle2, Loader2, Zap, Lightbulb,
+  Trash2, RotateCcw, AlertTriangle, Check, Play, Pause, Database, Settings, ChevronDown, ChevronUp, Clock, LogOut,
+  Swords, CheckCircle2, Loader2, Zap, Lightbulb,
 } from "lucide-react";
 import type { BettorProfile, TournamentWinnerOdds } from "./betting-store";
 import type { PlacedBet, TournamentState, TournamentHistoryEntry, ActiveTournament } from "./api";
@@ -56,7 +55,7 @@ export function AdminPage() {
   const [tournamentHistory, setTournamentHistory] = useState<TournamentHistoryEntry[]>([]);
   const [activeTournament, setActiveTournament] = useState<ActiveTournament | null>(null);
 
-  const [highscorePlayers, setHighscorePlayers] = useState<string[]>([]);
+  const [, setHighscorePlayers] = useState<string[]>([]);
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
 
   // UI
@@ -987,7 +986,7 @@ interface MatchStatusProps {
   isFinal?: boolean;
 }
 
-function MatchStatusCard({ label, tag, match, isFinal }: MatchStatusProps) {
+function MatchStatusCard({ label, match, isFinal }: MatchStatusProps) {
   const F = "'Titillium Web', sans-serif";
   const isDone = !!match.winner;
   const isWaiting = !match.player1 || !match.player2;

@@ -78,7 +78,7 @@ export function ChampionConfetti({ active }: { active: boolean }) {
       });
     }
 
-    let startTime = Date.now();
+    const startTime = Date.now();
     const duration = 5000;
 
     const animate = () => {
@@ -759,7 +759,7 @@ export function MVPBadge({ mvp, champion }: { mvp: MVPData; champion: string }) 
 //  13b. WIN PROBABILITY BADGE (shown on bracket nodes)
 // ════════════════════════════════════════════════════════════════
 
-export function WinProbBadge({ prob, side }: { prob: number; side: "left" | "right" }) {
+export function WinProbBadge({ prob }: { prob: number; side: "left" | "right" }) {
   const pct = Math.round(prob * 100);
   if (pct === 50) return null; // Don't show for perfectly even
 
@@ -848,12 +848,10 @@ export function RoadToFinal({ entry }: {
     { key: "qf4", p1: 2, p2: 5, winner: entry.qf4Winner },
   ];
 
-  let champQf: typeof qfMatchups[0] | null = null;
   for (const qf of qfMatchups) {
     if (qf.winner === champion) {
       const opp = players[qf.p1] === champion ? players[qf.p2] : players[qf.p1];
       if (opp) path.push({ round: "Kvartsfinal", opponent: opp, result: "Vinst" });
-      champQf = qf;
       break;
     }
   }

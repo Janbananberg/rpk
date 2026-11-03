@@ -1,13 +1,13 @@
 import { useMemo, useState } from "react";
 import { motion } from "motion/react";
 import type { GameSession } from "./api";
-import { Grid3x3 as Grid3X3Icon, CalendarDays, ChevronDown } from "lucide-react";
+import { CalendarDays, ChevronDown } from "lucide-react";
 
 const FONT = "'Titillium Web', sans-serif";
 
 /** Strip leading emoji(s) from a player name */
 function stripEmoji(name: string): string {
-  return name.replace(/^[\p{Emoji_Presentation}\p{Extended_Pictographic}\u200d\ufe0f\u{1f3fb}-\u{1f3ff}]+\s*/gu, "").trim();
+  return name.replace(/^(?:\p{Emoji_Presentation}|\p{Extended_Pictographic}|\u200d|\ufe0f|[\u{1f3fb}-\u{1f3ff}])+\s*/gu, "").trim();
 }
 
 // ── H2H Matrix Component ──
@@ -385,12 +385,8 @@ export function WeekdayHeatmap({ sessions }: { sessions: GameSession[] }) {
 }
 
 // ── Insight Section Wrapper ──
-type InsightTab = "heatmap";
-
 export function InsightsSection({
   sessions,
-  players,
-  stats,
 }: {
   sessions: GameSession[];
   players: string[];

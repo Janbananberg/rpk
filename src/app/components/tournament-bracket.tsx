@@ -15,7 +15,6 @@ import {
   TournamentProgressBar,
   AnimatedConnectorDot,
   computeEloRatings,
-  eloWinProbability,
   computeAllH2H,
   getH2H,
   computeMVP,
@@ -179,14 +178,6 @@ export function TournamentBracket({ onTournamentSaved }: { onTournamentSaved?: (
   }, [qf1, qf2, qf3, qf4, semi1, semi2, final_]);
 
   // Helper: get win probability for a match
-  const getWinProbs = (p1: string, p2: string): { p1: number; p2: number } | null => {
-    const e1 = eloRatings[p1];
-    const e2 = eloRatings[p2];
-    if (!e1 || !e2) return null;
-    const prob1 = eloWinProbability(e1.elo, e2.elo);
-    return { p1: prob1, p2: 1 - prob1 };
-  };
-
   // Helper: open match with Tale of Tape check
   const openMatchWithTape = (key: MatchKey, p1: string, p2: string) => {
     const match = key === "qf1" ? qf1 : key === "qf2" ? qf2 : key === "qf3" ? qf3 : key === "qf4" ? qf4 : key === "semi1" ? semi1 : key === "semi2" ? semi2 : final_;
@@ -1165,32 +1156,6 @@ function BracketNode({
         p1Elo={eloRatings?.[p1Name]?.elo}
         p2Elo={eloRatings?.[p2Name]?.elo}
       />
-    </div>
-  );
-}
-
-function Connector({ active }: { active: boolean }) {
-  return (
-    <div className="flex items-center justify-center h-full px-1">
-      <div className="w-full flex items-center">
-        <div
-          className={`flex-1 h-px transition-all duration-700 ${
-            active
-              ? "bg-gradient-to-r from-primary/40 to-primary/20"
-              : "bg-gradient-to-r from-border/40 to-border/15"
-          }`}
-        />
-        <div className={`w-2 h-2 rounded-full transition-all duration-500 ${
-          active ? "bg-primary/50" : "bg-border/30"
-        }`} />
-        <div
-          className={`flex-1 h-px transition-all duration-700 ${
-            active
-              ? "bg-gradient-to-l from-primary/40 to-primary/20"
-              : "bg-gradient-to-l from-border/40 to-border/15"
-          }`}
-        />
-      </div>
     </div>
   );
 }

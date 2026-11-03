@@ -601,7 +601,7 @@ export function PlayerSetup({
 
               {/* Player list */}
               <div className="flex-1 overflow-y-auto px-3 py-2" style={{ minHeight: 0 }}>
-                {top8Bwp.map((player, originalIdx) => {
+                {top8Bwp.map((player) => {
                   const isExcluded = excludedNames.has(player.name);
                   // Compute the effective rank (position among active players)
                   const activeIdx = isExcluded ? -1 : activeRanked.findIndex((p) => p.name === player.name);

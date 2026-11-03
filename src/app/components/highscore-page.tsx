@@ -15,13 +15,10 @@ import {
   Swords,
   Zap,
   Crown,
-  Star,
   Sparkles,
   BarChart3,
-  Expand,
   Pencil,
   CalendarDays,
-  ArrowUpDown,
   UserMinus,
   Activity,
   Sun,
@@ -34,11 +31,7 @@ import {
   Shield,
   Target,
   Award,
-  Share2,
   Download,
-  Lock,
-  Eye,
-  EyeOff,
   Snowflake,
   Undo2,
   Code2,
@@ -55,9 +48,6 @@ import {
   ResponsiveContainer,
   ReferenceLine,
   Label,
-  BarChart,
-  Bar,
-  Cell,
 } from "recharts";
 import { motion, AnimatePresence } from "motion/react";
 import { AchievementDisplay } from "./achievement-display";
@@ -69,7 +59,6 @@ import {
   saveHighscorePlayers,
   fetchHighscoreSessions,
   saveHighscoreSessions,
-  fetchArchivedSeasons,
   saveArchivedSeasons,
   fetchHistoricalStats,
   saveHistoricalStats,
@@ -88,7 +77,6 @@ import {
   fetchPlayerAchievements,
   savePlayerAchievements,
   fetchEloResetTimestamp,
-  resetEloRatings,
 } from "./api";
 import type { TournamentHistoryEntry, SavedPlayerAchievements, SavedAchievement } from "./api";
 import { API_BASE } from "./api";
@@ -99,7 +87,7 @@ const FONT = "'Titillium Web', sans-serif";
 /** Strip leading emoji(s) from a player name to get the plain text part */
 function stripEmoji(name: string | null | undefined): string {
   if (!name) return "";
-  return name.replace(/^[\p{Emoji_Presentation}\p{Extended_Pictographic}\u200d\ufe0f\u{1f3fb}-\u{1f3ff}]+\s*/gu, "").trim();
+  return name.replace(/^(?:\p{Emoji_Presentation}|\p{Extended_Pictographic}|\u200d|\ufe0f|[\u{1f3fb}-\u{1f3ff}])+\s*/gu, "").trim();
 }
 
 // The historical baseline data originates from March 2026
@@ -1119,22 +1107,6 @@ interface Achievement {
   unlockedAt?: number; // timestamp when first unlocked (permanent)
   isNew?: boolean; // true if just unlocked this session
 }
-
-const ACHIEVEMENT_RARITY_COLORS: Record<AchievementRarity, { color: string; bg: string }> = {
-  common: { color: "var(--muted-foreground)", bg: "color-mix(in srgb, var(--muted-foreground) 12%, transparent)" },
-  uncommon: { color: "var(--success)", bg: "color-mix(in srgb, var(--success) 12%, transparent)" },
-  rare: { color: "var(--primary)", bg: "color-mix(in srgb, var(--primary) 12%, transparent)" },
-  legendary: { color: "var(--warning)", bg: "color-mix(in srgb, var(--warning) 12%, transparent)" },
-  mythic: { color: "var(--error)", bg: "linear-gradient(135deg, color-mix(in srgb, var(--warning) 15%, transparent), color-mix(in srgb, var(--error) 15%, transparent))" },
-};
-
-const ACHIEVEMENT_RARITY_LABELS: Record<AchievementRarity, string> = {
-  common: "Vanlig",
-  uncommon: "Ovanlig",
-  rare: "Sällsynt",
-  legendary: "Legendarisk",
-  mythic: "Mytisk",
-};
 
 interface AchievementCheck {
   achievement: Achievement;
@@ -2620,7 +2592,7 @@ function PlayerSelectStep({
 
 export function HighscorePage() {
   const [players, setPlayers] = useState<string[]>([]);
-  const [sessions, setSessions] = useState<GameSession[]>([]);
+  const [, setSessions] = useState<GameSession[]>([]);
   const [sortTab, setSortTab] = useState<SortTab>("elo");
   const [showAllSessions, setShowAllSessions] = useState(false);
   const [expandedSession, setExpandedSession] = useState<string | null>(null);
@@ -2909,7 +2881,7 @@ export function HighscorePage() {
     }
 
     // Fetch updated month list
-    let months = alreadyMigrated ? ml : await fetchMonthList();
+    const months = alreadyMigrated ? ml : await fetchMonthList();
     // Recovery: always merge in any months discovered from underlying session
     // data on the server, in case monthList is stale (e.g. wiped by a prior
     // re-seed but the session keys still exist).
@@ -2931,7 +2903,7 @@ export function HighscorePage() {
       console.log("[Highscore] Recovered months from session data:", discovered);
     }
     // Ensure current month + archived stat months are all in the list
-    let updatedMonths = [...months];
+    const updatedMonths = [...months];
     let monthListChanged = recovered;
     if (!updatedMonths.includes(thisMonth)) { updatedMonths.push(thisMonth); monthListChanged = true; }
     for (const am of ARCHIVED_STAT_MONTHS) {
@@ -3209,7 +3181,7 @@ export function HighscorePage() {
         setTimeout(() => { achievementSyncRef.current = false; }, 10000);
       });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+
   }, [stats, eloRatings, allSessions]);
 
   // Achievement ownership counts: how many players have each achievement
@@ -3626,8 +3598,6 @@ export function HighscorePage() {
   }, [comparePlayer1, comparePlayer2, activeSessions]);
 
   // Always show all columns regardless of whether data exists
-  const hasCards = true;
-  const hasTrophies = true;
 
 
   // All known players: sorted by most games played (descending), then alphabetically as tiebreaker.
@@ -5080,21 +5050,6 @@ export function HighscorePage() {
                           )}
                         </div>
                       </div>
-
-                      {/* ── Stat Comparison Bars ── */}
-                      {(() => {
-                        const comparisons = [
-                          { label: "Vinst%", v1: p1.bwp, v2: p2.bwp, fmt: (v: number) => `${v.toFixed(1)}%`, higherBetter: true },
-                          { label: "Final%", v1: p1.finalPct, v2: p2.finalPct, fmt: (v: number) => `${v.toFixed(1)}%`, higherBetter: true },
-                          { label: "Vinster", v1: p1.wins, v2: p2.wins, fmt: (v: number) => `${v}`, higherBetter: true },
-                          { label: "Finaler", v1: p1.finals, v2: p2.finals, fmt: (v: number) => `${v}`, higherBetter: true },
-                          { label: "Spelade", v1: p1.gamesPlayed, v2: p2.gamesPlayed, fmt: (v: number) => `${v}`, higherBetter: true },
-                          { label: "Streak", v1: p1.bestStreak, v2: p2.bestStreak, fmt: (v: number) => `${v}`, higherBetter: true },
-                        ];
-                        return (
-                          null
-                        );
-                      })()}
 
                       {/* H2H Finals record — big visual */}
                       <div
@@ -6629,7 +6584,6 @@ export function HighscorePage() {
         {showApiModal && (() => {
           const baseUrl = `${API_BASE}/api/stats`;
           const exampleTotal = `${baseUrl}?month=total`;
-          const exampleMonth = `${baseUrl}?month=2026-03`;
           // Browser test uses fetch with auth header + blob URL (apikey query param not supported by Edge Functions)
           const curlExample = `curl "${exampleTotal}"`;
           const fetchExample = `const res = await fetch("${baseUrl}?month=2026-03");
@@ -7114,7 +7068,7 @@ console.log(data.players);`;
                     fill="var(--primary)"
                     shape={(props: any) => {
                       const { cx, cy, payload } = props;
-                      if (cx == null || cy == null) return null;
+                      if (cx == null || cy == null) return <g />;
                       const r = Math.max(5, Math.min(14, 4 + Math.sqrt(payload.gamesPlayed) * 1.2));
                       const eloNorm = Math.min(Math.max((payload.elo - 900) / 300, 0), 1);
                       return (
@@ -7971,7 +7925,6 @@ console.log(data.players);`;
                             </span>
                             <div className="flex items-center gap-2">
                               {isMonthView && monthlyEloDelta && (() => {
-                                const d = monthlyEloDelta[selectedPlayer.name] ?? 0;
                                 return (
                                   null
                                 );
@@ -8667,7 +8620,6 @@ console.log(data.players);`;
                       {revengeData.slice(0, 5).map((rv) => {
                         const dateStr = new Date(rv.lastLossDate).toLocaleDateString("sv-SE", { day: "numeric", month: "short" });
                         const severity = rv.lossStreak >= 3 ? "high" : rv.lossStreak >= 2 ? "medium" : "low";
-                        const barPct = Math.min(100, (rv.lossStreak / Math.max(rv.totalLosses + rv.totalWins, 1)) * 100);
                         return (
                           <div
                             key={rv.opponent}
