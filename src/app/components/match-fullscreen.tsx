@@ -4,7 +4,7 @@ import { MatchData, recalcMatch } from "./match-card";
 import { CoinFlip } from "./coin-flip";
 import { FlipScoreboard } from "./flip-scoreboard";
 import { motion, AnimatePresence } from "motion/react";
-import karmaImage from "figma:asset/a6f1dfa674a6bee4a408fb06840cec35e9af59e5.png";
+import karmaImage from "../../assets/karma.png";
 import { computePotDistribution } from "./highscore-page";
 
 type ScoreStyle = "modern" | "classic";

@@ -5,7 +5,7 @@ import {
   ChevronUp, ChevronDown, ListMusic, ImageIcon,
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
-import { ImageWithFallback } from "./figma/ImageWithFallback";
+import { ImageWithFallback } from "./image-with-fallback";
 
 /* ── Types ──────────────────────────────────────────────────────────── */
 interface Track {
