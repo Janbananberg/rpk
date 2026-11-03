@@ -9,7 +9,7 @@ import {
   getH2H,
   isGoldenSet,
 } from "../app/components/tournament-enhancements";
-import { computePotDistribution } from "../app/components/highscore-page";
+import { computePotDistribution } from "../app/lib/elo";
 
 function session(date: number, players: string[], rounds: [string, string, string][]): GameSession {
   return {

@@ -5,7 +5,7 @@ import { CoinFlip } from "./coin-flip";
 import { FlipScoreboard } from "./flip-scoreboard";
 import { motion, AnimatePresence } from "motion/react";
 import karmaImage from "../../assets/karma.png";
-import { computePotDistribution } from "./highscore-page";
+import { computePotDistribution } from "../lib/elo";
 
 type ScoreStyle = "modern" | "classic";
 
