@@ -1,0 +1,6 @@
+@import './fonts.css';
+@import './tailwind.css';
+@import '../imports/lkab-default-palette.css';
+@import '../imports/lkab-light-theme.css';
+@import '../imports/lkab-dark-theme.css';
+@import './theme.css';

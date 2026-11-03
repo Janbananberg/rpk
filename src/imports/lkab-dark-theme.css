@@ -1,0 +1,67 @@
+[data-theme="lkab-dark"] {
+    /* ─── Primary ─────────────────────────────────────────────────────── */
+    --lkab-primary: var(--lkab-primary-80);
+    --lkab-on-primary: var(--lkab-primary-20);
+    --lkab-primary-container: var(--lkab-primary-25);
+    --lkab-on-primary-container: var(--lkab-primary-90);
+    /* ─── Secondary ─────────────────────────────────────────────────────── */
+    --lkab-secondary: var(--lkab-secondary-90);
+    --lkab-on-secondary: var(--lkab-secondary-30);
+    --lkab-secondary-container: var(--lkab-secondary-40);
+    --lkab-on-secondary-container: var(--lkab-secondary-95);
+    /* ─── Tertiary ─────────────────────────────────────────────────────── */
+    --lkab-tertiary: var(--lkab-neutral-90);
+    --lkab-on-tertiary: var(--lkab-neutral-20);
+    --lkab-tertiary-container: var(--lkab-neutral-30);
+    --lkab-on-secondary-container: var(--lkab-neutral-90);
+    /* ─── Surface ─────────────────────────────────────────────────────── */
+    --lkab-surface: var(--lkab-dark-neutral-6);
+    --lkab-surface-variant: var(--lkab-dark-neutral-variant-30);
+    --lkab-on-surface: var(--lkab-dark-neutral-96);
+    --lkab-on-surface-variant: var(--lkab-dark-neutral-variant-80);
+    --lkab-surface-bright: var(--lkab-dark-neutral-24);
+    --lkab-surface-dim: var(--lkab-dark-neutral-4);
+    --lkab-surface-container-lowest: var(--lkab-dark-neutral-4);
+    --lkab-surface-container-low: var(--lkab-dark-neutral-10);
+    --lkab-surface-container: var(--lkab-dark-neutral-12);
+    --lkab-surface-container-high: var(--lkab-dark-neutral-17);
+    --lkab-surface-container-highest: var(--lkab-dark-neutral-22);
+    /* ─── Background ─────────────────────────────────────────────────────── */
+    --lkab-background: var(--lkab-dark-neutral-6);
+    --lkab-on-background: var(--lkab-dark-neutral-96);
+    /* ─── Outline ─────────────────────────────────────────────────────── */
+    --lkab-outline: var(--lkab-dark-neutral-variant-60);
+    --lkab-outline-variant: var(--lkab-dark-neutral-variant-30);
+    /* ─── Info ─────────────────────────────────────────────────────── */
+    --lkab-info: var(--lkab-primary-80);
+    --lkab-on-info: var(--lkab-primary-20);
+    --lkab-info-container: var(--lkab-primary-15);
+    --lkab-on-info-container: var(--lkab-primary-90);
+    /* ─── Success ─────────────────────────────────────────────────────── */
+    --lkab-success: var(--lkab-green-80);
+    --lkab-on-success: var(--lkab-green-20);
+    --lkab-success-container: var(--lkab-green-15);
+    --lkab-on-success-container: var(--lkab-green-90);
+    /* ─── Warning ─────────────────────────────────────────────────────── */
+    --lkab-warning: var(--lkab-yellow-80);
+    --lkab-on-warning: var(--lkab-yellow-20);
+    --lkab-warning-container: var(--lkab-yellow-15);
+    --lkab-on-warning-container: var(--lkab-yellow-90);
+    /* ─── Error ─────────────────────────────────────────────────────── */
+    --lkab-error: var(--lkab-red-80);
+    --lkab-on-error: var(--lkab-red-20);
+    --lkab-error-container: var(--lkab-red-10);
+    --lkab-on-error-container: var(--lkab-red-90);
+    /* ─── Inverse ─────────────────────────────────────────────────────── */
+    --lkab-inverse-surface: var(--lkab-dark-neutral-90);
+    --lkab-inverse-on-surface: var(--lkab-dark-neutral-20);
+    --lkab-inverse-primary: var(--lkab-primary-40);
+    /* ─── Scrim/Shadow ─────────────────────────────────────────────────────── */
+    --lkab-scrim: var(--lkab-neutral-0);
+    --lkab-shadow: var(--lkab-neutral-0);
+    /* ─── Theme specific ─────────────────────────────────────────────────────── */
+    --lkab-filled-button-background-disabled-state: var(--lkab-dark-neutral-20);
+    --lkab-filled-button-foreground-disabled-state: var(--lkab-dark-neutral-90);
+    --lkab-unfilled-button-foreground-disabled-state: var(--lkab-dark-neutral-40);
+    --lkab-button-border-disabled-state: var(--lkab-dark-neutral-40);
+}

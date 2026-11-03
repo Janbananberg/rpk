@@ -1,0 +1,348 @@
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  --font-size: 16px;
+  
+  /* Typography sizes */
+  --text-h1: 57px;
+  --text-h2: 32px;
+  --text-h3: 28px;
+  --text-h4: 24px;
+  --text-lg: 18px;
+  --text-base: 16px;
+  --text-label: 14px;
+  --text-sm: 12px;
+  --text-xs: 11px;
+  
+  /* Font weights */
+  --font-weight-normal: 400;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  /* ─── Light theme (Holken DB · lkab-light) ────────────────────────── */
+
+  /* Background & Surface → neutral palette */
+  --background: var(--lkab-neutral-100);
+  --foreground: var(--lkab-neutral-10);
+
+  --card: var(--lkab-neutral-95);
+  --card-foreground: var(--lkab-neutral-10);
+
+  --popover: var(--lkab-neutral-95);
+  --popover-foreground: var(--lkab-neutral-10);
+
+  /* Primary → primary palette */
+  --primary: var(--lkab-primary-40);
+  --primary-foreground: var(--lkab-primary-100);
+  --primary-container: var(--lkab-primary-90);
+  --on-primary-container: var(--lkab-primary-20);
+
+  /* Secondary → secondary palette */
+  --secondary: var(--lkab-secondary-40);
+  --secondary-foreground: var(--lkab-secondary-100);
+
+  /* Muted → neutral-variant palette */
+  --muted: var(--lkab-neutral-variant-90);
+  --muted-foreground: var(--lkab-neutral-variant-30);
+
+  /* Accent → primary tonal */
+  --accent: var(--lkab-primary-95);
+  --accent-foreground: var(--lkab-secondary-25);
+
+  /* Destructive → red palette */
+  --destructive: var(--lkab-red-40);
+  --destructive-foreground: var(--lkab-red-100);
+
+  /* Outline / Border → neutral-variant palette */
+  --border: var(--lkab-neutral-variant-92);
+  --border-strong: var(--lkab-neutral-variant-50);
+
+  /* Input → surface */
+  --input: var(--lkab-neutral-100);
+  --input-background: var(--lkab-neutral-100);
+
+  /* Ring → primary */
+  --ring: var(--lkab-primary-40);
+
+  /* Elevation */
+  --elevation-sm: 0px 1px 2px 0px rgba(0,0,0,0.3), 0px 1px 3px 1px rgba(0,0,0,0.15);
+
+  /* Surface containers (M3 tonal elevation) */
+  --surface-container-lowest: var(--lkab-neutral-100);
+  --surface-container-low: var(--lkab-neutral-98);
+  --surface-container: var(--lkab-neutral-95);
+  --surface-container-high: var(--lkab-neutral-90);
+  --surface-container-highest: var(--lkab-neutral-81);
+
+  /* Charts → primary/secondary tonal */
+  --chart-1: var(--lkab-primary-40);
+  --chart-2: var(--lkab-secondary-40);
+  --chart-3: var(--lkab-primary-80);
+  --chart-4: var(--lkab-primary-90);
+  --chart-5: var(--lkab-primary-95);
+
+  /* Radius */
+  --radius: 100px;
+  --radius-button: 100px;
+  --radius-card: 8px;
+
+  /* Sidebar → surface-container-low */
+  --sidebar: var(--lkab-neutral-95);
+  --sidebar-foreground: var(--lkab-neutral-10);
+  --sidebar-primary: var(--lkab-primary-40);
+  --sidebar-primary-foreground: var(--lkab-primary-100);
+  --sidebar-accent: var(--lkab-primary-95);
+  --sidebar-accent-foreground: var(--lkab-secondary-25);
+  --sidebar-border: var(--lkab-neutral-variant-92);
+  --sidebar-ring: var(--lkab-primary-40);
+
+  /* Success / Warning / Info from LKAB light theme */
+  --success: var(--lkab-green-40);
+  --success-foreground: var(--lkab-green-100);
+  --warning: var(--lkab-yellow-60);
+  --warning-foreground: var(--lkab-yellow-100);
+  --info: var(--lkab-primary-40);
+  --info-foreground: var(--lkab-primary-100);
+}
+
+/* ─── Dark theme (Holken DB · lkab-dark) ──────────────────────────── */
+.dark {
+  /* Background & Surface → dark-neutral palette (blue-tinted darks) */
+  --background: var(--lkab-dark-neutral-6);
+  --foreground: var(--lkab-dark-neutral-96);
+
+  --card: var(--lkab-dark-neutral-12);
+  --card-foreground: var(--lkab-dark-neutral-96);
+
+  --popover: var(--lkab-dark-neutral-17);
+  --popover-foreground: var(--lkab-dark-neutral-96);
+
+  /* Primary → primary palette (light tones on dark bg) */
+  --primary: var(--lkab-primary-80);
+  --primary-foreground: var(--lkab-primary-20);
+  --primary-container: var(--lkab-primary-30);
+  --on-primary-container: var(--lkab-primary-90);
+
+  /* Secondary → secondary palette */
+  --secondary: var(--lkab-secondary-90);
+  --secondary-foreground: var(--lkab-secondary-30);
+
+  /* Muted → dark-neutral tonal */
+  --muted: var(--lkab-dark-neutral-22);
+  --muted-foreground: var(--lkab-dark-neutral-variant-80);
+
+  /* Accent → secondary-container dark tonal */
+  --accent: var(--lkab-secondary-40);
+  --accent-foreground: var(--lkab-secondary-95);
+
+  /* Destructive → red (light on dark) */
+  --destructive: var(--lkab-red-80);
+  --destructive-foreground: var(--lkab-red-20);
+
+  /* Outline / Border → dark-neutral-variant palette */
+  --border: var(--lkab-dark-neutral-variant-30);
+  --border-strong: var(--lkab-dark-neutral-variant-60);
+
+  /* Input → surface-container-low */
+  --input: var(--lkab-dark-neutral-10);
+  --input-background: var(--lkab-dark-neutral-10);
+
+  /* Ring → primary */
+  --ring: var(--lkab-primary-80);
+
+  /* Elevation (softer glow in dark) */
+  --elevation-sm: 0px 1px 3px 0px rgba(0,0,0,0.5), 0px 2px 8px 0px rgba(0,0,0,0.25);
+
+  /* Surface containers (M3 dark tonal elevation) */
+  --surface-container-lowest: var(--lkab-dark-neutral-4);
+  --surface-container-low: var(--lkab-dark-neutral-10);
+  --surface-container: var(--lkab-dark-neutral-12);
+  --surface-container-high: var(--lkab-dark-neutral-17);
+  --surface-container-highest: var(--lkab-dark-neutral-22);
+
+  /* Charts → primary/secondary (light tones) */
+  --chart-1: var(--lkab-primary-80);
+  --chart-2: var(--lkab-secondary-80);
+  --chart-3: var(--lkab-primary-60);
+  --chart-4: var(--lkab-primary-50);
+  --chart-5: var(--lkab-primary-40);
+
+  /* Sidebar → surface-container-low dark */
+  --sidebar: var(--lkab-dark-neutral-10);
+  --sidebar-foreground: var(--lkab-dark-neutral-96);
+  --sidebar-primary: var(--lkab-primary-80);
+  --sidebar-primary-foreground: var(--lkab-primary-20);
+  --sidebar-accent: var(--lkab-secondary-40);
+  --sidebar-accent-foreground: var(--lkab-secondary-95);
+  --sidebar-border: var(--lkab-dark-neutral-variant-30);
+  --sidebar-ring: var(--lkab-primary-80);
+
+  /* Success / Warning / Info from LKAB dark theme */
+  --success: var(--lkab-green-80);
+  --success-foreground: var(--lkab-green-20);
+  --warning: var(--lkab-yellow-80);
+  --warning-foreground: var(--lkab-yellow-20);
+  --info: var(--lkab-primary-80);
+  --info-foreground: var(--lkab-primary-20);
+
+  /* Coin */
+  --coin: var(--lkab-yellow-60);
+  --coin-highlight: var(--lkab-yellow-90);
+  --coin-shadow: var(--lkab-yellow-30);
+  --coin-edge: var(--lkab-yellow-80);
+  --coin-foreground: var(--lkab-yellow-10);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-input: var(--input);
+  --color-input-background: var(--input-background);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-surface-container-lowest: var(--surface-container-lowest);
+  --color-surface-container-low: var(--surface-container-low);
+  --color-surface-container: var(--surface-container);
+  --color-surface-container-high: var(--surface-container-high);
+  --color-surface-container-highest: var(--surface-container-highest);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-info: var(--info);
+  --color-info-foreground: var(--info-foreground);
+  --radius-sm: calc(var(--radius-card) - 2px);
+  --radius-md: var(--radius-card);
+  --radius-lg: calc(var(--radius-card) + 4px);
+  --radius-xl: calc(var(--radius-card) + 8px);
+  --radius-button: var(--radius-button);
+  --color-coin: var(--coin);
+  --color-coin-highlight: var(--coin-highlight);
+  --color-coin-shadow: var(--coin-shadow);
+  --color-coin-edge: var(--coin-edge);
+  --color-coin-foreground: var(--coin-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Titillium Web', sans-serif;
+  }
+}
+
+/**
+ * Base typography. This is not applied to elements which have an ancestor with a Tailwind text class.
+ */
+@layer base {
+  :where(:not(:has([class*=" text-"]), :not(:has([class^="text-"])))) {
+    h1 {
+      font-family: 'Titillium Web', sans-serif;
+      font-size: var(--text-h1);
+      font-weight: var(--font-weight-normal);
+      line-height: 1.5;
+    }
+
+    h2 {
+      font-family: 'Titillium Web', sans-serif;
+      font-size: var(--text-h2);
+      font-weight: var(--font-weight-normal);
+      line-height: 1.5;
+    }
+
+    h3 {
+      font-family: 'Titillium Web', sans-serif;
+      font-size: var(--text-h3);
+      font-weight: var(--font-weight-normal);
+      line-height: 1.5;
+    }
+
+    h4 {
+      font-family: 'Titillium Web', sans-serif;
+      font-size: var(--text-h4);
+      font-weight: var(--font-weight-normal);
+      line-height: 1.5;
+    }
+
+    p {
+      font-family: 'Titillium Web', sans-serif;
+      font-size: var(--text-base);
+      font-weight: var(--font-weight-normal);
+      line-height: 1.5;
+    }
+
+    label {
+      font-family: 'Titillium Web', sans-serif;
+      font-size: var(--text-label);
+      font-weight: var(--font-weight-semibold);
+      line-height: 1.5;
+    }
+
+    button {
+      font-family: 'Titillium Web', sans-serif;
+      font-size: var(--text-label);
+      font-weight: var(--font-weight-semibold);
+      line-height: 1.5;
+    }
+
+    input {
+      font-family: 'Titillium Web', sans-serif;
+      font-size: var(--text-base);
+      font-weight: var(--font-weight-normal);
+      line-height: 1.5;
+    }
+  }
+}
+
+html {
+  font-size: var(--font-size);
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+}
+
+/* Mobile bottom-nav padding — cleared on desktop where nav is hidden */
+.mobile-nav-padding {
+  padding-bottom: calc(72px + env(safe-area-inset-bottom, 0px));
+}
+@media (min-width: 768px) {
+  .mobile-nav-padding {
+    padding-bottom: 0;
+  }
+}
