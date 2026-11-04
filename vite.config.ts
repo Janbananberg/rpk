@@ -19,6 +19,11 @@ export default defineConfig({
   // File types to support raw imports. Never add .css, .tsx, or .ts files to this.
   assetsInclude: ['**/*.svg', '**/*.csv'],
 
+  server: {
+    // Agent worktrees live under .claude/ — their edits must not reload the app.
+    watch: { ignored: ['**/.claude/**'] },
+  },
+
   test: {
     // Only the app's own tests — not copies in agent worktrees under .claude/
     include: ['src/**/*.test.ts'],
