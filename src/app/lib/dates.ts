@@ -14,11 +14,11 @@ export function formatMonthLabel(month: string): string {
   return `${months[parseInt(m, 10) - 1]} ${year}`;
 }
 
-/** Short month label, e.g. "Mar 26" */
+/** Short month label with the full year, e.g. "Mar 2026" (a two-digit year reads like a date) */
 export function formatMonthShort(month: string): string {
   const [year, m] = month.split("-");
   const months = ["Jan", "Feb", "Mar", "Apr", "Maj", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dec"];
-  return `${months[parseInt(m, 10) - 1]} ${year.slice(2)}`;
+  return `${months[parseInt(m, 10) - 1]} ${year}`;
 }
 
 export type MonthView = string | "total"; // "YYYY-MM" or "total"
