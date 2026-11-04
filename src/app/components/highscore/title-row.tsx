@@ -1,7 +1,7 @@
-import { Info, BarChart3, Swords, Plus } from "lucide-react";
+import { Info, BarChart3, Swords, Plus, UserPlus } from "lucide-react";
 import { formatMonthLabel } from "../../lib/dates";
 import type { PlayerStats } from "../../lib/stats";
-import { FONT } from "./constants";
+import { FONT, MIN_PLAYERS_FOR_ROUND } from "./constants";
 
 interface TitleRowProps {
   selectedMonth: string;
@@ -17,6 +17,9 @@ interface TitleRowProps {
   setComparePlayer2: React.Dispatch<React.SetStateAction<string | null>>;
   isViewingCurrentMonth: boolean;
   startRegistration: () => void;
+  canStartRound: boolean;
+  playerCount: number;
+  onAddPlayer: () => void;
 }
 
 export function TitleRow({
@@ -33,6 +36,9 @@ export function TitleRow({
   setComparePlayer2,
   isViewingCurrentMonth,
   startRegistration,
+  canStartRound,
+  playerCount,
+  onAddPlayer,
 }: TitleRowProps) {
   return (
     <>
@@ -106,17 +112,38 @@ export function TitleRow({
             </button>
           )}
 
-          {/* Ny omgång — only when viewing current month (desktop only in title row) */}
-          {isViewingCurrentMonth && (
+          {/* Until there are enough players, adding players is the primary action (desktop; mobile uses the FAB) */}
+          {isViewingCurrentMonth && !canStartRound && (
             <button
-              onClick={startRegistration}
-              className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all cursor-pointer"
+              onClick={onAddPlayer}
+              className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all cursor-pointer hover:opacity-90"
               style={{
-                fontFamily: FONT,
                 fontSize: "var(--text-label)",
                 fontWeight: "var(--font-weight-semibold)",
                 background: "var(--primary)",
                 color: "var(--primary-foreground)",
+                borderRadius: "var(--radius-card)",
+              }}
+            >
+              <UserPlus className="w-3.5 h-3.5" />
+              Lägg till spelare
+            </button>
+          )}
+
+          {/* Ny omgång — only when viewing current month (desktop only in title row) */}
+          {isViewingCurrentMonth && (
+            <button
+              onClick={startRegistration}
+              disabled={!canStartRound}
+              title={canStartRound ? undefined : `Minst ${MIN_PLAYERS_FOR_ROUND} spelare behövs`}
+              className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all cursor-pointer disabled:cursor-not-allowed"
+              style={{
+                fontFamily: FONT,
+                fontSize: "var(--text-label)",
+                fontWeight: "var(--font-weight-semibold)",
+                background: canStartRound ? "var(--primary)" : "var(--surface-container-high)",
+                color: canStartRound ? "var(--primary-foreground)" : "var(--muted-foreground)",
+                border: canStartRound ? "none" : "1px solid var(--border)",
                 borderRadius: "var(--radius-card)",
               }}
             >
@@ -126,6 +153,15 @@ export function TitleRow({
           )}
         </div>
       </div>
+      {isViewingCurrentMonth && !canStartRound && (
+        <p
+          className="flex items-center gap-1.5 -mt-3 mb-5 md:mb-6 text-muted-foreground"
+          style={{ fontSize: "var(--text-sm)" }}
+        >
+          <Info className="w-3.5 h-3.5 shrink-0" />
+          Minst {MIN_PLAYERS_FOR_ROUND} spelare behövs för att registrera en omgång – {playerCount} av {MIN_PLAYERS_FOR_ROUND} tillagda.
+        </p>
+      )}
     </>
   );
 }

@@ -3,6 +3,7 @@ import { usePolling } from "../hooks/use-polling";
 import {
   Plus,
   Archive,
+  UserPlus,
 } from "lucide-react";
 import { motion } from "motion/react";
 import { useNavigationGuard } from "./navigation-guard";
@@ -44,8 +45,9 @@ import { ELO_START, computeLastPlayed, applyEloDecay, computeElo, computeEloHist
 import { computeRevengeData, computeSeasonSummary, generateFunFacts, computePlayerInsights, computeH2HInsights } from "../lib/insights";
 import { buildStatsCsv } from "../lib/stats-csv";
 import { ALL_ACHIEVEMENTS, MYTHIC_COMPLETIONIST, computePlayerAchievements, syncAchievements } from "../lib/achievements";
-import { FONT } from "./highscore/constants";
+import { FONT, MIN_PLAYERS_FOR_ROUND } from "./highscore/constants";
 import type { RegStep } from "./highscore/constants";
+import { HighscoreEmptyState } from "./highscore/empty-state";
 import { RegistrationFlow } from "./highscore/registration-flow";
 import { MonthPicker } from "./highscore/month-picker";
 import { HeroStats } from "./highscore/hero-stats";
@@ -663,6 +665,8 @@ export function HighscorePage() {
   const visibleSessions = showAllSessions ? recentSessions : recentSessions.slice(0, 5);
 
   const hasSessions = activeSessions.length > 0;
+  const hasPlayers = players.length > 0;
+  const canStartRound = players.length >= MIN_PLAYERS_FOR_ROUND;
 
   // Always show all columns regardless of whether data exists
   const hasFormData = true;
@@ -1140,7 +1144,10 @@ export function HighscorePage() {
         monthPickerOpen={monthPickerOpen}
       />
 
-      {/* ── Hero Stats ── */}
+      {/* ── Hero Stats (or one empty state while there are no players) ── */}
+      {!hasPlayers ? (
+        <HighscoreEmptyState onAddPlayer={() => setShowAddPlayer(true)} />
+      ) : (
       <HeroStats
         topPlayer={topPlayer}
         hasStreakData={hasStreakData}
@@ -1150,8 +1157,10 @@ export function HighscorePage() {
         factIndex={factIndex}
         setFactIndex={setFactIndex}
       />
+      )}
 
       {/* ── Title Row ── */}
+      {hasPlayers && (
       <TitleRow
         selectedMonth={selectedMonth}
         currentMonth={currentMonth}
@@ -1166,7 +1175,11 @@ export function HighscorePage() {
         setComparePlayer2={setComparePlayer2}
         isViewingCurrentMonth={isViewingCurrentMonth}
         startRegistration={startRegistration}
+        canStartRound={canStartRound}
+        playerCount={players.length}
+        onAddPlayer={() => setShowAddPlayer(true)}
       />
+      )}
 
       {/* ── Compare Mode ── */}
       <CompareView
@@ -1193,7 +1206,8 @@ export function HighscorePage() {
         showSeasonSummary={showSeasonSummary}
       />
 
-      {/* ── Table (always visible, below deep dive when active) ── */}
+      {/* ── Table (always visible when there are players, below deep dive when active) ── */}
+      {hasPlayers && (
       <LeaderboardTable
         sortedStats={sortedStats}
         hasFormData={hasFormData}
@@ -1211,8 +1225,10 @@ export function HighscorePage() {
         eloHistory={eloHistory}
         hasStreakData={hasStreakData}
       />
+      )}
 
       {/* ── Action row: Add player + Export CSV + API ── */}
+      {hasPlayers && (
       <ActionRow
         sortedStats={sortedStats}
         isViewingCurrentMonth={isViewingCurrentMonth}
@@ -1221,6 +1237,7 @@ export function HighscorePage() {
         exportStatsCsv={exportStatsCsv}
         selectedMonth={selectedMonth}
       />
+      )}
 
       {/* ── API Info Modal ── */}
       <ApiInfoModal
@@ -1341,10 +1358,10 @@ export function HighscorePage() {
         setShowAllSessions={setShowAllSessions}
         showAllSessions={showAllSessions}
       />
-      {/* ── Mobile FAB: Ny omgång ── */}
-      {isViewingCurrentMonth && (
+      {/* ── Mobile FAB: Ny omgång, or Lägg till spelare until there are enough players ── */}
+      {isViewingCurrentMonth && hasPlayers && (
         <button
-          onClick={startRegistration}
+          onClick={canStartRound ? startRegistration : () => setShowAddPlayer(true)}
           className="md:hidden fixed right-4 bottom-20 z-40 flex items-center gap-2 px-5 h-14 rounded-full transition-all cursor-pointer active:scale-95"
           style={{
             background: "var(--primary)",
@@ -1355,8 +1372,8 @@ export function HighscorePage() {
             fontWeight: "var(--font-weight-semibold)",
           }}
         >
-          <Plus className="w-5 h-5" />
-          Ny omgång
+          {canStartRound ? <Plus className="w-5 h-5" /> : <UserPlus className="w-5 h-5" />}
+          {canStartRound ? "Ny omgång" : "Lägg till spelare"}
         </button>
       )}
 
