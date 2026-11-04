@@ -1,7 +1,7 @@
-import { Info, BarChart3, Swords, Plus } from "lucide-react";
+import { Info, BarChart3, Swords, Plus, UserPlus, Trophy } from "lucide-react";
 import { formatMonthLabel } from "../../lib/dates";
 import type { PlayerStats } from "../../lib/stats";
-import { FONT } from "./constants";
+import { FONT, MIN_PLAYERS_FOR_ROUND } from "./constants";
 
 interface TitleRowProps {
   selectedMonth: string;
@@ -17,6 +17,9 @@ interface TitleRowProps {
   setComparePlayer2: React.Dispatch<React.SetStateAction<string | null>>;
   isViewingCurrentMonth: boolean;
   startRegistration: () => void;
+  canStartRound: boolean;
+  playerCount: number;
+  onAddPlayer: () => void;
 }
 
 export function TitleRow({
@@ -33,23 +36,27 @@ export function TitleRow({
   setComparePlayer2,
   isViewingCurrentMonth,
   startRegistration,
+  canStartRound,
+  playerCount,
+  onAddPlayer,
 }: TitleRowProps) {
   return (
     <>
       <div className="flex flex-col gap-3 mb-5 md:mb-6 md:flex-row md:items-center md:justify-between">
         <div className="flex items-center gap-3">
           <h2
-            className="text-foreground"
+            className="text-foreground flex items-center gap-2 flex-wrap"
             style={{
               fontFamily: FONT,
               fontSize: "var(--text-h3)",
               fontWeight: "var(--font-weight-semibold)",
             }}
           >
-            💀 Rankning
+            <Trophy className="w-6 h-6 shrink-0" style={{ color: "var(--primary)" }} aria-hidden />
+            Rankning
             {selectedMonth !== currentMonth && (
               <span
-                className="text-muted-foreground ml-2"
+                className="text-muted-foreground"
                 style={{ fontSize: "var(--text-label)", fontWeight: "var(--font-weight-normal)" }}
               >
                 {selectedMonth === "total" ? "— Totalt" : `— ${formatMonthLabel(selectedMonth)}`}
@@ -59,13 +66,13 @@ export function TitleRow({
           <button
             onClick={() => setShowRankingInfoModal(true)}
             className="flex items-center justify-center w-8 h-8 rounded-full border border-border text-muted-foreground hover:text-primary hover:border-primary transition-all cursor-pointer"
-            title="Hur fungerar rankingen?"
+            title="Hur fungerar rankningen?"
           >
             <Info className="w-4 h-4" />
           </button>
         </div>
         <div className="flex items-center gap-2">
-          {/* Deep Dive toggle */}
+          {/* Fördjupning toggle */}
           <button
             onClick={() => setShowGraphView(!showGraphView)}
             className={`flex items-center gap-1.5 px-3 py-2 md:py-1.5 rounded-lg border transition-all cursor-pointer ${
@@ -81,7 +88,7 @@ export function TitleRow({
             }}
           >
             <BarChart3 className="w-4 h-4 md:w-3.5 md:h-3.5" />
-            Deep Dive
+            Fördjupning
           </button>
 
           {/* Compare button — available when there are sessions or historical h2h data */}
@@ -102,7 +109,25 @@ export function TitleRow({
               }}
             >
               <Swords className="w-4 h-4 md:w-3.5 md:h-3.5" />
-              H2H
+              Inbördes
+            </button>
+          )}
+
+          {/* Until there are enough players, adding players is the primary action (desktop; mobile uses the FAB) */}
+          {isViewingCurrentMonth && !canStartRound && (
+            <button
+              onClick={onAddPlayer}
+              className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all cursor-pointer hover:opacity-90"
+              style={{
+                fontSize: "var(--text-label)",
+                fontWeight: "var(--font-weight-semibold)",
+                background: "var(--primary)",
+                color: "var(--primary-foreground)",
+                borderRadius: "var(--radius-card)",
+              }}
+            >
+              <UserPlus className="w-3.5 h-3.5" />
+              Lägg till spelare
             </button>
           )}
 
@@ -110,13 +135,16 @@ export function TitleRow({
           {isViewingCurrentMonth && (
             <button
               onClick={startRegistration}
-              className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all cursor-pointer"
+              disabled={!canStartRound}
+              title={canStartRound ? undefined : `Minst ${MIN_PLAYERS_FOR_ROUND} spelare behövs`}
+              className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all cursor-pointer disabled:cursor-not-allowed"
               style={{
                 fontFamily: FONT,
                 fontSize: "var(--text-label)",
                 fontWeight: "var(--font-weight-semibold)",
-                background: "var(--primary)",
-                color: "var(--primary-foreground)",
+                background: canStartRound ? "var(--primary)" : "var(--surface-container-high)",
+                color: canStartRound ? "var(--primary-foreground)" : "var(--muted-foreground)",
+                border: canStartRound ? "none" : "1px solid var(--border)",
                 borderRadius: "var(--radius-card)",
               }}
             >
@@ -126,6 +154,15 @@ export function TitleRow({
           )}
         </div>
       </div>
+      {isViewingCurrentMonth && !canStartRound && (
+        <p
+          className="flex items-center gap-1.5 -mt-3 mb-5 md:mb-6 text-muted-foreground"
+          style={{ fontSize: "var(--text-sm)" }}
+        >
+          <Info className="w-3.5 h-3.5 shrink-0" />
+          Minst {MIN_PLAYERS_FOR_ROUND} spelare behövs för att registrera en omgång – {playerCount} av {MIN_PLAYERS_FOR_ROUND} tillagda.
+        </p>
+      )}
     </>
   );
 }

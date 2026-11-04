@@ -1,4 +1,4 @@
-import { Shield, Target } from "lucide-react";
+import { Shield, Target, Skull } from "lucide-react";
 import type { PlayerStats } from "../../../lib/stats";
 import type { RevengeTarget } from "../../../lib/insights";
 import { FONT } from "../constants";
@@ -26,7 +26,7 @@ export function ProfileRivals({
               style={{ background: "var(--surface-container-lowest)", borderRadius: "var(--radius-card)" }}
             >
               <div className="text-muted-foreground mb-1" style={{ fontSize: "var(--text-xs)", textTransform: "uppercase", letterSpacing: "0.05em" }}>
-                Nemesis 💀
+                <Skull className="w-3 h-3 inline align-[-2px] mr-1" aria-hidden />Nemesis
               </div>
               <div className="text-destructive" style={{ fontSize: "var(--text-label)", fontWeight: "var(--font-weight-semibold)" }}>
                 {selectedPlayer.nemesis}
@@ -44,7 +44,7 @@ export function ProfileRivals({
               style={{ background: "var(--surface-container-lowest)", borderRadius: "var(--radius-card)" }}
             >
               <div className="text-muted-foreground mb-1" style={{ fontSize: "var(--text-xs)", textTransform: "uppercase", letterSpacing: "0.05em" }}>
-                Byte 🎯
+                <Target className="w-3 h-3 inline align-[-2px] mr-1" aria-hidden />Favoritbyte
               </div>
               <div className="text-success" style={{ fontSize: "var(--text-label)", fontWeight: "var(--font-weight-semibold)" }}>
                 {selectedPlayer.prey}
@@ -184,7 +184,7 @@ export function ProfileRivals({
                     className="text-foreground"
                     style={{ fontFamily: FONT, fontSize: "var(--text-label)" }}
                   >
-                    vs {opp}
+                    mot {opp}
                   </span>
                   <div className="flex items-center gap-2">
                     <span

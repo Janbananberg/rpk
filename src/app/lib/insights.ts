@@ -268,7 +268,7 @@ export function generateFunFacts(
   // Best current streak
   const bestStreaker = [...stats].sort((a, b) => b.currentStreak - a.currentStreak)[0];
   if (bestStreaker && bestStreaker.currentStreak >= 2) {
-    facts.push(`${bestStreaker.name} är on fire med ${bestStreaker.currentStreak} raka vinster! 🔥`);
+    facts.push(`${bestStreaker.name} är glödhet med ${bestStreaker.currentStreak} raka vinster! 🔥`);
   }
 
   // Worst current cold streak
@@ -289,7 +289,7 @@ export function generateFunFacts(
   if (clutch.length > 0) {
     const bestClutch = [...clutch].sort((a, b) => b.vfPct - a.vfPct)[0];
     if (bestClutch.vfPct >= 60) {
-      facts.push(`${bestClutch.name} vinner ${bestClutch.vfPct.toFixed(1)}% av sina finaler — clutch!`);
+      facts.push(`${bestClutch.name} vinner ${bestClutch.vfPct.toFixed(1)}% av sina finaler — iskallt!`);
     }
   }
 
@@ -346,7 +346,7 @@ export function generateFunFacts(
     .sort((a, b) => b.positiveH2H - a.positiveH2H);
   if (dominators.length > 0) {
     const top = dominators[0];
-    facts.push(`${top.name} dominerar ${top.positiveH2H} av ${top.totalOpponents} motståndare i H2H 💪`);
+    facts.push(`${top.name} dominerar ${top.positiveH2H} av ${top.totalOpponents} motståndare i inbördes möten 💪`);
   }
 
   // ── #6 Mest förbättrad (jämför med förra månadens Vinst%) ──
@@ -386,7 +386,7 @@ export function generateFunFacts(
     .sort((a, b) => b.coldStreak - a.coldStreak);
   if (coldPlayers.length > 0) {
     const coldest = coldPlayers[0];
-    facts.push(`${coldest.name} har inte vunnit på ${coldest.coldStreak} raka finaler — cold streak! 🥶`);
+    facts.push(`${coldest.name} har inte vunnit på ${coldest.coldStreak} raka finaler — förlustsvit! 🥶`);
   }
 
   // ── #9 Nemesis-paret (mest ojämn H2H) ──

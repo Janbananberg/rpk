@@ -1,5 +1,5 @@
 import { useEffect, useCallback, useRef, useState } from "react";
-import { Minus, Plus, X, RotateCcw, Trophy, ChevronDown, Undo2, Monitor, LayoutGrid, TrendingUp } from "lucide-react";
+import { Minus, Plus, X, RotateCcw, Trophy, ChevronDown, Undo2, Monitor, LayoutGrid, TrendingUp, Zap, Coins } from "lucide-react";
 import { MatchData, recalcMatch } from "./match-card";
 import { CoinFlip } from "./coin-flip";
 import { FlipScoreboard } from "./flip-scoreboard";
@@ -253,7 +253,7 @@ export function MatchFullscreen({
               className="text-warning"
               style={{ fontSize: "var(--text-sm)", fontWeight: "var(--font-weight-semibold)" }}
             >
-              · Deuce · 1 serv var
+              · Lika · 1 serv var
             </span>
           )}
         </div>
@@ -264,7 +264,8 @@ export function MatchFullscreen({
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-[var(--radius-button)] text-muted-foreground hover:text-foreground hover:bg-surface-container-high transition-all duration-200 cursor-pointer"
               style={{ fontSize: "var(--text-label)", fontWeight: "var(--font-weight-semibold)" }}
             >
-              🪙 Singla slant
+              <Coins className="w-4 h-4" aria-hidden />
+              Singla slant
             </button>
           )}
           {/* Style toggle */}
@@ -370,7 +371,7 @@ export function MatchFullscreen({
                       </span>
                       {isUpset && (
                         <span style={{ fontSize: "var(--text-xs)", fontWeight: "var(--font-weight-bold)", color: "var(--warning)" }}>
-                          ⚡+{upsetBonus}
+                          <Zap className="w-3 h-3 inline align-[-2px]" aria-hidden />+{upsetBonus}
                         </span>
                       )}
                     </div>
@@ -389,7 +390,7 @@ export function MatchFullscreen({
                   {isUpset && (
                     <div className="flex items-center gap-1.5 px-3 py-1 rounded-[var(--radius-button)]" style={{ background: "color-mix(in srgb, var(--warning) 10%, transparent)" }}>
                       <span style={{ fontSize: "var(--text-xs)", fontWeight: "var(--font-weight-bold)", color: "var(--warning)" }}>
-                        ⚡ Upset-bonus: +{upsetBonus} Elo till {match.winner}!
+                        <Zap className="w-3 h-3 inline align-[-2px] mr-1" aria-hidden />Skrällbonus: +{upsetBonus} Elo till {match.winner}!
                       </span>
                     </div>
                   )}
@@ -509,7 +510,7 @@ export function MatchFullscreen({
                 className="text-muted-foreground/70"
                 style={{ fontSize: "var(--text-sm)", fontWeight: "var(--font-weight-semibold)", letterSpacing: "0.2em", textTransform: "uppercase" }}
               >
-                SETS
+                SET
               </span>
               <div className="flex items-baseline gap-1.5">
                 <span
@@ -728,12 +729,12 @@ export function MatchFullscreen({
               <div
                 className="flex items-center justify-center gap-1.5 px-3 pb-1.5 w-full"
               >
-                <span style={{ fontSize: "12px", lineHeight: 1 }}>⚡</span>
+                <Zap className="w-3 h-3 shrink-0" style={{ color: "var(--warning)" }} aria-hidden />
                 <span style={{ fontSize: "var(--text-xs)", fontWeight: "var(--font-weight-bold)", color: "var(--warning)" }}>
-                  Upset-alert!
+                  Skrällvarning!
                 </span>
                 <span style={{ fontSize: "var(--text-xs)", color: "var(--muted-foreground)" }}>
-                  Gap {Math.round(eloDiff)} · Underdog: <span style={{ fontWeight: "var(--font-weight-bold)", color: "var(--warning)" }}>{underdogName}</span> · <span style={{ fontWeight: "var(--font-weight-bold)", color: "var(--warning)" }}>+{upsetBonus} Elo bonus</span>
+                  Skillnad {Math.round(eloDiff)} · Utmanare: <span style={{ fontWeight: "var(--font-weight-bold)", color: "var(--warning)" }}>{underdogName}</span> · <span style={{ fontWeight: "var(--font-weight-bold)", color: "var(--warning)" }}>+{upsetBonus} Elo i bonus</span>
                 </span>
               </div>
             )}

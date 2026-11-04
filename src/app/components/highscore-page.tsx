@@ -3,9 +3,11 @@ import { usePolling } from "../hooks/use-polling";
 import {
   Plus,
   Archive,
+  UserPlus,
 } from "lucide-react";
-import { motion } from "motion/react";
+import { motion, useReducedMotion } from "motion/react";
 import { useNavigationGuard } from "./navigation-guard";
+import { ChampionConfetti } from "./tournament-enhancements";
 import { ConfirmDialog } from "./confirm-dialog";
 import type { GameSession, GameRound, HistoricalStats, PlayerCards } from "./api";
 import {
@@ -40,12 +42,15 @@ import { getCurrentMonth } from "../lib/dates";
 import type { MonthView } from "../lib/dates";
 import { computeStats, sortStats } from "../lib/stats";
 import type { SortTab, PlayerStats } from "../lib/stats";
-import { ELO_START, computeLastPlayed, applyEloDecay, computeElo, computeEloHistory, computeH2HElo } from "../lib/elo";
+import { ELO_START, SEED_MIN_ROUNDS, computeLastPlayed, applyEloDecay, computeElo, computeEloHistory, computeH2HElo } from "../lib/elo";
+import type { EloEntry } from "../lib/elo";
 import { computeRevengeData, computeSeasonSummary, generateFunFacts, computePlayerInsights, computeH2HInsights } from "../lib/insights";
 import { buildStatsCsv } from "../lib/stats-csv";
 import { ALL_ACHIEVEMENTS, MYTHIC_COMPLETIONIST, computePlayerAchievements, syncAchievements } from "../lib/achievements";
-import { FONT } from "./highscore/constants";
+import { FONT, MIN_PLAYERS_FOR_ROUND, INACTIVE_WEEKS } from "./highscore/constants";
 import type { RegStep } from "./highscore/constants";
+import { HighscoreEmptyState } from "./highscore/empty-state";
+import { Podium } from "./highscore/podium";
 import { RegistrationFlow } from "./highscore/registration-flow";
 import { MonthPicker } from "./highscore/month-picker";
 import { HeroStats } from "./highscore/hero-stats";
@@ -61,6 +66,31 @@ import { PlayerProfileModal } from "./highscore/player-profile-modal";
 import { AddPlayerModal } from "./highscore/add-player-modal";
 import { RecentSessions } from "./highscore/recent-sessions";
 import { ShareResultPrompt } from "./highscore/share-result";
+
+interface SaveCelebration {
+  phase: "before" | "after";
+  winner: string | null;
+  /** What the ranking looked like just before the save. */
+  before: {
+    sortedStats: PlayerStats[];
+    podiumPlayers: PlayerStats[];
+    eloRatings: Record<string, EloEntry>;
+    monthlyEloDelta: Record<string, number> | undefined;
+    monthlyRoundsPlayed: Record<string, number> | undefined;
+  };
+}
+
+/** The player with the most round wins in a session; a tie goes to whoever won last. */
+function sessionWinner(rounds: GameRound[]): string | null {
+  const wins = new Map<string, number>();
+  let best: string | null = null;
+  for (const r of rounds) {
+    const n = (wins.get(r.winner) ?? 0) + 1;
+    wins.set(r.winner, n);
+    if (best === null || n >= (wins.get(best) ?? 0)) best = r.winner;
+  }
+  return best;
+}
 
 export function HighscorePage() {
   const [players, setPlayers] = useState<string[]>([]);
@@ -570,13 +600,42 @@ export function HighscorePage() {
 
   const sortedStats = useMemo(() => sortStats(stats, sortTab, sortDir, eloRatings, monthlyEloDelta, monthlyRoundsPlayed), [stats, sortTab, sortDir, eloRatings, monthlyEloDelta, monthlyRoundsPlayed]);
 
+  // Podium: the view's top three by ranking (not by the chosen sort column), grouped like the
+  // table — seeded first, then unseeded, inactive last — among players who played in the view.
+  const podiumPlayers = useMemo(() => {
+    const ranked = sortStats(stats, "elo", "desc", eloRatings, monthlyEloDelta, monthlyRoundsPlayed)
+      .filter((s) => s.gamesPlayed > 0);
+    if (ranked.length < 3) return [];
+    const cutoff = Date.now() - INACTIVE_WEEKS * 7 * 24 * 60 * 60 * 1000;
+    const group = (s: PlayerStats) => {
+      const lp = lastPlayedMap[s.name];
+      if (!lp || lp < cutoff) return 2;
+      return s.gamesPlayed >= SEED_MIN_ROUNDS ? 0 : 1;
+    };
+    return [...ranked].sort((a, b) => group(a) - group(b)).slice(0, 3);
+  }, [stats, eloRatings, monthlyEloDelta, monthlyRoundsPlayed, lastPlayedMap]);
+
+  // ── After a saved round: show the old standings for a moment, then let Elo tick and rows
+  // move to their new places, with confetti for the round's winner. Purely visual. ──
+  const [celebration, setCelebration] = useState<SaveCelebration | null>(null);
+  const celebrationPhase = celebration?.phase ?? null;
+  const reduceMotion = useReducedMotion();
+  useEffect(() => {
+    if (!celebrationPhase || registering) return;
+    const timer = setTimeout(
+      () => setCelebration((c) => (c && c.phase === "before" ? { ...c, phase: "after" } : null)),
+      celebrationPhase === "before" ? 350 : 2000,
+    );
+    return () => clearTimeout(timer);
+  }, [celebrationPhase, registering]);
+
   function exportStatsCsv() {
     const csv = buildStatsCsv(sortedStats, eloRatings, activeSessions);
     const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    const label = selectedMonth === "total" ? "Total" : selectedMonth;
+    const label = selectedMonth === "total" ? "Totalt" : selectedMonth;
     a.download = `rundpingis-statistik-${label}.csv`;
     a.click();
     URL.revokeObjectURL(url);
@@ -664,6 +723,8 @@ export function HighscorePage() {
   const visibleSessions = showAllSessions ? recentSessions : recentSessions.slice(0, 5);
 
   const hasSessions = activeSessions.length > 0;
+  const hasPlayers = players.length > 0;
+  const canStartRound = players.length >= MIN_PLAYERS_FOR_ROUND;
 
   // Always show all columns regardless of whether data exists
   const hasFormData = true;
@@ -825,6 +886,11 @@ export function HighscorePage() {
   async function saveSession() {
     if (currentRounds.length === 0 || saving) return;
     setSaving(true);
+    setCelebration({
+      phase: "before",
+      winner: sessionWinner(currentRounds),
+      before: { sortedStats, podiumPlayers, eloRatings, monthlyEloDelta, monthlyRoundsPlayed },
+    });
     const sessionId = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
     // Include all players who appeared in any round (even if removed from roster)
     const roundPlayers = new Set<string>();
@@ -1093,6 +1159,9 @@ export function HighscorePage() {
 
   // ── Main highscore view ──
 
+  // Right after a save the table and podium first show the standings from before it.
+  const shownBefore = celebration?.phase === "before" ? celebration.before : null;
+
   // Helper: toggle sort on a column header click
   function handleHeaderSort(key: SortTab) {
     if (sortTab === key) {
@@ -1143,7 +1212,10 @@ export function HighscorePage() {
         monthPickerOpen={monthPickerOpen}
       />
 
-      {/* ── Hero Stats ── */}
+      {/* ── Hero Stats (or one empty state while there are no players) ── */}
+      {!hasPlayers ? (
+        <HighscoreEmptyState onAddPlayer={() => setShowAddPlayer(true)} />
+      ) : (
       <HeroStats
         topPlayer={topPlayer}
         hasStreakData={hasStreakData}
@@ -1153,8 +1225,10 @@ export function HighscorePage() {
         factIndex={factIndex}
         setFactIndex={setFactIndex}
       />
+      )}
 
       {/* ── Title Row ── */}
+      {hasPlayers && (
       <TitleRow
         selectedMonth={selectedMonth}
         currentMonth={currentMonth}
@@ -1169,7 +1243,11 @@ export function HighscorePage() {
         setComparePlayer2={setComparePlayer2}
         isViewingCurrentMonth={isViewingCurrentMonth}
         startRegistration={startRegistration}
+        canStartRound={canStartRound}
+        playerCount={players.length}
+        onAddPlayer={() => setShowAddPlayer(true)}
       />
+      )}
 
       {/* ── Compare Mode ── */}
       <CompareView
@@ -1196,9 +1274,23 @@ export function HighscorePage() {
         showSeasonSummary={showSeasonSummary}
       />
 
-      {/* ── Table (always visible, below deep dive when active) ── */}
+      {/* ── Podium: top three of the view ── */}
+      {hasPlayers && (
+        <Podium
+          top={shownBefore?.podiumPlayers ?? podiumPlayers}
+          eloRatings={shownBefore?.eloRatings ?? eloRatings}
+          isMonthView={isMonthView}
+          monthlyEloDelta={shownBefore ? shownBefore.monthlyEloDelta : monthlyEloDelta}
+          monthlyRoundsPlayed={shownBefore ? shownBefore.monthlyRoundsPlayed : monthlyRoundsPlayed}
+          onSelect={(p) => { setDevSectionOpen(false); setSelectedPlayer(p); }}
+          animateChanges={celebration !== null}
+        />
+      )}
+
+      {/* ── Table (always visible when there are players, below deep dive when active) ── */}
+      {hasPlayers && (
       <LeaderboardTable
-        sortedStats={sortedStats}
+        sortedStats={shownBefore?.sortedStats ?? sortedStats}
         hasFormData={hasFormData}
         handleHeaderSort={handleHeaderSort}
         sortTab={sortTab}
@@ -1208,14 +1300,20 @@ export function HighscorePage() {
         setDevSectionOpen={setDevSectionOpen}
         setSelectedPlayer={setSelectedPlayer}
         selectedPlayer={selectedPlayer}
-        eloRatings={eloRatings}
-        monthlyEloDelta={monthlyEloDelta}
-        monthlyRoundsPlayed={monthlyRoundsPlayed}
+        eloRatings={shownBefore?.eloRatings ?? eloRatings}
+        monthlyEloDelta={shownBefore ? shownBefore.monthlyEloDelta : monthlyEloDelta}
+        monthlyRoundsPlayed={shownBefore ? shownBefore.monthlyRoundsPlayed : monthlyRoundsPlayed}
         eloHistory={eloHistory}
         hasStreakData={hasStreakData}
+        animateChanges={celebration !== null}
+        layoutKey={celebrationPhase ?? "idle"}
+        highlightPlayer={celebrationPhase === "after" ? celebration?.winner ?? null : null}
       />
+      )}
+      <ChampionConfetti active={celebrationPhase === "after" && !reduceMotion} duration={2000} />
 
       {/* ── Action row: Add player + Export CSV + API ── */}
+      {hasPlayers && (
       <ActionRow
         sortedStats={sortedStats}
         isViewingCurrentMonth={isViewingCurrentMonth}
@@ -1224,6 +1322,7 @@ export function HighscorePage() {
         exportStatsCsv={exportStatsCsv}
         selectedMonth={selectedMonth}
       />
+      )}
 
       {/* ── API Info Modal ── */}
       <ApiInfoModal
@@ -1352,10 +1451,10 @@ export function HighscorePage() {
         eloResetTimestamp={eloResetTimestamp}
         onDismiss={() => setSharedSession(null)}
       />
-      {/* ── Mobile FAB: Ny omgång ── */}
-      {isViewingCurrentMonth && (
+      {/* ── Mobile FAB: Ny omgång, or Lägg till spelare until there are enough players ── */}
+      {isViewingCurrentMonth && hasPlayers && (
         <button
-          onClick={startRegistration}
+          onClick={canStartRound ? startRegistration : () => setShowAddPlayer(true)}
           className="md:hidden fixed right-4 bottom-20 z-40 flex items-center gap-2 px-5 h-14 rounded-full transition-all cursor-pointer active:scale-95"
           style={{
             background: "var(--primary)",
@@ -1366,8 +1465,8 @@ export function HighscorePage() {
             fontWeight: "var(--font-weight-semibold)",
           }}
         >
-          <Plus className="w-5 h-5" />
-          Ny omgång
+          {canStartRound ? <Plus className="w-5 h-5" /> : <UserPlus className="w-5 h-5" />}
+          {canStartRound ? "Ny omgång" : "Lägg till spelare"}
         </button>
       )}
 

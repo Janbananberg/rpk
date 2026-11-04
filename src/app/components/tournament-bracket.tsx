@@ -723,7 +723,7 @@ export function TournamentBracket({ onTournamentSaved }: { onTournamentSaved?: (
             {/* SF1 */}
             <div className="flex flex-col items-center flex-1">
               <BracketNode label="Semifinal 1" tag="SF1" match={semi1}
-                p1={qf1.winner || "Vinnare QF1"} p2={qf2.winner || "Vinnare QF2"}
+                p1={qf1.winner || "Vinnare KF1"} p2={qf2.winner || "Vinnare KF2"}
                 disabled={!sf1Unlocked}
                 onClick={() => { if (sf1Unlocked) openMatchWithTape("semi1", qf1.winner || "", qf2.winner || ""); }}
                 eloRatings={eloRatings}
@@ -793,7 +793,7 @@ export function TournamentBracket({ onTournamentSaved }: { onTournamentSaved?: (
             {/* SF2 */}
             <div className="flex flex-col items-center flex-1">
               <BracketNode label="Semifinal 2" tag="SF2" match={semi2}
-                p1={qf3.winner || "Vinnare QF3"} p2={qf4.winner || "Vinnare QF4"}
+                p1={qf3.winner || "Vinnare KF3"} p2={qf4.winner || "Vinnare KF4"}
                 disabled={!sf2Unlocked}
                 onClick={() => { if (sf2Unlocked) openMatchWithTape("semi2", qf3.winner || "", qf4.winner || ""); }}
                 eloRatings={eloRatings}
@@ -863,13 +863,13 @@ export function TournamentBracket({ onTournamentSaved }: { onTournamentSaved?: (
           {/* Semis */}
           <div className="grid grid-cols-2 gap-3">
             <BracketNode label="Semifinal 1" tag="SF1" match={semi1}
-              p1={qf1.winner || "Vinnare QF1"} p2={qf2.winner || "Vinnare QF2"}
+              p1={qf1.winner || "Vinnare KF1"} p2={qf2.winner || "Vinnare KF2"}
               disabled={!sf1Unlocked}
               onClick={() => { if (sf1Unlocked) openMatchWithTape("semi1", qf1.winner || "", qf2.winner || ""); }}
               eloRatings={eloRatings}
             />
             <BracketNode label="Semifinal 2" tag="SF2" match={semi2}
-              p1={qf3.winner || "Vinnare QF3"} p2={qf4.winner || "Vinnare QF4"}
+              p1={qf3.winner || "Vinnare KF3"} p2={qf4.winner || "Vinnare KF4"}
               disabled={!sf2Unlocked}
               onClick={() => { if (sf2Unlocked) openMatchWithTape("semi2", qf3.winner || "", qf4.winner || ""); }}
               eloRatings={eloRatings}

@@ -737,7 +737,7 @@ export function PlayerSetup({
                   style={{ fontFamily: FONT, fontSize: "var(--text-base)", fontWeight: "var(--font-weight-semibold)" }}
                 >
                   <Check className="w-4 h-4" />
-                  Bekräfta seeding
+                  Bekräfta seedning
                 </button>
               </div>
             </motion.div>

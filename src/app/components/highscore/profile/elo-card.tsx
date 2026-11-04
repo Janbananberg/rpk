@@ -75,12 +75,12 @@ export function ProfileEloCard({
                     className="text-muted-foreground"
                     style={{ fontFamily: FONT, fontSize: "var(--text-xs)" }}
                   >
-                    Elo Rating
+                    Elo-tal
                   </span>
                 </div>
                 <div className="flex items-center gap-3 mt-0.5">
                   <span className="text-muted-foreground" style={{ fontFamily: FONT, fontSize: "var(--text-xs)" }}>
-                    Peak <strong style={{ color: "var(--foreground)" }}>{entry.peakElo}</strong>
+                    Högsta <strong style={{ color: "var(--foreground)" }}>{entry.peakElo}</strong>
                   </span>
                   <span className="text-muted-foreground" style={{ fontFamily: FONT, fontSize: "var(--text-xs)" }}>
                     {entry.matches} rundor
@@ -104,10 +104,10 @@ export function ProfileEloCard({
                     className="flex flex-col items-center justify-center shrink-0 px-3 py-1.5 rounded-lg"
                     style={{
                       background: d > 0
-                        ? "rgba(54,225,140,0.10)"
+                        ? "color-mix(in srgb, var(--success) 10%, transparent)"
                         : d < 0
-                          ? "rgba(255,80,80,0.10)"
-                          : "rgba(160,160,160,0.08)",
+                          ? "color-mix(in srgb, var(--destructive) 10%, transparent)"
+                          : "color-mix(in srgb, var(--muted-foreground) 8%, transparent)",
                       borderRadius: "var(--radius-card)",
                     }}
                   >

@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from "motion/react";
-import { ArrowLeft, Undo2, Users, Swords, Trophy, Check, ChevronDown, X, Plus, TrendingUp } from "lucide-react";
+import { ArrowLeft, Undo2, Users, Swords, Trophy, Check, ChevronDown, X, Plus, TrendingUp, Zap } from "lucide-react";
 import type { PlayerStats } from "../../lib/stats";
 import { computePotDistribution, ELO_ANTE, ELO_UPSET_THRESHOLD } from "../../lib/elo";
 import type { EloEntry } from "../../lib/elo";
@@ -81,7 +81,7 @@ export function RegistrationFlow({
         <ConfirmDialog
           open={confirmSave}
           title="Spara speltillfälle?"
-          message={`Vill du spara detta speltillfälle med ${currentRounds.length} ${currentRounds.length === 1 ? "runda" : "rundor"}? Statistik och Elo-ratings uppdateras.`}
+          message={`Vill du spara detta speltillfälle med ${currentRounds.length} ${currentRounds.length === 1 ? "runda" : "rundor"}? Statistik och Elo-tal uppdateras.`}
           confirmLabel="Spara"
           cancelLabel="Avbryt"
           variant="warning"
@@ -276,7 +276,7 @@ export function RegistrationFlow({
                           {roundsWon > 0 && (
                             <span className="flex items-center gap-0.5 text-success">
                               <Trophy className="w-3 h-3" />
-                              {roundsWon}W
+                              {roundsWon}V
                             </span>
                           )}
                           {isNew && (
@@ -605,7 +605,7 @@ export function RegistrationFlow({
                 <span className="text-muted-foreground" style={{ fontFamily: FONT, fontSize: "var(--text-label)" }}>
                   {selectedFinalists[0]}
                 </span>
-                <span className="text-muted-foreground" style={{ fontSize: "var(--text-label)" }}>vs</span>
+                <span className="text-muted-foreground" style={{ fontSize: "var(--text-label)" }}>mot</span>
                 <span className="text-muted-foreground" style={{ fontFamily: FONT, fontSize: "var(--text-label)" }}>
                   {selectedFinalists[1]}
                 </span>
@@ -690,20 +690,20 @@ export function RegistrationFlow({
                           borderRadius: "var(--radius-button)",
                         }}
                       >
-                        <span style={{ fontSize: "16px", lineHeight: 1 }}>⚡</span>
+                        <Zap className="w-4 h-4 shrink-0" style={{ color: "var(--warning)" }} aria-hidden />
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-1.5 flex-wrap">
                             <span style={{ fontSize: "var(--text-xs)", fontWeight: "var(--font-weight-bold)", color: "var(--warning)" }}>
-                              Upset-alert!
+                              Skrällvarning!
                             </span>
                             <span style={{ fontSize: "var(--text-xs)", color: "var(--muted-foreground)" }}>
-                              Elo-gap: <span style={{ fontWeight: "var(--font-weight-bold)", color: "var(--foreground)" }}>{Math.round(eloDiff)}</span>
+                              Elo-skillnad: <span style={{ fontWeight: "var(--font-weight-bold)", color: "var(--foreground)" }}>{Math.round(eloDiff)}</span>
                             </span>
                           </div>
                           <span style={{ fontSize: "var(--text-xs)", color: "var(--muted-foreground)", lineHeight: 1.4 }}>
-                            Underdog <span style={{ fontWeight: "var(--font-weight-bold)", color: "var(--warning)" }}>{underdog}</span> vinner{" "}
+                            Utmanaren <span style={{ fontWeight: "var(--font-weight-bold)", color: "var(--warning)" }}>{underdog}</span> vinner{" "}
                             <span style={{ fontWeight: "var(--font-weight-bold)", color: "var(--success)" }}>+{underdogWinDelta}</span>
-                            {" "}vs favorit{" "}
+                            {" "}mot favoriten{" "}
                             <span style={{ fontWeight: "var(--font-weight-semibold)", color: "var(--foreground)" }}>{favorite}</span>
                             {" "}<span style={{ fontWeight: "var(--font-weight-bold)", color: "var(--success)" }}>+{favoriteWinDelta}</span>
                           </span>

@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from "motion/react";
-import { Activity, Grid3X3 as Grid3X3Icon, CalendarDays, TrendingUp, Info } from "lucide-react";
+import { Activity, Grid3X3 as Grid3X3Icon, CalendarDays, TrendingUp, Info, Zap } from "lucide-react";
 import { ResponsiveContainer, ScatterChart, CartesianGrid, XAxis, Label, YAxis, ReferenceLine, Tooltip, Scatter } from "recharts";
 import { ELO_START, ELO_ANTE, ELO_ALPHA, ELO_UPSET_THRESHOLD, ELO_UPSET_BONUS } from "../../lib/elo";
 import type { EloEntry } from "../../lib/elo";
@@ -42,7 +42,7 @@ export function DeepDiveView({
           <div className="flex items-center gap-3 px-3 md:px-4 py-3 border-b border-border" style={{ background: "var(--surface-container-high)" }}>
             <Activity className="w-4 h-4 text-primary" />
             <span style={{ fontFamily: FONT, fontSize: "var(--text-sm)", fontWeight: "var(--font-weight-semibold)", color: "var(--foreground)", letterSpacing: "0.02em" }}>
-              Deep Dive
+              Fördjupning
             </span>
           </div>
 
@@ -86,7 +86,7 @@ export function DeepDiveView({
                     tickLine={{ stroke: "var(--border)" }}
                   >
                     <Label
-                      value="Elo Rating"
+                      value="Elo-tal"
                       angle={-90}
                       position="left"
                       offset={10}
@@ -191,13 +191,13 @@ export function DeepDiveView({
                     HÖG ELO
                   </text>
                   <text key="q-elite" x="78%" y="10%" textAnchor="middle" fill="var(--success)" opacity={0.18} style={{ fontSize: 13, fontWeight: 700, letterSpacing: "0.08em", fontFamily: "'Titillium Web', sans-serif" }}>
-                    ELITE
+                    ELIT
                   </text>
                   <text key="q-weak" x="18%" y="92%" textAnchor="middle" fill="var(--muted-foreground)" opacity={0.18} style={{ fontSize: 13, fontWeight: 700, letterSpacing: "0.08em", fontFamily: "'Titillium Web', sans-serif" }}>
                     SVAG
                   </text>
                   <text key="q-clutch" x="78%" y="92%" textAnchor="middle" fill="var(--info)" opacity={0.18} style={{ fontSize: 13, fontWeight: 700, letterSpacing: "0.08em", fontFamily: "'Titillium Web', sans-serif" }}>
-                    CLUTCH
+                    AVGÖRARE
                   </text>
                 </ScatterChart>
               </ResponsiveContainer>
@@ -213,7 +213,7 @@ export function DeepDiveView({
             <div className="flex items-center gap-2 mb-4">
               <Grid3X3Icon className="w-4 h-4 text-primary" />
               <span style={{ fontFamily: FONT, fontSize: "var(--text-base)", fontWeight: "var(--font-weight-semibold)", color: "var(--foreground)" }}>
-                H2H-matris
+                Inbördesmatris
               </span>
             </div>
             <H2HMatrix stats={stats} />
@@ -240,7 +240,7 @@ export function DeepDiveView({
               <div className="flex items-center gap-2 mb-4">
                 <TrendingUp className="w-4 h-4 text-primary" />
                 <span style={{ fontFamily: FONT, fontSize: "var(--text-base)", fontWeight: "var(--font-weight-semibold)", color: "var(--foreground)" }}>
-                  Elo Rating
+                  Elo-tal
                 </span>
               </div>
 
@@ -252,7 +252,7 @@ export function DeepDiveView({
                       <th className="text-left px-2 py-2" style={{ fontSize: "var(--text-xs)", fontWeight: "var(--font-weight-semibold)", color: "var(--muted-foreground)", letterSpacing: "0.05em", textTransform: "uppercase" }}>#</th>
                       <th className="text-left px-2 py-2" style={{ fontSize: "var(--text-xs)", fontWeight: "var(--font-weight-semibold)", color: "var(--muted-foreground)", letterSpacing: "0.05em", textTransform: "uppercase" }}>Spelare</th>
                       <th className="text-right px-2 py-2" style={{ fontSize: "var(--text-xs)", fontWeight: "var(--font-weight-semibold)", color: "var(--muted-foreground)", letterSpacing: "0.05em", textTransform: "uppercase" }}>Elo</th>
-                      <th className="text-right px-2 py-2" style={{ fontSize: "var(--text-xs)", fontWeight: "var(--font-weight-semibold)", color: "var(--muted-foreground)", letterSpacing: "0.05em", textTransform: "uppercase" }}>Peak</th>
+                      <th className="text-right px-2 py-2" style={{ fontSize: "var(--text-xs)", fontWeight: "var(--font-weight-semibold)", color: "var(--muted-foreground)", letterSpacing: "0.05em", textTransform: "uppercase" }}>Högsta</th>
                       <th className="text-right px-2 py-2" style={{ fontSize: "var(--text-xs)", fontWeight: "var(--font-weight-semibold)", color: "var(--muted-foreground)", letterSpacing: "0.05em", textTransform: "uppercase", cursor: "help" }}>Δ senaste</th>
                       <th className="text-right px-2 py-2" style={{ fontSize: "var(--text-xs)", fontWeight: "var(--font-weight-semibold)", color: "var(--muted-foreground)", letterSpacing: "0.05em", textTransform: "uppercase" }}>Rundor</th>
                     </tr>
@@ -309,13 +309,13 @@ export function DeepDiveView({
                         Finalist (vinst): <strong style={{ color: "var(--success)" }}>+{Math.round(8 * ELO_ANTE * 0.5 - ELO_ANTE)} till +{Math.round(8 * ELO_ANTE * (0.5 + ELO_ALPHA) - ELO_ANTE)}</strong>
                       </p>
                       <p>
-                        <strong style={{ color: "var(--warning)" }}>⚡ Upset-bonus:</strong> Om underdogen (lägre Elo) vinner finalen och Elo-gapet är ≥{" "}
+                        <strong className="inline-flex items-center gap-1" style={{ color: "var(--warning)" }}><Zap className="w-3 h-3" aria-hidden />Skrällbonus:</strong> Om den lägre rankade spelaren vinner finalen och Elo-skillnaden är ≥{" "}
                         <strong style={{ color: "var(--foreground)" }}>{ELO_UPSET_THRESHOLD}</strong> poäng, får vinnaren en extra bonus på{" "}
                         <strong style={{ color: "var(--success)" }}>+{ELO_UPSET_BONUS} Elo</strong> utöver sin pottandel.
-                        {" "}Denna bonus ligger <em>utanför</em> nollsumman och belönar upsets.
+                        {" "}Denna bonus ligger <em>utanför</em> nollsumman och belönar skrällar.
                       </p>
                       <p>I övrigt är systemet <strong style={{ color: "var(--foreground)" }}>nollsumma</strong> — ingen Elo skapas eller förstörs från potten.</p>
-                      <p>Peak-värdet visar spelarens högsta uppnådda Elo.</p>
+                      <p>Kolumnen Högsta visar spelarens högsta uppnådda Elo.</p>
                       <p style={{ fontStyle: "italic", color: "var(--muted-foreground)" }}>Obs: Elo beräknas från all sessionsdata (från mars 2026). Arkiverade månader utan runddata ingår ej.</p>
                     </div>
                   </div>

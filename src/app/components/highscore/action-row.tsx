@@ -71,7 +71,7 @@ export function ActionRow({
                 }}
               >
                 <Download className="w-4 h-4" />
-                Exportera CSV{selectedMonth === "total" ? " (Total)" : ` (${selectedMonth})`}
+                Exportera CSV{selectedMonth === "total" ? " (Totalt)" : ` (${selectedMonth})`}
               </button>
               <Link
                 to="/storbild"

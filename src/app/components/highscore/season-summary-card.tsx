@@ -1,4 +1,4 @@
-import { ChevronDown, Award, Crown, TrendingUp, Zap, TrendingDown } from "lucide-react";
+import { ChevronDown, Award, Crown, TrendingUp, Zap, TrendingDown, Flame, Swords } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import type { SeasonSummary } from "../../lib/insights";
 import { FONT } from "./constants";
@@ -63,7 +63,7 @@ export function SeasonSummaryCard({
                   <>
                     <span className="hidden md:inline" style={{ fontSize: "var(--text-label)", color: "var(--muted-foreground)" }}>·</span>
                     <span className="hidden md:inline" style={{ fontSize: "var(--text-label)", color: "var(--warning)" }}>
-                      👑 {seasonSummary.mvp.name.split(" ")[0]}
+                      <Crown className="w-3.5 h-3.5 inline align-[-2px] mr-1" aria-hidden />{seasonSummary.mvp.name.split(" ")[0]}
                     </span>
                   </>
                 )}
@@ -155,7 +155,7 @@ export function SeasonSummaryCard({
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="text-muted-foreground" style={{ fontFamily: FONT, fontSize: "var(--text-xs)", textTransform: "uppercase", letterSpacing: "0.05em" }}>
-                            MVP
+                            Månadens spelare
                           </div>
                           <div className="truncate" style={{ fontFamily: FONT, fontSize: "var(--text-base)", fontWeight: "var(--font-weight-semibold)", color: "var(--primary)" }}>
                             {seasonSummary.mvp.name}
@@ -243,7 +243,7 @@ export function SeasonSummaryCard({
                           className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
                           style={{ background: "color-mix(in srgb, var(--primary) 15%, transparent)" }}
                         >
-                          <span style={{ fontSize: "var(--text-base)" }}>🔥</span>
+                          <Flame className="w-5 h-5" style={{ color: "var(--primary)" }} />
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="text-muted-foreground" style={{ fontFamily: FONT, fontSize: "var(--text-xs)", textTransform: "uppercase", letterSpacing: "0.05em" }}>
@@ -272,7 +272,7 @@ export function SeasonSummaryCard({
                           className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
                           style={{ background: "color-mix(in srgb, var(--destructive) 15%, transparent)" }}
                         >
-                          <span style={{ fontSize: "var(--text-base)" }}>⚔️</span>
+                          <Swords className="w-5 h-5" style={{ color: "var(--destructive)" }} />
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="text-muted-foreground" style={{ fontFamily: FONT, fontSize: "var(--text-xs)", textTransform: "uppercase", letterSpacing: "0.05em" }}>
@@ -280,7 +280,7 @@ export function SeasonSummaryCard({
                           </div>
                           <div className="truncate" style={{ fontFamily: FONT, fontSize: "var(--text-label)", fontWeight: "var(--font-weight-semibold)", color: "var(--foreground)" }}>
                             {seasonSummary.rivalry.player1}{" "}
-                            <span className="text-muted-foreground" style={{ fontWeight: "var(--font-weight-normal)", fontSize: "var(--text-xs)" }}>vs</span>{" "}
+                            <span className="text-muted-foreground" style={{ fontWeight: "var(--font-weight-normal)", fontSize: "var(--text-xs)" }}>mot</span>{" "}
                             {seasonSummary.rivalry.player2}
                           </div>
                         </div>
@@ -339,7 +339,7 @@ export function SeasonSummaryCard({
                       )}
                       <div className="p-3 rounded-lg" style={{ background: "var(--surface-container-lowest)", borderRadius: "var(--radius-sm)" }}>
                         <div className="text-muted-foreground" style={{ fontFamily: FONT, fontSize: "var(--text-xs)", textTransform: "uppercase", letterSpacing: "0.05em" }}>
-                          Snitt finaler/session
+                          Snitt finaler/omgång
                         </div>
                         <div style={{ fontFamily: FONT, fontSize: "var(--text-label)", fontWeight: "var(--font-weight-semibold)", color: "var(--foreground)" }}>
                           {seasonSummary.avgFinalsPerSession}

@@ -43,14 +43,14 @@ export function HeroStats({
           color="var(--primary)"
         />
 
-        {/* Streaks – On Fire & Cold Streak combined */}
+        {/* Win and loss streaks combined */}
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           className="rounded-lg border border-border p-3 md:p-4 flex flex-col gap-2 md:gap-3"
           style={{ background: "var(--surface-container)", borderRadius: "var(--radius-card)" }}
         >
-          {/* On Fire */}
+          {/* Win streak */}
           <div className="flex items-center gap-2.5">
             <div
               className="flex items-center justify-center w-7 h-7 rounded-md shrink-0"
@@ -74,14 +74,14 @@ export function HeroStats({
               </span>
               <span className="text-muted-foreground" style={{ fontSize: "var(--text-xs)", fontFamily: FONT }}>
                 {hasStreakData && hotPlayer && hotPlayer.currentStreak >= 2
-                  ? `${hotPlayer.currentStreak} raka vinster 🔥`
-                  : "Ingen aktiv hot streak"}
+                  ? `${hotPlayer.currentStreak} raka vinster`
+                  : "Ingen aktiv vinstsvit"}
               </span>
             </div>
           </div>
           {/* Divider */}
           <div className="h-px w-full" style={{ background: "var(--border)", opacity: 0.5 }} />
-          {/* Cold Streak */}
+          {/* Loss streak */}
           <div className="flex items-center gap-2.5">
             <div
               className="flex items-center justify-center w-7 h-7 rounded-md shrink-0"
@@ -105,8 +105,8 @@ export function HeroStats({
               </span>
               <span className="text-muted-foreground" style={{ fontSize: "var(--text-xs)", fontFamily: FONT }}>
                 {hasStreakData && coldPlayer && coldPlayer.coldStreak >= 2
-                  ? `${coldPlayer.coldStreak} raka förluster 🥶`
-                  : "Ingen aktiv cold streak"}
+                  ? `${coldPlayer.coldStreak} raka förluster`
+                  : "Ingen aktiv förlustsvit"}
               </span>
             </div>
           </div>
