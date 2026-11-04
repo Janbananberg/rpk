@@ -1,16 +1,12 @@
 /**
- * API client for the betting and tournament system.
+ * API client for the tournament and highscore data.
  *
  * Backend URL is read from VITE_API_URL (see .env.example). No backend is
  * configured yet, so requests fail until one is provided.
  *
  * - Admin login is checked in the browser (config.ts); admin actions send X-Admin-Token.
- * - Bettor writes send a per-user token (X-Bettor-Token), kept in localStorage.
  */
 import { ADMIN_PASSWORD } from "../config";
-import type { BettorProfile } from "./betting-store";
-import type { MatchOdds } from "./betting-store";
-import type { TournamentWinnerOdds } from "./betting-store";
 
 export const API_BASE: string = import.meta.env.VITE_API_URL ?? "";
 const BASE = API_BASE;
@@ -18,13 +14,9 @@ const BASE = API_BASE;
 // ════════════════════════════════════════════════════════════════════════
 //  TOKEN MANAGEMENT
 //  Admin token: stored in sessionStorage (cleared on tab close).
-//  Bettor token: stored in localStorage (persists across sessions).
-//  Neither contains secrets like passwords or service role keys.
 // ════════════════════════════════════════════════════════════════════════
 
 const ADMIN_TOKEN_KEY = "rpk-admin-token";
-const BETTOR_TOKEN_KEY = "rpk-bettor-token";
-
 export function getAdminToken(): string | null {
   try { return sessionStorage.getItem(ADMIN_TOKEN_KEY); } catch { return null; }
 }
@@ -36,20 +28,9 @@ export function setAdminToken(token: string | null) {
   } catch {}
 }
 
-export function getBettorToken(): string | null {
-  try { return localStorage.getItem(BETTOR_TOKEN_KEY); } catch { return null; }
-}
-
-export function setBettorToken(token: string | null) {
-  try {
-    if (token) localStorage.setItem(BETTOR_TOKEN_KEY, token);
-    else localStorage.removeItem(BETTOR_TOKEN_KEY);
-  } catch {}
-}
-
 // ════════════════════════════════════════════════════════════════════════
 //  HEADER BUILDERS
-//  Admin/bettor tokens are sent via custom headers, never in the request body.
+//  The admin token is sent via a custom header, never in the request body.
 // ════════════════════════════════════════════════════════════════════════
 
 /** Base headers. */
@@ -65,54 +46,10 @@ const adminHeaders = (): Record<string, string> => {
   return h;
 };
 
-/** Headers for bettor-authenticated requests. */
-const bettorHeaders = (): Record<string, string> => {
-  const h = baseHeaders();
-  const token = getBettorToken();
-  if (token) h["X-Bettor-Token"] = token;
-  return h;
-};
-
 // ════════════════════════════════════════════════════════════════════════
 //  PUBLIC READ ENDPOINTS (no authentication required)
 //  These return non-sensitive, publicly visible tournament data.
 // ════════════════════════════════════════════════════════════════════════
-
-export async function fetchOdds(): Promise<MatchOdds[]> {
-  try {
-    const res = await fetch(`${BASE}/odds`, { headers: baseHeaders() });
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const data = await res.json();
-    return data.odds || [];
-  } catch (e) {
-    console.log("API fetchOdds error:", e);
-    return [];
-  }
-}
-
-export async function fetchOddsConfig(): Promise<Record<string, { odds1: number; odds2: number }> | null> {
-  try {
-    const res = await fetch(`${BASE}/odds-config`, { headers: baseHeaders() });
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const data = await res.json();
-    return data.config || null;
-  } catch (e) {
-    console.log("API fetchOddsConfig error:", e);
-    return null;
-  }
-}
-
-export async function fetchTournamentWinnerOdds(): Promise<TournamentWinnerOdds | null> {
-  try {
-    const res = await fetch(`${BASE}/tournament-winner-odds`, { headers: baseHeaders() });
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const data = await res.json();
-    return data.odds || null;
-  } catch (e) {
-    console.log("API fetchTournamentWinnerOdds error:", e);
-    return null;
-  }
-}
 
 export async function fetchTournamentHistory(): Promise<TournamentHistoryEntry[]> {
   try {
@@ -123,168 +60,6 @@ export async function fetchTournamentHistory(): Promise<TournamentHistoryEntry[]
   } catch (e) {
     console.log("API fetchTournamentHistory error:", e);
     return [];
-  }
-}
-
-export async function fetchAllBettors(): Promise<BettorProfile[]> {
-  try {
-    const res = await fetch(`${BASE}/bettors`, { headers: baseHeaders() });
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const data = await res.json();
-    return data.bettors || [];
-  } catch (e) {
-    console.log("API fetchAllBettors error:", e);
-    return [];
-  }
-}
-
-export async function fetchBettorProfile(name: string): Promise<BettorProfile | null> {
-  try {
-    const res = await fetch(`${BASE}/bettor/${encodeURIComponent(name)}`, { headers: baseHeaders() });
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const data = await res.json();
-    return data.profile || null;
-  } catch (e) {
-    console.log("API fetchBettorProfile error:", e);
-    return null;
-  }
-}
-
-export async function fetchBets(name: string): Promise<PlacedBet[]> {
-  try {
-    const res = await fetch(`${BASE}/bets/${encodeURIComponent(name)}`, { headers: baseHeaders() });
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const data = await res.json();
-    return data.bets || [];
-  } catch (e) {
-    console.log("API fetchBets error:", e);
-    return [];
-  }
-}
-
-export interface TournamentState {
-  active: boolean;
-  activatedAt: number | null;
-}
-
-export async function fetchTournamentState(): Promise<TournamentState> {
-  try {
-    const res = await fetch(`${BASE}/tournament-state`, { headers: baseHeaders() });
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const data = await res.json();
-    return data.state || { active: false, activatedAt: null };
-  } catch (e) {
-    console.log("API fetchTournamentState error:", e);
-    return { active: false, activatedAt: null };
-  }
-}
-
-// ════════════════════════════════════════════════════════════════════════
-//  BETTOR AUTHENTICATION
-//  Registration/login endpoints return a bettor token.
-//  The token is stored in localStorage and used for authenticated writes.
-// ════════════════════════════════════════════════════════════════════════
-
-export async function registerBettor(name: string, profile: BettorProfile): Promise<{ ok: boolean; token?: string; error?: string }> {
-  try {
-    const res = await fetch(`${BASE}/bettor/register`, {
-      method: "POST",
-      headers: baseHeaders(),
-      body: JSON.stringify({ name, profile }),
-    });
-    const data = await res.json();
-    if (!res.ok) return { ok: false, error: data.error };
-    if (data.token) setBettorToken(data.token);
-    return { ok: true, token: data.token };
-  } catch (e) {
-    console.log("API registerBettor error:", e);
-    return { ok: false, error: String(e) };
-  }
-}
-
-export async function loginBettor(name: string): Promise<{ ok: boolean; profile?: BettorProfile; token?: string; error?: string }> {
-  try {
-    const res = await fetch(`${BASE}/bettor/login`, {
-      method: "POST",
-      headers: baseHeaders(),
-      body: JSON.stringify({ name }),
-    });
-    const data = await res.json();
-    if (!res.ok) return { ok: false, error: data.error };
-    if (data.token) setBettorToken(data.token);
-    return { ok: true, profile: data.profile, token: data.token };
-  } catch (e) {
-    console.log("API loginBettor error:", e);
-    return { ok: false, error: String(e) };
-  }
-}
-
-// ════════════════════════════════════════════════════════════════════════
-//  BETTOR AUTHENTICATED WRITES
-//  These require the X-Bettor-Token header.
-//  Balance changes are done server-side; the client cannot set its own balance.
-// ════════════════════════════════════════════════════════════════════════
-
-/**
- * Update own profile (cosmetics only).
- * SECURITY: The server ignores balance/totalWon/totalLost from the client.
- */
-export async function saveBettorProfile(profile: BettorProfile): Promise<BettorProfile | null> {
-  try {
-    const res = await fetch(`${BASE}/bettor`, {
-      method: "POST",
-      headers: bettorHeaders(),
-      body: JSON.stringify({ profile }),
-    });
-    if (!res.ok) {
-      const err = await res.text();
-      console.log("API saveBettorProfile error:", err);
-      return null;
-    }
-    const data = await res.json();
-    return data.profile || null;
-  } catch (e) {
-    console.log("API saveBettorProfile network error:", e);
-    return null;
-  }
-}
-
-/**
- * Place a bet — server validates balance, odds, and deducts server-side.
- * Returns the created bet and updated balance.
- */
-export async function placeBet(name: string, playerName: string, amount: number): Promise<{ ok: boolean; bet?: PlacedBet; balance?: number; error?: string }> {
-  try {
-    const res = await fetch(`${BASE}/bets/${encodeURIComponent(name)}/place`, {
-      method: "POST",
-      headers: bettorHeaders(),
-      body: JSON.stringify({ playerName, amount }),
-    });
-    const data = await res.json();
-    if (!res.ok) return { ok: false, error: data.error };
-    return { ok: true, bet: data.bet, balance: data.balance };
-  } catch (e) {
-    console.log("API placeBet error:", e);
-    return { ok: false, error: String(e) };
-  }
-}
-
-/**
- * Purchase a cosmetic item — server validates balance and deducts server-side.
- */
-export async function purchaseCosmetic(name: string, itemId: string, price: number): Promise<{ ok: boolean; profile?: BettorProfile; error?: string }> {
-  try {
-    const res = await fetch(`${BASE}/bettor/${encodeURIComponent(name)}/purchase`, {
-      method: "POST",
-      headers: bettorHeaders(),
-      body: JSON.stringify({ itemId, price }),
-    });
-    const data = await res.json();
-    if (!res.ok) return { ok: false, error: data.error };
-    return { ok: true, profile: data.profile };
-  } catch (e) {
-    console.log("API purchaseCosmetic error:", e);
-    return { ok: false, error: String(e) };
   }
 }
 
@@ -341,62 +116,6 @@ export async function saveSiteTheme(theme: string): Promise<void> {
 //  No passwords are sent in request bodies.
 // ════════════════════════════════════════════════════════════════════════
 
-export async function publishOdds(odds: MatchOdds[]): Promise<void> {
-  try {
-    const res = await fetch(`${BASE}/odds`, {
-      method: "POST",
-      headers: adminHeaders(),
-      body: JSON.stringify({ odds }),
-    });
-    if (!res.ok) {
-      const err = await res.text();
-      console.log("API publishOdds error:", err);
-    }
-  } catch (e) {
-    console.log("API publishOdds network error:", e);
-  }
-}
-
-export async function saveOddsConfig(config: Record<string, { odds1: number; odds2: number }>): Promise<void> {
-  try {
-    await fetch(`${BASE}/odds-config`, {
-      method: "POST",
-      headers: adminHeaders(),
-      body: JSON.stringify({ config }),
-    });
-  } catch (e) {
-    console.log("API saveOddsConfig network error:", e);
-  }
-}
-
-export async function publishTournamentWinnerOdds(odds: TournamentWinnerOdds): Promise<void> {
-  try {
-    const res = await fetch(`${BASE}/tournament-winner-odds`, {
-      method: "POST",
-      headers: adminHeaders(),
-      body: JSON.stringify({ odds }),
-    });
-    if (!res.ok) {
-      const err = await res.text();
-      console.log("API publishTournamentWinnerOdds error:", err);
-    }
-  } catch (e) {
-    console.log("API publishTournamentWinnerOdds network error:", e);
-  }
-}
-
-export async function saveTournamentState(state: TournamentState): Promise<void> {
-  try {
-    await fetch(`${BASE}/tournament-state`, {
-      method: "POST",
-      headers: adminHeaders(),
-      body: JSON.stringify({ state }),
-    });
-  } catch (e) {
-    console.log("API saveTournamentState network error:", e);
-  }
-}
-
 export async function saveTournamentHistoryEntry(entry: TournamentHistoryEntry): Promise<void> {
   try {
     const res = await fetch(`${BASE}/tournament-history`, {
@@ -410,46 +129,6 @@ export async function saveTournamentHistoryEntry(entry: TournamentHistoryEntry):
     }
   } catch (e) {
     console.log("API saveTournamentHistoryEntry network error:", e);
-  }
-}
-
-export async function adminFetchAllBets(): Promise<PlacedBet[][]> {
-  try {
-    const res = await fetch(`${BASE}/admin/all-bets`, {
-      method: "POST",
-      headers: adminHeaders(),
-    });
-    if (!res.ok) return [];
-    const data = await res.json();
-    return data.allBets || [];
-  } catch (e) {
-    console.log("API adminFetchAllBets error:", e);
-    return [];
-  }
-}
-
-export async function adminDeleteBettor(name: string): Promise<boolean> {
-  try {
-    const res = await fetch(`${BASE}/admin/delete-bettor`, {
-      method: "POST",
-      headers: adminHeaders(),
-      body: JSON.stringify({ name }),
-    });
-    return res.ok;
-  } catch {
-    return false;
-  }
-}
-
-export async function adminResetAll(): Promise<boolean> {
-  try {
-    const res = await fetch(`${BASE}/admin/reset-all`, {
-      method: "POST",
-      headers: adminHeaders(),
-    });
-    return res.ok;
-  } catch {
-    return false;
   }
 }
 
@@ -506,19 +185,6 @@ export async function deleteActiveTournament(): Promise<boolean> {
 // ════════════════════════════════════════════════════════════════════════
 //  TYPES (shared with components)
 // ════════════════════════════════════════════════════════════════════════
-
-export interface PlacedBet {
-  id: string;
-  matchId: string;
-  matchLabel: string;
-  player: string;
-  amount: number;
-  odds: number;
-  resolved: boolean;
-  won: boolean | null;
-  placedAt: number;
-  resolvedAt: number | null;
-}
 
 export interface TournamentHistoryMatchDetail {
   player1: string;

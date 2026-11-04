@@ -1,25 +1,22 @@
 import { Outlet, useLocation, useNavigate } from "react-router";
-import { Trophy, Ticket, Shield, Gamepad2 } from "lucide-react";
-import { useState, useEffect } from "react";
-import { getAdminToken } from "./api";
+import { Trophy, Shield, Gamepad2 } from "lucide-react";
+import { useEffect } from "react";
 import { RpkLogo } from "./rpk-logo";
 import { NavigationGuardProvider, useNavigationGuard } from "./navigation-guard";
 import { ConfirmDialog } from "./confirm-dialog";
 import { Snowfall } from "./snowfall";
 import { useTheme } from "../theme";
 
-type TabKey = "turnering" | "bet" | "highscore" | "admin";
+type TabKey = "turnering" | "highscore" | "admin";
 
-const ALL_TABS: { key: TabKey; path: string; label: string; icon: typeof Trophy; adminOnly?: boolean; mobileVisible?: boolean }[] = [
+const ALL_TABS: { key: TabKey; path: string; label: string; icon: typeof Trophy; mobileVisible?: boolean }[] = [
   { key: "highscore", path: "/", label: "Spela", icon: Gamepad2, mobileVisible: true },
   { key: "turnering", path: "/turnering", label: "Turnering", icon: Trophy, mobileVisible: true },
-  { key: "bet", path: "/bet", label: "Betting", icon: Ticket, adminOnly: true, mobileVisible: true },
   { key: "admin", path: "/admin", label: "Admin", icon: Shield, mobileVisible: true },
 ];
 
 function getActiveTab(pathname: string): TabKey {
   if (pathname.startsWith("/turnering")) return "turnering";
-  if (pathname.startsWith("/bet")) return "bet";
   if (pathname.startsWith("/admin")) return "admin";
   return "highscore";
 }
@@ -36,23 +33,10 @@ function RootLayoutInner() {
   const location = useLocation();
   const navigate = useNavigate();
   const activeTab = getActiveTab(location.pathname);
-  const [isAdmin, setIsAdmin] = useState(() => !!getAdminToken());
   const { isBlocked, pendingPath, setPendingPath } = useNavigationGuard();
   const { theme } = useTheme();
 
-  // Re-check admin token periodically and on navigation
-  useEffect(() => {
-    setIsAdmin(!!getAdminToken());
-  }, [location.pathname]);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setIsAdmin(!!getAdminToken());
-    }, 2000);
-    return () => clearInterval(interval);
-  }, []);
-
-  const TABS = ALL_TABS.filter((t) => !t.adminOnly || isAdmin);
+  const TABS = ALL_TABS;
   const MOBILE_TABS = TABS.filter((t) => t.mobileVisible);
 
   const handleNavigate = (path: string) => {

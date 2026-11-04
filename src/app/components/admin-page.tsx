@@ -3,26 +3,17 @@ import { usePolling } from "../hooks/use-polling";
 import { ThemePicker } from "./theme-picker";
 import { motion, AnimatePresence } from "motion/react";
 import {
-  Shield, Lock, Eye, EyeOff, Users, Ticket, TrendingUp, Trophy,
-  Trash2, RotateCcw, AlertTriangle, Check, Play, Pause, Database, Settings, ChevronDown, ChevronUp, Clock, LogOut,
+  Shield, Lock, Eye, EyeOff, Trophy,
+  Trash2, RotateCcw, AlertTriangle, Check, Pause, Database, Settings, Clock, LogOut,
   Swords, CheckCircle2, Loader2, Zap,
 } from "lucide-react";
-import type { BettorProfile, TournamentWinnerOdds } from "./betting-store";
-import type { PlacedBet, TournamentState, TournamentHistoryEntry, ActiveTournament } from "./api";
+import type { TournamentHistoryEntry, ActiveTournament } from "./api";
 import {
   adminLogin,
   adminLogout,
-  adminDeleteBettor,
-  adminResetAll,
-  adminFetchAllBets,
   adminDeleteTournamentHistoryEntry,
   adminClearTournamentHistory,
   adminDeleteActiveTournament,
-  fetchAllBettors,
-  fetchTournamentWinnerOdds,
-  publishTournamentWinnerOdds,
-  fetchTournamentState,
-  saveTournamentState,
   fetchTournamentHistory,
   fetchActiveTournament,
   getAdminToken,
@@ -33,7 +24,7 @@ import {
 
 const FONT = "'Titillium Web', sans-serif";
 
-type AdminTab = "overview" | "tournaments" | "bettors" | "odds" | "history" | "settings";
+type AdminTab = "tournaments" | "history" | "settings";
 
 export function AdminPage() {
   const [password, setPassword] = useState("");
@@ -41,27 +32,19 @@ export function AdminPage() {
   const [authError, setAuthError] = useState("");
   const [showPw, setShowPw] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [activeTab, setActiveTab] = useState<AdminTab>("overview");
+  const [activeTab, setActiveTab] = useState<AdminTab>("tournaments");
 
   // Data
-  const [bettors, setBettors] = useState<BettorProfile[]>([]);
-  const [tournamentOdds, setTournamentOdds] = useState<TournamentWinnerOdds | null>(null);
-  const [playerOddsEdit, setPlayerOddsEdit] = useState<Record<string, number>>({});
-  const [allBets, setAllBets] = useState<PlacedBet[][]>([]);
-  const [tournamentState, setTournamentState] = useState<TournamentState>({ active: false, activatedAt: null });
   const [tournamentHistory, setTournamentHistory] = useState<TournamentHistoryEntry[]>([]);
   const [activeTournament, setActiveTournament] = useState<ActiveTournament | null>(null);
 
   const [, setHighscorePlayers] = useState<string[]>([]);
 
   // UI
-  const [confirmReset, setConfirmReset] = useState(false);
-  const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
   const [confirmDeleteHistory, setConfirmDeleteHistory] = useState<string | null>(null);
   const [confirmClearHistory, setConfirmClearHistory] = useState(false);
   const [confirmDeleteTournament, setConfirmDeleteTournament] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
-  const [expandedBettor, setExpandedBettor] = useState<string | null>(null);
   const [confirmEloReset, setConfirmEloReset] = useState(false);
   const [eloResetTs, setEloResetTs] = useState<number | null>(null);
   const [eloResetting, setEloResetting] = useState(false);
@@ -92,25 +75,12 @@ export function AdminPage() {
 
   const loadData = useCallback(async () => {
     if (!authenticated) return;
-    const [b, tOdds, ab, ts, th, at, hp, eloTs] = await Promise.all([
-      fetchAllBettors(),
-      fetchTournamentWinnerOdds(),
-      adminFetchAllBets(),
-      fetchTournamentState(),
+    const [th, at, hp, eloTs] = await Promise.all([
       fetchTournamentHistory(),
       fetchActiveTournament(),
       fetchHighscorePlayers(),
       fetchEloResetTimestamp(),
     ]);
-    setBettors(b);
-    if (tOdds) {
-      setTournamentOdds(tOdds);
-      const oddsMap: Record<string, number> = {};
-      tOdds.players.forEach(p => { oddsMap[p.name] = p.odds; });
-      setPlayerOddsEdit(prev => Object.keys(prev).length === 0 ? oddsMap : prev);
-    }
-    setAllBets(ab);
-    setTournamentState(ts);
     setTournamentHistory(th);
     setActiveTournament(at);
     setHighscorePlayers(hp);
@@ -119,53 +89,10 @@ export function AdminPage() {
 
   usePolling(loadData, { enabled: authenticated });
 
-  const handleDeleteBettor = async (name: string) => {
-    const ok = await adminDeleteBettor(name);
-    if (ok) { showToast(`${name} raderad`); setConfirmDelete(null); loadData(); }
-  };
-
-  const handleResetAll = async () => {
-    const ok = await adminResetAll();
-    if (ok) { showToast("All data nollställd"); setConfirmReset(false); setPlayerOddsEdit({}); loadData(); }
-  };
-
-  const handleToggleTournament = async () => {
-    const newState: TournamentState = {
-      active: !tournamentState.active,
-      activatedAt: !tournamentState.active ? Date.now() : tournamentState.activatedAt,
-    };
-    await saveTournamentState(newState);
-    setTournamentState(newState);
-    showToast(newState.active ? "Turnering aktiverad!" : "Turnering pausad");
-  };
-
-  const handleSaveOdds = async () => {
-    if (!tournamentOdds) return;
-    const updated: TournamentWinnerOdds = {
-      players: tournamentOdds.players.map(p => ({
-        name: p.name,
-        odds: playerOddsEdit[p.name] ?? p.odds,
-      })),
-      champion: tournamentOdds.champion,
-    };
-    await publishTournamentWinnerOdds(updated);
-    setTournamentOdds(updated);
-    showToast("Odds sparade & publicerade");
-  };
-
   const handleDeleteActiveTournament = async () => {
     const ok = await adminDeleteActiveTournament();
     if (ok) { showToast("Aktiv turnering raderad"); setConfirmDeleteTournament(false); setActiveTournament(null); loadData(); }
   };
-
-  // Stats
-  const totalBalance = bettors.reduce((s, b) => s + b.balance, 0);
-  const totalBetsCount = allBets.flat().length;
-  const flatBets = allBets.flat();
-  const resolvedBets = flatBets.filter(b => b.resolved);
-  const pendingBets = flatBets.filter(b => !b.resolved);
-  const players = tournamentOdds?.players || [];
-  const champion = tournamentOdds?.champion || null;
 
   // Login screen
   if (!authenticated) {
@@ -213,10 +140,7 @@ export function AdminPage() {
   }
 
   const TAB_CONFIG: { key: AdminTab; label: string; icon: typeof Database }[] = [
-    { key: "overview", label: "Översikt", icon: Database },
     { key: "tournaments", label: "Turneringar", icon: Swords },
-    { key: "bettors", label: "Bettare", icon: Users },
-    { key: "odds", label: "Odds", icon: TrendingUp },
     { key: "history", label: "Historik", icon: Clock },
     { key: "settings", label: "Inst.", icon: Settings },
   ];
@@ -231,18 +155,6 @@ export function AdminPage() {
             <span style={{ fontFamily: FONT, fontSize: "var(--text-base)", fontWeight: "var(--font-weight-semibold)" }} className="text-foreground">Adminpanel</span>
           </div>
           <div className="flex items-center gap-2">
-            <button
-              onClick={handleToggleTournament}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-[var(--radius-button)] border transition-all cursor-pointer ${
-                tournamentState.active
-                  ? "border-[var(--success)]/30 bg-[var(--success)]/10 text-[var(--success)]"
-                  : "border-destructive/30 bg-destructive/10 text-destructive"
-              }`}
-              style={{ fontFamily: FONT, fontSize: "var(--text-label)", fontWeight: "var(--font-weight-semibold)" }}
-            >
-              {tournamentState.active ? <Play className="w-3.5 h-3.5" /> : <Pause className="w-3.5 h-3.5" />}
-              {tournamentState.active ? "Aktiv" : "Pausad"}
-            </button>
             <button onClick={handleLogout} className="p-1.5 rounded-full text-muted-foreground hover:text-foreground transition-colors cursor-pointer" title="Logga ut">
               <LogOut className="w-4 h-4" />
             </button>
@@ -266,86 +178,6 @@ export function AdminPage() {
       </header>
 
       <main className="max-w-2xl mx-auto px-4 py-6 flex flex-col gap-6 pb-24">
-        {/* ── Overview ── */}
-        {activeTab === "overview" && (
-          <motion.div key="overview" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col gap-5">
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-              <StatBox icon={Users} label="Bettare" value={String(bettors.length)} />
-              <StatBox icon={Ticket} label="Totala bets" value={String(totalBetsCount)} />
-              <StatBox icon={Trophy} label="Avslutade" value={String(resolvedBets.length)} />
-              <StatBox icon={TrendingUp} label="Aktiva" value={String(pendingBets.length)} />
-            </div>
-
-            {/* Active tournament quick card */}
-            {activeTournament && (
-              <button
-                onClick={() => setActiveTab("tournaments")}
-                className="rounded-[var(--radius-card)] border border-primary/20 p-4 flex items-center gap-4 text-left hover:border-primary/40 transition-all cursor-pointer"
-                style={{ background: "var(--surface-container-low)" }}
-              >
-                <div className="w-10 h-10 rounded-full flex items-center justify-center bg-primary/10 shrink-0">
-                  <Swords className="w-5 h-5 text-primary" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p style={{ fontFamily: FONT, fontSize: "var(--text-base)", fontWeight: "var(--font-weight-semibold)" }} className="text-foreground">
-                    Aktiv turnering
-                  </p>
-                  <p style={{ fontFamily: FONT, fontSize: "12px" }} className="text-muted-foreground truncate">
-                    {activeTournament.players.join(" · ")}
-                  </p>
-                </div>
-                <div className={`px-2.5 py-1 rounded-[var(--radius-button)] text-xs font-semibold ${
-                  activeTournament.status === "completed"
-                    ? "bg-[var(--success)]/10 text-[var(--success)]"
-                    : "bg-primary/10 text-primary"
-                }`} style={{ fontFamily: FONT }}>
-                  {activeTournament.status === "completed" ? "Klar" : "Pågår"}
-                </div>
-              </button>
-            )}
-
-            <div className={`rounded-[var(--radius-card)] border p-5 flex items-center justify-between ${tournamentState.active ? "border-[var(--success)]/20" : "border-border/50"}`} style={{ background: "var(--surface-container-low)" }}>
-              <div>
-                <p style={{ fontFamily: FONT, fontSize: "var(--text-base)", fontWeight: "var(--font-weight-semibold)" }} className="text-foreground">Turneringsstatus</p>
-                <p style={{ fontFamily: FONT, fontSize: "var(--text-label)" }} className="text-muted-foreground">
-                  {tournamentState.active
-                    ? `Aktiv sedan ${tournamentState.activatedAt ? new Date(tournamentState.activatedAt).toLocaleTimeString("sv-SE", { hour: "2-digit", minute: "2-digit" }) : "–"}`
-                    : "Turneringen är pausad"
-                  }
-                </p>
-              </div>
-              <button
-                onClick={handleToggleTournament}
-                className={`px-5 py-2.5 rounded-[var(--radius-button)] transition-all cursor-pointer ${
-                  tournamentState.active ? "bg-destructive/15 text-destructive hover:bg-destructive/25" : "bg-[var(--success)] text-[var(--success-foreground)] hover:opacity-90"
-                }`}
-                style={{ fontFamily: FONT, fontSize: "var(--text-label)", fontWeight: "var(--font-weight-semibold)" }}
-              >
-                {tournamentState.active ? "Pausa" : "Aktivera"}
-              </button>
-            </div>
-
-            {/* Tournament winner odds summary */}
-            <div className="rounded-[var(--radius-card)] border border-border/50 overflow-hidden" style={{ background: "var(--surface-container-low)" }}>
-              <div className="px-4 py-3 border-b border-border/30 flex items-center gap-2">
-                <Trophy className="w-4 h-4 text-primary" />
-                <span style={{ fontFamily: FONT, fontSize: "var(--text-base)", fontWeight: "var(--font-weight-semibold)" }} className="text-foreground">Turneringsvinnare – Odds</span>
-              </div>
-              {players.length > 0 ? players.map(p => (
-                <div key={p.name} className={`px-4 py-3 border-b border-border/20 last:border-0 flex items-center justify-between ${champion === p.name ? "bg-primary/[0.06]" : ""}`}>
-                  <div className="flex items-center gap-2">
-                    {champion === p.name && <Trophy className="w-3.5 h-3.5 text-primary" />}
-                    <span className={champion === p.name ? "text-primary" : champion ? "text-muted-foreground/50" : "text-foreground"} style={{ fontFamily: FONT, fontSize: "var(--text-label)", fontWeight: champion === p.name ? 700 : "var(--font-weight-normal)" }}>{p.name}</span>
-                  </div>
-                  <span className="text-foreground tabular-nums" style={{ fontFamily: FONT, fontSize: "var(--text-label)", fontWeight: 700 }}>{p.odds.toFixed(2)}</span>
-                </div>
-              )) : (
-                <p className="px-4 py-6 text-center text-muted-foreground" style={{ fontFamily: FONT, fontSize: "var(--text-label)" }}>Inga odds publicerade — starta turneringen först</p>
-              )}
-            </div>
-          </motion.div>
-        )}
-
         {/* ── Tournaments ── */}
         {activeTab === "tournaments" && (
           <motion.div key="tournaments" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col gap-5">
@@ -497,112 +329,6 @@ export function AdminPage() {
           </motion.div>
         )}
 
-        {/* ── Bettors ── */}
-        {activeTab === "bettors" && (
-          <motion.div key="bettors" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col gap-4">
-            <div className="flex items-center justify-between">
-              <span style={{ fontFamily: FONT, fontSize: "var(--text-base)", fontWeight: "var(--font-weight-semibold)" }} className="text-foreground">{bettors.length} registrerade bettare</span>
-              <span className="text-muted-foreground tabular-nums" style={{ fontFamily: FONT, fontSize: "var(--text-label)" }}>Totalt saldo: {totalBalance}</span>
-            </div>
-            {bettors.sort((a, b) => b.balance - a.balance).map((bettor, idx) => {
-              const isExpanded = expandedBettor === bettor.name;
-              return (
-                <div key={bettor.name} className="rounded-[var(--radius-card)] border border-border/50 overflow-hidden" style={{ background: "var(--surface-container-low)" }}>
-                  <button onClick={() => setExpandedBettor(isExpanded ? null : bettor.name)} className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-surface-container-high/30 transition-colors cursor-pointer">
-                    <span className="text-muted-foreground tabular-nums w-6 text-center" style={{ fontFamily: FONT, fontSize: "var(--text-label)", fontWeight: 700 }}>{idx + 1}</span>
-                    <div className="w-8 h-8 rounded-full flex items-center justify-center bg-surface-container-high shrink-0">
-                      {bettor.equippedCosmetics?.avatar ? <span style={{ fontSize: "16px" }}>{bettor.equippedCosmetics.avatar}</span> : <span className="text-foreground" style={{ fontFamily: FONT, fontSize: "var(--text-label)", fontWeight: 700 }}>{bettor.name.charAt(0).toUpperCase()}</span>}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <span className="text-foreground truncate block" style={{ fontFamily: FONT, fontSize: "var(--text-base)", fontWeight: "var(--font-weight-semibold)" }}>{bettor.name}</span>
-                      {bettor.equippedCosmetics?.title && <span className="text-muted-foreground/60" style={{ fontFamily: FONT, fontSize: "11px" }}>{bettor.equippedCosmetics.title}</span>}
-                    </div>
-                    <div className="flex items-center gap-3 shrink-0">
-                      <span className="text-foreground tabular-nums" style={{ fontFamily: FONT, fontSize: "var(--text-label)", fontWeight: 700 }}>{bettor.balance}</span>
-                      {isExpanded ? <ChevronUp className="w-4 h-4 text-muted-foreground" /> : <ChevronDown className="w-4 h-4 text-muted-foreground" />}
-                    </div>
-                  </button>
-                  {isExpanded && (
-                    <div className="px-4 pb-4 pt-1 border-t border-border/30 flex flex-col gap-3">
-                      <div className="grid grid-cols-4 gap-2">
-                        <MiniStat label="Saldo" value={String(bettor.balance)} />
-                        <MiniStat label="Vunnet" value={`+${bettor.totalWon}`} />
-                        <MiniStat label="Förlorat" value={`-${bettor.totalLost}`} />
-                        <MiniStat label="Bets" value={String(bettor.totalBets)} />
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-muted-foreground" style={{ fontFamily: FONT, fontSize: "11px" }}>Cosmetics: {bettor.purchasedCosmetics?.length || 0} köpta</span>
-                        <span className="text-muted-foreground/40" style={{ fontFamily: FONT, fontSize: "11px" }}>Reg: {new Date(bettor.registeredAt).toLocaleDateString("sv-SE")}</span>
-                      </div>
-                      <button onClick={() => setConfirmDelete(bettor.name)} className="self-start flex items-center gap-1.5 px-3 py-1.5 rounded-[var(--radius-button)] text-destructive border border-destructive/20 hover:bg-destructive/10 transition-all cursor-pointer" style={{ fontFamily: FONT, fontSize: "var(--text-label)" }}>
-                        <Trash2 className="w-3 h-3" /> Radera bettare
-                      </button>
-                    </div>
-                  )}
-                </div>
-              );
-            })}
-          </motion.div>
-        )}
-
-        {/* ── Odds management ── */}
-        {activeTab === "odds" && (
-          <motion.div key="odds" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col gap-5">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Trophy className="w-4 h-4 text-primary" />
-                <span style={{ fontFamily: FONT, fontSize: "var(--text-base)", fontWeight: "var(--font-weight-semibold)" }} className="text-foreground">Turneringsvinnare – Odds</span>
-              </div>
-              <button onClick={handleSaveOdds} disabled={players.length === 0} className="flex items-center gap-1.5 px-4 py-2 rounded-[var(--radius-button)] bg-primary text-primary-foreground hover:opacity-90 transition-all cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed" style={{ fontFamily: FONT, fontSize: "var(--text-label)", fontWeight: "var(--font-weight-semibold)" }}>
-                <Check className="w-3.5 h-3.5" /> Spara & publicera
-              </button>
-            </div>
-            <p className="text-muted-foreground" style={{ fontFamily: FONT, fontSize: "var(--text-label)" }}>Ställ in odds för varje spelare att vinna hela turneringen.</p>
-            {players.length > 0 ? (
-              <div className="flex flex-col gap-3">
-                {players.map(p => {
-                  const isChampion = champion === p.name;
-                  const isEliminated = champion && !isChampion;
-                  const oddsVal = playerOddsEdit[p.name] ?? p.odds;
-                  return (
-                    <div key={p.name} className={`rounded-[var(--radius-card)] border overflow-hidden transition-all ${isChampion ? "border-primary/30" : "border-border/40"} ${isEliminated ? "opacity-50" : ""}`} style={{ background: "var(--surface-container-low)" }}>
-                      <div className="flex items-center justify-between px-4 py-3.5">
-                        <div className="flex items-center gap-3">
-                          <div className={`w-9 h-9 rounded-full flex items-center justify-center ${isChampion ? "bg-primary/15" : ""}`} style={{ background: isChampion ? undefined : "var(--surface-container-highest)" }}>
-                            {isChampion ? <Trophy className="w-4 h-4 text-primary" /> : <span style={{ fontFamily: FONT, fontSize: "var(--text-label)", fontWeight: 700 }} className="text-foreground">{p.name.charAt(0).toUpperCase()}</span>}
-                          </div>
-                          <span className={isChampion ? "text-primary" : "text-foreground"} style={{ fontFamily: FONT, fontSize: "var(--text-base)", fontWeight: isChampion ? 700 : "var(--font-weight-normal)" }}>{p.name}</span>
-                        </div>
-                        <input type="number" step="0.1" min="1.01" max="99" value={oddsVal} onChange={(e) => setPlayerOddsEdit(prev => ({ ...prev, [p.name]: Math.max(1.01, parseFloat(e.target.value) || 1.01) }))} disabled={!!champion} className="w-20 text-center px-2 py-1.5 rounded-[var(--radius-card)] border border-border/50 bg-surface-container text-foreground outline-none focus:border-primary transition-colors tabular-nums disabled:opacity-40" style={{ fontFamily: FONT, fontSize: "var(--text-base)", fontWeight: 700 }} />
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            ) : (
-              <div className="flex flex-col items-center gap-2 py-12 text-muted-foreground">
-                <Users className="w-8 h-8 opacity-30" />
-                <span style={{ fontFamily: FONT, fontSize: "var(--text-label)" }}>Starta turneringen i bracket-vyn för att sätta odds</span>
-              </div>
-            )}
-            {players.length > 0 && !champion && (
-              <div className="flex flex-col gap-2 pt-2 border-t border-border/30">
-                <span className="text-muted-foreground" style={{ fontFamily: FONT, fontSize: "var(--text-label)", fontWeight: "var(--font-weight-semibold)" }}>Snabbinställningar</span>
-                <div className="flex flex-wrap gap-2">
-                  {[
-                    { label: "Alla lika (4.00)", fn: () => { const m: Record<string,number> = {}; players.forEach(p => m[p.name] = 4.0); setPlayerOddsEdit(m); }},
-                    { label: "Favorit + underdog", fn: () => { const m: Record<string,number> = {}; players.forEach((p,i) => m[p.name] = i === 0 ? 2.5 : i === players.length - 1 ? 8.0 : 4.0); setPlayerOddsEdit(m); }},
-                    { label: "Jämna par (3.00)", fn: () => { const m: Record<string,number> = {}; players.forEach(p => m[p.name] = 3.0); setPlayerOddsEdit(m); }},
-                    { label: "Höga odds (6.00)", fn: () => { const m: Record<string,number> = {}; players.forEach(p => m[p.name] = 6.0); setPlayerOddsEdit(m); }},
-                  ].map(({ label, fn }) => (
-                    <button key={label} onClick={fn} className="px-3 py-2 rounded-[var(--radius-card)] border border-border/40 text-muted-foreground hover:text-foreground hover:border-primary/40 transition-all cursor-pointer" style={{ fontFamily: FONT, fontSize: "12px", fontWeight: "var(--font-weight-semibold)" }}>{label}</button>
-                  ))}
-                </div>
-              </div>
-            )}
-          </motion.div>
-        )}
-
         {/* ── History ── */}
         {activeTab === "history" && (
           <motion.div key="history" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col gap-5">
@@ -701,26 +427,14 @@ export function AdminPage() {
               </button>
             </div>
 
-            <div className="rounded-[var(--radius-card)] border border-destructive/30 p-5 flex flex-col gap-4" style={{ background: "var(--surface-container-low)" }}>
-              <div className="flex items-center gap-2">
-                <AlertTriangle className="w-4 h-4 text-destructive" />
-                <span style={{ fontFamily: FONT, fontSize: "var(--text-base)", fontWeight: "var(--font-weight-semibold)" }} className="text-destructive">Farozon</span>
-              </div>
-              <p className="text-muted-foreground" style={{ fontFamily: FONT, fontSize: "var(--text-label)" }}>Nollställ all bettingdata — raderar alla bettare, bets, odds och turneringsstatus. Kan inte ångras.</p>
-              <button onClick={() => setConfirmReset(true)} className="self-start flex items-center gap-1.5 px-4 py-2 rounded-[var(--radius-button)] bg-destructive text-destructive-foreground hover:opacity-90 transition-all cursor-pointer" style={{ fontFamily: FONT, fontSize: "var(--text-label)", fontWeight: "var(--font-weight-semibold)" }}>
-                <RotateCcw className="w-3.5 h-3.5" /> Nollställ allt
-              </button>
-            </div>
           </motion.div>
         )}
       </main>
 
       {/* Dialogs */}
       <AnimatePresence>
-        {confirmDelete && <ConfirmDialog title={`Radera ${confirmDelete}?`} description="Bettarens profil och alla deras bets raderas permanent." onConfirm={() => handleDeleteBettor(confirmDelete)} onCancel={() => setConfirmDelete(null)} destructive />}
       </AnimatePresence>
       <AnimatePresence>
-        {confirmReset && <ConfirmDialog title="Nollställ all data?" description="ALL bettingdata raderas permanent: bettare, bets, odds och turneringsstatus." onConfirm={handleResetAll} onCancel={() => setConfirmReset(false)} destructive />}
       </AnimatePresence>
       <AnimatePresence>
         {confirmDeleteHistory && (
@@ -779,27 +493,6 @@ export function AdminPage() {
 }
 
 /* ── Sub-components ─────────────────────────────────────────────────── */
-
-function StatBox({ icon: Icon, label, value }: { icon: typeof Users; label: string; value: string }) {
-  return (
-    <div className="rounded-[var(--radius-card)] border border-border/50 px-4 py-4 flex flex-col gap-1" style={{ background: "var(--surface-container-low)" }}>
-      <div className="flex items-center gap-2 text-muted-foreground">
-        <Icon className="w-3.5 h-3.5" />
-        <span style={{ fontSize: "var(--text-sm)" }}>{label}</span>
-      </div>
-      <span className="text-foreground tabular-nums" style={{ fontSize: "var(--text-h4)", fontWeight: "var(--font-weight-bold)" }}>{value}</span>
-    </div>
-  );
-}
-
-function MiniStat({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="text-center">
-      <p className="text-foreground tabular-nums" style={{ fontSize: "var(--text-label)", fontWeight: "var(--font-weight-bold)" }}>{value}</p>
-      <p className="text-muted-foreground/60" style={{ fontSize: "var(--text-xs)" }}>{label}</p>
-    </div>
-  );
-}
 
 interface MatchStatusProps {
   label: string;

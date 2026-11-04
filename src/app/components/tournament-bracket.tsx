@@ -4,7 +4,6 @@ import { MiniMatchCard, MatchData, createMatch } from "./match-card";
 import { MatchFullscreen } from "./match-fullscreen";
 import type { EloMatchInfo } from "./match-fullscreen";
 import { PlayerSetup } from "./player-setup";
-import { OddsPanel } from "./odds-panel";
 import { Trophy, Lock, RotateCcw, AlertTriangle, Save, Check } from "lucide-react";
 import { saveTournamentHistoryEntry, saveActiveTournament, deleteActiveTournament, fetchActiveTournament, fetchTournamentHistory } from "./api";
 import type { ActiveTournament, ActiveTournamentMatch, TournamentHistoryEntry } from "./api";
@@ -906,7 +905,6 @@ export function TournamentBracket({ onTournamentSaved }: { onTournamentSaved?: (
 
         {/* Action buttons */}
         <div className="flex flex-wrap items-center justify-center gap-3">
-          <OddsPanel semi1={semi1} semi2={semi2} final_={final_} />
           <button
             onClick={() => window.location.href = "/admin"}
             className="group flex items-center gap-2 px-5 py-2.5 rounded-[var(--radius-button)] border border-border/40 hover:border-primary/40 text-muted-foreground hover:text-primary transition-all duration-300 cursor-pointer"

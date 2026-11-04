@@ -9,7 +9,6 @@ export const router = createBrowserRouter([
     children: [
       { index: true, lazy: async () => ({ Component: (await import("./components/highscore-page")).HighscorePage }) },
       { path: "turnering", lazy: async () => ({ Component: (await import("./components/tournament-page")).TournamentPage }) },
-      { path: "bet", lazy: async () => ({ Component: (await import("./components/betting-page")).BettingPage }) },
       { path: "admin", lazy: async () => ({ Component: (await import("./components/admin-page")).AdminPage }) },
       { path: "highscore", element: <Navigate to="/" replace /> },
       // Removed pages (e.g. /forslag) and typos land on the start page instead of an error.

@@ -1,7 +1,7 @@
 # RPK
 
-Pingisturneringsappen: turneringsträd, highscore med Elo, odds och vadslagning och
-adminsida. React 18 + Vite + Tailwind, med LKAB:s färgteman.
+Pingisturneringsappen: turneringsträd, highscore med Elo och en adminsida med temaväljare.
+React 18 + Vite + Tailwind, med LKAB:s färgteman.
 
 ## Kom igång
 
