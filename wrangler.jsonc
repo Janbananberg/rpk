@@ -1,0 +1,10 @@
+// Cloudflare Workers: serves the built Vite app from dist/. Unknown paths (/turnering, /storbild …)
+// get index.html so React Router can take over. The backend and the D1 binding go here later.
+{
+  "name": "rpk",
+  "compatibility_date": "2026-06-01",
+  "assets": {
+    "directory": "./dist",
+    "not_found_handling": "single-page-application"
+  }
+}
