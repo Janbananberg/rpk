@@ -84,7 +84,7 @@ console.log(data.players);`;
                           </div>
                           <div>
                             <h2 style={{ fontFamily: FONT, fontSize: "var(--text-lg)", fontWeight: "var(--font-weight-bold)" as any, color: "var(--foreground)" }}>
-                              Stats API
+                              Statistik-API
                             </h2>
                             <p style={{ fontFamily: FONT, fontSize: "var(--text-xs)", color: "var(--on-surface-variant)" }}>
                               Rundpingisklubben — öppet JSON-API
@@ -198,12 +198,12 @@ console.log(data.players);`;
                                   ["playerCount", "Antal spelare med data"],
                                   ["availableMonths", "Lista av YYYY-MM med data"],
                                   ["players[].name", "Spelarens namn"],
-                                  ["players[].elo / peakElo", "Aktuell & peak Elo-rating"],
+                                  ["players[].elo / peakElo", "Aktuellt och högsta Elo-tal"],
                                   ["players[].wins / finals / gamesPlayed", "Grundläggande statistik"],
                                   ["players[].winPct / finalPct / finalWinPct", "Vinstprocent"],
-                                  ["players[].currentStreak / bestStreak", "Vinst-streaks"],
+                                  ["players[].currentStreak / bestStreak", "Vinstsviter"],
                                   ["players[].nemesis / prey", "Svåraste motståndare / favoritbyte"],
-                                  ["players[].h2h", "Head-to-head per motståndare"],
+                                  ["players[].h2h", "Inbördes facit per motståndare"],
                                   ["players[].yellowCards / redCards", "Kort"],
                                   ["players[].tournamentWins", "Antal turneringsvinster"],
                                   ["players[].insights", "Veckodag, tid, gruppstorleks-analys"],

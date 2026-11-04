@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from "motion/react";
-import { ArrowLeft, Check, X, Pencil, UserMinus } from "lucide-react";
+import { ArrowLeft, Check, X, Pencil, UserMinus, Flame, Snowflake } from "lucide-react";
 import { ELO_START } from "../../lib/elo";
 import type { EloEntry } from "../../lib/elo";
 import { computePlayerAchievements, ALL_ACHIEVEMENTS, MYTHIC_COMPLETIONIST } from "../../lib/achievements";
@@ -238,7 +238,7 @@ export function PlayerProfileModal({
                               color: "var(--warning-foreground)",
                             }}
                           >
-                            🔥 {selectedPlayer.currentStreak} streak
+                            <Flame className="w-3 h-3" aria-hidden />{selectedPlayer.currentStreak} raka vinster
                           </span>
                         )}
                         {hasStreakData && selectedPlayer.coldStreak >= 2 && (
@@ -251,7 +251,7 @@ export function PlayerProfileModal({
                               color: "var(--info-foreground)",
                             }}
                           >
-                            🥶 {selectedPlayer.coldStreak} streak
+                            <Snowflake className="w-3 h-3" aria-hidden />{selectedPlayer.coldStreak} raka förluster
                           </span>
                         )}
                       </div>

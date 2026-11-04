@@ -9,14 +9,14 @@ import type { PlayerStats } from "./stats";
 export function buildStatsCsv(sortedStats: PlayerStats[], eloRatings: Record<string, EloEntry>, activeSessions: GameSession[]): string {
   const headers = [
     "Namn", "Elo", "Vinster", "Finaler", "Spelat", "Vinst%", "Final%", "Finalvinst%",
-    "Bästa streak", "Kall streak", "Gula kort", "Röda kort", "Turneringsvinster",
-    "Nemesis", "Prey",
+    "Bästa vinstsvit", "Längsta förlustsvit", "Gula kort", "Röda kort", "Turneringsvinster",
+    "Nemesis", "Favoritbyte",
     "Bästa dag", "Bästa dag vinst%", "Sämsta dag", "Sämsta dag vinst%",
-    "Tidspreferens", "Peak-timme",
+    "Tidspreferens", "Mest aktiv tid",
     "Före lunch spel", "Före lunch vinst%", "Efter lunch spel", "Efter lunch vinst%",
     "Folkpreferens", "Median gruppstorlek",
     "Stor grupp vinst%", "Liten grupp vinst%",
-    "Omgångar", "H2H (motståndare:V-F)"
+    "Omgångar", "Inbördes (motståndare:V-F)"
   ];
   const rows = sortedStats.map((s) => {
     const elo = eloRatings[s.name]?.elo ?? ELO_START;

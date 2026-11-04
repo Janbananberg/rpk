@@ -1,4 +1,4 @@
-import { CalendarDays, Coffee, Sun, Users, UserMinus, Clock } from "lucide-react";
+import { CalendarDays, Coffee, Sun, Users, UserMinus, Clock, TriangleAlert } from "lucide-react";
 import type { PlayerInsights } from "../../../lib/insights";
 import { FONT } from "../constants";
 
@@ -136,7 +136,7 @@ export function ProfileTimeInsights({
             >
               <div className="flex items-center justify-between mb-2">
                 <span className="text-muted-foreground" style={{ fontSize: "var(--text-xs)", textTransform: "uppercase", letterSpacing: "0.05em" }}>
-                  Före vs efter lunch
+                  Före och efter lunch
                 </span>
                 <span className="text-muted-foreground" style={{ fontSize: "var(--text-xs)" }}>
                   (kl 12:00)
@@ -305,7 +305,7 @@ export function ProfileTimeInsights({
                 opacity: 0.85,
               }}
             >
-              <span style={{ fontSize: "var(--text-base)" }}>⚠️</span>
+              <TriangleAlert className="w-4 h-4 shrink-0" style={{ color: "var(--destructive)" }} aria-hidden />
               <span className="text-muted-foreground" style={{ fontSize: "var(--text-sm)", lineHeight: 1.4 }}>
                 Undvik <strong style={{ color: "var(--destructive)", fontWeight: "var(--font-weight-semibold)" }}>{playerInsights.worstWeekday.day}ar</strong> — bara{" "}
                 {playerInsights.worstWeekday.winRate.toFixed(1)}% finalvinst jämfört med{" "}

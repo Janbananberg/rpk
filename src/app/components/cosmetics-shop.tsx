@@ -17,7 +17,7 @@ const FONT = "'Titillium Web', sans-serif";
 const CATEGORY_LABELS: Record<CosmeticCategory, string> = {
   avatar: "Avatarer",
   title: "Titlar",
-  badge: "Badges",
+  badge: "Märken",
   bundle: "Paket",
 };
 

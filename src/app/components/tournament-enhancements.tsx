@@ -278,8 +278,8 @@ export function TaleOfTape({ p1, p2, elo, h2h, matchLabel, onContinue }: TaleOfT
   const prob2 = 1 - prob1;
 
   const stats = [
-    { label: "Elo Rating", v1: e1.toString(), v2: e2.toString(), better: e1 > e2 ? 1 : e2 > e1 ? 2 : 0 },
-    { label: "H2H Vinster", v1: h2h.wins1.toString(), v2: h2h.wins2.toString(), better: h2h.wins1 > h2h.wins2 ? 1 : h2h.wins2 > h2h.wins1 ? 2 : 0 },
+    { label: "Elo-tal", v1: e1.toString(), v2: e2.toString(), better: e1 > e2 ? 1 : e2 > e1 ? 2 : 0 },
+    { label: "Inbördes vinster", v1: h2h.wins1.toString(), v2: h2h.wins2.toString(), better: h2h.wins1 > h2h.wins2 ? 1 : h2h.wins2 > h2h.wins1 ? 2 : 0 },
     { label: "Elo-matcher", v1: (elo[p1]?.matches ?? 0).toString(), v2: (elo[p2]?.matches ?? 0).toString(), better: 0 },
     { label: "Vinstchans", v1: `${Math.round(prob1 * 100)}%`, v2: `${Math.round(prob2 * 100)}%`, better: prob1 > prob2 ? 1 : prob2 > prob1 ? 2 : 0 },
   ];
@@ -312,7 +312,7 @@ export function TaleOfTape({ p1, p2, elo, h2h, matchLabel, onContinue }: TaleOfT
               className="text-muted-foreground"
               style={{ fontFamily: FONT, fontSize: "var(--text-xs)", fontWeight: "var(--font-weight-semibold)", letterSpacing: "0.15em", textTransform: "uppercase" }}
             >
-              {matchLabel}
+              Inför matchen · {matchLabel}
             </span>
           </div>
         </div>

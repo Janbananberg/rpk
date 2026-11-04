@@ -577,7 +577,7 @@ export function HighscorePage() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    const label = selectedMonth === "total" ? "Total" : selectedMonth;
+    const label = selectedMonth === "total" ? "Totalt" : selectedMonth;
     a.download = `rundpingis-statistik-${label}.csv`;
     a.click();
     URL.revokeObjectURL(url);

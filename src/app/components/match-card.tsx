@@ -151,7 +151,7 @@ export function MiniMatchCard({
                 key={i}
                 className={`flex items-center gap-0.5 px-1.5 py-0.5 rounded ${golden ? "ring-1 ring-warning/40" : ""}`}
                 style={{ background: played ? "var(--surface-container-high)" : "transparent" }}
-                title={golden ? "Golden Set!" : undefined}
+                title={golden ? "Gyllene set!" : undefined}
               >
                 <span
                   className={`tabular-nums ${won1 ? "text-primary" : "text-muted-foreground/60"}`}

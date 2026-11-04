@@ -340,7 +340,7 @@ export function WeekdayHeatmap({ sessions }: { sessions: GameSession[] }) {
       {/* Summary */}
       <div className="flex items-center justify-between mt-4 px-1">
         <span style={{ fontFamily: FONT, fontSize: "var(--text-sm)", color: "var(--muted-foreground)" }}>
-          Peak:{" "}
+          Flest:{" "}
           <span style={{ color: "var(--primary)", fontWeight: "var(--font-weight-semibold)" }}>
             {WEEKDAY_SHORT[peakDay]} {TIME_SLOTS[peakSlot]}
           </span>

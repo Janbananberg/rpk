@@ -100,7 +100,7 @@ export function OddsPanel({ semi1, semi2, final_ }: OddsPanelProps) {
         style={{ fontFamily: FONT, fontSize: "var(--text-label)" }}
       >
         <TrendingUp className="w-3.5 h-3.5 transition-transform duration-500 group-hover:scale-110" />
-        Odds & Betting
+        Odds och vadslagning
       </button>
 
       {/* Panel overlay */}
@@ -223,7 +223,7 @@ export function OddsPanel({ semi1, semi2, final_ }: OddsPanelProps) {
                     <div className="flex flex-wrap gap-2">
                       {[
                         { label: "Alla lika (4.00)", fn: () => { const m: Record<string,number> = {}; allPlayers.forEach(n => m[n] = 4.0); setPlayerOdds(m); }},
-                        { label: "Favorit + underdog", fn: () => { const m: Record<string,number> = {}; allPlayers.forEach((n,i) => m[n] = i === 0 ? 2.5 : i === allPlayers.length - 1 ? 8.0 : 4.0); setPlayerOdds(m); }},
+                        { label: "Favorit + utmanare", fn: () => { const m: Record<string,number> = {}; allPlayers.forEach((n,i) => m[n] = i === 0 ? 2.5 : i === allPlayers.length - 1 ? 8.0 : 4.0); setPlayerOdds(m); }},
                         { label: "Jämna par (3.00)", fn: () => { const m: Record<string,number> = {}; allPlayers.forEach(n => m[n] = 3.0); setPlayerOdds(m); }},
                       ].map(({ label, fn }) => (
                         <button

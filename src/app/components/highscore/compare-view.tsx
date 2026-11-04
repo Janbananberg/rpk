@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from "motion/react";
-import { Swords, X, TrendingUp, Clock, Coffee, Sun, CalendarDays } from "lucide-react";
+import { Swords, X, TrendingUp, Clock, Coffee, Sun, CalendarDays, Lightbulb } from "lucide-react";
 import { computePlayerPercentile, getCSGORank } from "../../lib/rank";
 import { stripEmoji } from "../../lib/players";
 import type { PlayerStats } from "../../lib/stats";
@@ -60,7 +60,7 @@ export function CompareView({
                     fontWeight: "var(--font-weight-semibold)",
                   }}
                 >
-                  Head-to-Head
+                  Inbördes möten
                 </span>
               </div>
 
@@ -309,7 +309,7 @@ export function CompareView({
                         </div>
                         {totalMeetings === 0 && (
                           <div className="text-center" style={{ fontSize: "var(--text-sm)", color: "var(--muted-foreground)", fontFamily: FONT }}>
-                            Ingen finalmöte ännu
+                            Inget finalmöte ännu
                           </div>
                         )}
                         {totalMeetings > 0 && (
@@ -608,7 +608,7 @@ export function CompareView({
                                     className="shrink-0 w-7 h-7 rounded-full flex items-center justify-center"
                                     style={{ background: "var(--muted)" }}
                                   >
-                                    <span style={{ fontSize: "var(--text-sm)", lineHeight: 1 }}>💡</span>
+                                    <Lightbulb className="w-3.5 h-3.5" style={{ color: "var(--warning)" }} aria-hidden />
                                   </div>
                                   <span style={{ fontSize: "var(--text-label)", lineHeight: 1.6, fontFamily: FONT, color: "var(--foreground)" }}>
                                     <strong style={{ color: "var(--primary)", fontWeight: "var(--font-weight-bold)" }}>{stripEmoji(p1.name).split(" ")[0]}</strong>
@@ -633,7 +633,7 @@ export function CompareView({
                                     className="shrink-0 w-7 h-7 rounded-full flex items-center justify-center mt-0.5"
                                     style={{ background: "var(--muted)" }}
                                   >
-                                    <span style={{ fontSize: "var(--text-sm)", lineHeight: 1 }}>💡</span>
+                                    <Lightbulb className="w-3.5 h-3.5" style={{ color: "var(--warning)" }} aria-hidden />
                                   </div>
                                   <span style={{ fontSize: "var(--text-label)", lineHeight: 1.6, fontFamily: FONT, color: "var(--foreground)" }}>
                                     <strong style={{ color: "var(--warning)", fontWeight: "var(--font-weight-bold)" }}>{stripEmoji(p2.name).split(" ")[0]}</strong>

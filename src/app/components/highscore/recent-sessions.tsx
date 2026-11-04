@@ -1,4 +1,4 @@
-import { Clock, Trash2, ChevronDown, ChevronUp } from "lucide-react";
+import { Clock, Trash2, ChevronDown, ChevronUp, Trophy } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { formatMonthLabel, formatRelativeDate, formatSessionDate } from "../../lib/dates";
 import type { GameSession } from "../api";
@@ -89,7 +89,7 @@ export function RecentSessions({
                             className="text-muted-foreground"
                             style={{ fontSize: "var(--text-sm)" }}
                           >
-                            {session.rounds.length}R · {session.players.length}P{(() => {
+                            {session.rounds.length} {session.rounds.length === 1 ? "runda" : "rundor"} · {session.players.length} spelare{(() => {
                               const hasRosterChanges = session.rounds.some((r) => r.players && r.players.length !== session.players.length);
                               return hasRosterChanges ? " ±" : "";
                             })()}
@@ -175,7 +175,7 @@ export function RecentSessions({
                                 <span>R{ri + 1}</span>
                                 {round.players && round.players.length !== session.players.length && (
                                   <span style={{ fontSize: "var(--text-xs)", opacity: 0.6 }}>
-                                    {round.players.length}P
+                                    {round.players.length} sp.
                                   </span>
                                 )}
                               </span>
@@ -193,7 +193,7 @@ export function RecentSessions({
                                           : "var(--font-weight-normal)",
                                     }}
                                   >
-                                    {f === round.winner && "🏆 "}
+                                    {f === round.winner && <Trophy className="w-3.5 h-3.5 inline align-[-2px] mr-1" aria-hidden />}
                                     {f}
                                   </span>
                                 ))}

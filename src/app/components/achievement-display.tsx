@@ -143,7 +143,7 @@ export function AchievementDisplay({
       {/* Empty state */}
       {unlocked.length === 0 && (
         <div className="flex flex-col items-center justify-center py-4 text-center" style={{ opacity: 0.6 }}>
-          <span style={{ fontSize: 28, marginBottom: 6 }}>🔒</span>
+          <Lock className="w-7 h-7 text-muted-foreground" style={{ marginBottom: 6 }} aria-hidden />
           <span className="text-muted-foreground" style={{ fontFamily: FONT, fontSize: "var(--text-sm)" }}>
             Inga achievements upplåsta ännu
           </span>

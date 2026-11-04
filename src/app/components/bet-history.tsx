@@ -47,7 +47,7 @@ export function BetHistory({ bets }: BetHistoryProps) {
             Ingen historik \u00e4n
           </p>
           <p className="text-muted-foreground mt-1" style={{ fontFamily: FONT, fontSize: "var(--text-label)" }}>
-            Dina avslutade bets visas h\u00e4r
+            Dina avslutade vad visas h\u00e4r
           </p>
         </div>
       </div>
@@ -83,7 +83,7 @@ export function BetHistory({ bets }: BetHistoryProps) {
             style={{ fontFamily: FONT, fontSize: "var(--text-label)", fontWeight: "var(--font-weight-semibold)" }}
           >
             <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
-            Aktiva bets ({pending.length})
+            Aktiva vad ({pending.length})
           </span>
           {pending.map((bet, idx) => (
             <BetRow key={bet.id} bet={bet} idx={idx} />
@@ -98,7 +98,7 @@ export function BetHistory({ bets }: BetHistoryProps) {
             className="text-muted-foreground"
             style={{ fontFamily: FONT, fontSize: "var(--text-label)", fontWeight: "var(--font-weight-semibold)" }}
           >
-            Avslutade bets ({resolved.length})
+            Avslutade vad ({resolved.length})
           </span>
           {resolved.map((bet, idx) => (
             <BetRow key={bet.id} bet={bet} idx={idx} />

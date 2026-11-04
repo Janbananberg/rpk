@@ -53,7 +53,7 @@ export function ProfileStreakAndTrophies({
                   letterSpacing: "0.05em",
                 }}
               >
-                Bästa streak
+                Bästa vinstsvit
               </span>
               <div className="flex items-baseline gap-1.5">
                 <span
@@ -147,7 +147,7 @@ export function ProfileStreakAndTrophies({
                     style={{ background: "var(--surface-container)", borderRadius: "var(--radius-sm)" }}
                   >
                     <div className="flex items-center gap-2">
-                      <span style={{ fontSize: "var(--text-base)" }}>🏆</span>
+                      <Trophy className="w-4 h-4" style={{ color: "var(--primary)" }} aria-hidden />
                       <span
                         className="text-foreground"
                         style={{ fontFamily: FONT, fontSize: "var(--text-label)", fontWeight: "var(--font-weight-semibold)" }}

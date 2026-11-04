@@ -1,4 +1,4 @@
-import { Info, BarChart3, Swords, Plus, UserPlus } from "lucide-react";
+import { Info, BarChart3, Swords, Plus, UserPlus, Trophy } from "lucide-react";
 import { formatMonthLabel } from "../../lib/dates";
 import type { PlayerStats } from "../../lib/stats";
 import { FONT, MIN_PLAYERS_FOR_ROUND } from "./constants";
@@ -45,17 +45,18 @@ export function TitleRow({
       <div className="flex flex-col gap-3 mb-5 md:mb-6 md:flex-row md:items-center md:justify-between">
         <div className="flex items-center gap-3">
           <h2
-            className="text-foreground"
+            className="text-foreground flex items-center gap-2 flex-wrap"
             style={{
               fontFamily: FONT,
               fontSize: "var(--text-h3)",
               fontWeight: "var(--font-weight-semibold)",
             }}
           >
-            💀 Rankning
+            <Trophy className="w-6 h-6 shrink-0" style={{ color: "var(--primary)" }} aria-hidden />
+            Rankning
             {selectedMonth !== currentMonth && (
               <span
-                className="text-muted-foreground ml-2"
+                className="text-muted-foreground"
                 style={{ fontSize: "var(--text-label)", fontWeight: "var(--font-weight-normal)" }}
               >
                 {selectedMonth === "total" ? "— Totalt" : `— ${formatMonthLabel(selectedMonth)}`}
@@ -71,7 +72,7 @@ export function TitleRow({
           </button>
         </div>
         <div className="flex items-center gap-2">
-          {/* Deep Dive toggle */}
+          {/* Fördjupning toggle */}
           <button
             onClick={() => setShowGraphView(!showGraphView)}
             className={`flex items-center gap-1.5 px-3 py-2 md:py-1.5 rounded-lg border transition-all cursor-pointer ${
@@ -87,7 +88,7 @@ export function TitleRow({
             }}
           >
             <BarChart3 className="w-4 h-4 md:w-3.5 md:h-3.5" />
-            Deep Dive
+            Fördjupning
           </button>
 
           {/* Compare button — available when there are sessions or historical h2h data */}
@@ -108,7 +109,7 @@ export function TitleRow({
               }}
             >
               <Swords className="w-4 h-4 md:w-3.5 md:h-3.5" />
-              H2H
+              Inbördes
             </button>
           )}
 

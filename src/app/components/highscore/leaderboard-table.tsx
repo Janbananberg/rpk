@@ -1,4 +1,4 @@
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, Target, ClipboardList, Moon, Trophy, Flame, Snowflake, TrendingDown } from "lucide-react";
 import type { PlayerStats, SortTab } from "../../lib/stats";
 import { SEED_MIN_ROUNDS, ELO_START, weightedDelta } from "../../lib/elo";
 import type { EloEntry } from "../../lib/elo";
@@ -283,7 +283,7 @@ export function LeaderboardTable({
                               fontFamily: FONT,
                             }}
                           >
-                            🏆 {s.tournamentWins}
+                            <Trophy className="w-3 h-3" aria-hidden />{s.tournamentWins}
                           </span>
                         )}
                         {/* Cards inline */}
@@ -334,7 +334,7 @@ export function LeaderboardTable({
                               color: "var(--warning-foreground)",
                             }}
                           >
-                            🔥 {s.currentStreak}
+                            <Flame className="w-3 h-3" aria-hidden />{s.currentStreak}
                           </span>
                         )}
                         {s.coldStreak >= 2 && (
@@ -347,7 +347,7 @@ export function LeaderboardTable({
                               color: "var(--info-foreground)",
                             }}
                           >
-                            🥶 {s.coldStreak}
+                            <Snowflake className="w-3 h-3" aria-hidden />{s.coldStreak}
                           </span>
                         )}
                       </div>
@@ -473,7 +473,7 @@ export function LeaderboardTable({
                             className="flex items-center gap-0.5 px-1 py-0.5 rounded-full shrink-0"
                             style={{ fontSize: 10, fontWeight: "var(--font-weight-bold)", background: "color-mix(in srgb, var(--primary) 15%, transparent)", color: "var(--primary)", fontFamily: FONT }}
                           >
-                            🏆{s.tournamentWins}
+                            <Trophy className="w-2.5 h-2.5" aria-hidden />{s.tournamentWins}
                           </span>
                         )}
                         {hasStreakData && s.currentStreak >= 2 && (
@@ -481,7 +481,7 @@ export function LeaderboardTable({
                             className="flex items-center gap-0.5 px-1 py-0.5 rounded-full shrink-0"
                             style={{ fontSize: 10, fontWeight: "var(--font-weight-semibold)", background: "var(--warning)", color: "var(--warning-foreground)" }}
                           >
-                            🔥{s.currentStreak}
+                            <Flame className="w-2.5 h-2.5" aria-hidden />{s.currentStreak}
                           </span>
                         )}
                         {hasStreakData && s.coldStreak >= 2 && (
@@ -489,7 +489,7 @@ export function LeaderboardTable({
                             className="flex items-center gap-0.5 px-1 py-0.5 rounded-full shrink-0"
                             style={{ fontSize: 10, fontWeight: "var(--font-weight-semibold)", background: "var(--info)", color: "var(--info-foreground)" }}
                           >
-                            🥶{s.coldStreak}
+                            <Snowflake className="w-2.5 h-2.5" aria-hidden />{s.coldStreak}
                           </span>
                         )}
                         {s.yellowCards > 0 && (
@@ -534,7 +534,7 @@ export function LeaderboardTable({
                           fontFamily: FONT,
                         }}
                       >
-                        <span style={{ fontSize: "13px", lineHeight: 1 }}>🎯</span>
+                        <Target className="w-3.5 h-3.5" style={{ color: "var(--success)" }} aria-hidden />
                         <span style={{
                           fontSize: "var(--text-xs)",
                           fontWeight: "var(--font-weight-bold)",
@@ -561,7 +561,7 @@ export function LeaderboardTable({
                           marginTop: seeded.length > 0 ? 2 : 0,
                         }}
                       >
-                        <span style={{ fontSize: "13px", lineHeight: 1 }}>📋</span>
+                        <ClipboardList className="w-3.5 h-3.5 text-muted-foreground" aria-hidden />
                         <span style={{
                           fontSize: "var(--text-xs)",
                           fontWeight: "var(--font-weight-bold)",
@@ -588,7 +588,7 @@ export function LeaderboardTable({
                           marginTop: (seeded.length > 0 || unseeded.length > 0) ? 2 : 0,
                         }}
                       >
-                        <span style={{ fontSize: "13px", lineHeight: 1 }}>💤</span>
+                        <Moon className="w-3.5 h-3.5 text-muted-foreground" aria-hidden />
                         <span style={{
                           fontSize: "var(--text-xs)",
                           fontWeight: "var(--font-weight-bold)",
@@ -649,7 +649,7 @@ export function LeaderboardTable({
                                   fontFamily: FONT,
                                 }}
                               >
-                                💤 {weeksAgo != null ? `${weeksAgo}v sedan` : "aldrig"}
+                                <Moon className="w-3 h-3" aria-hidden />{weeksAgo != null ? `${weeksAgo}v sedan` : "aldrig"}
                               </span>
                               <span
                                 className="flex items-center gap-0.5 px-1.5 py-0.5 rounded-full shrink-0"
@@ -661,7 +661,7 @@ export function LeaderboardTable({
                                   fontFamily: FONT,
                                 }}
                               >
-                                📉 {eloRatings[s.name]?.elo ?? ELO_START} Elo
+                                <TrendingDown className="w-3 h-3" aria-hidden />{eloRatings[s.name]?.elo ?? ELO_START} Elo
                               </span>
                             </div>
                             <div className="flex items-center justify-center">
@@ -700,7 +700,7 @@ export function LeaderboardTable({
                                 className="px-1 py-0.5 rounded-full shrink-0"
                                 style={{ fontSize: 10, fontWeight: "var(--font-weight-semibold)", background: "color-mix(in srgb, var(--muted-foreground) 12%, transparent)", color: "var(--muted-foreground)", fontFamily: FONT }}
                               >
-                                💤 {weeksAgo != null ? `${weeksAgo}v` : "—"}
+                                <Moon className="w-2.5 h-2.5 inline align-[-1px] mr-0.5" aria-hidden />{weeksAgo != null ? `${weeksAgo}v` : "—"}
                               </span>
                               <ChevronRight className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
                             </div>
@@ -714,7 +714,7 @@ export function LeaderboardTable({
                               </span>
                               <span className="text-border" style={{ fontSize: 10 }}>·</span>
                               <span className="shrink-0" style={{ fontSize: "var(--text-xs)", fontFamily: FONT, color: "var(--destructive)" }}>
-                                📉 {eloRatings[s.name]?.elo ?? ELO_START}
+                                <TrendingDown className="w-3 h-3 inline align-[-2px] mr-0.5" aria-hidden />{eloRatings[s.name]?.elo ?? ELO_START}
                               </span>
                             </div>
                           </div>
