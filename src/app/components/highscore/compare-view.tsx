@@ -6,6 +6,7 @@ import type { PlayerStats } from "../../lib/stats";
 import type { EloEntry } from "../../lib/elo";
 import type { H2HInsight } from "../../lib/insights";
 import { FONT } from "./constants";
+import { GruvrankBadge } from "./gruvrank-badge";
 
 interface CompareViewProps {
   compareMode: boolean;
@@ -169,20 +170,7 @@ export function CompareView({
                             borderRadius: "var(--radius-card)",
                           }}
                         >
-                          {p1Rank && (
-                            <div
-                              className="w-8 h-8 rounded-lg flex items-center justify-center mb-0.5"
-                              style={{
-                                background: `color-mix(in srgb, ${p1Rank.color} 25%, transparent)`,
-                                border: `1.5px solid color-mix(in srgb, ${p1Rank.color} 40%, transparent)`,
-                                borderRadius: "var(--radius-card)",
-                              }}
-                            >
-                              <span style={{ fontFamily: FONT, fontSize: p1Rank.shortName.length > 3 ? "var(--text-xs)" : "var(--text-sm)", fontWeight: "var(--font-weight-bold)", color: p1Rank.color, lineHeight: 1 }}>
-                                {p1Rank.shortName}
-                              </span>
-                            </div>
-                          )}
+                          {p1Rank && <GruvrankBadge rank={p1Rank} size={40} className="mb-0.5" />}
                           <span className="truncate w-full" style={{ fontFamily: FONT, fontSize: "var(--text-label)", fontWeight: "var(--font-weight-bold)", color: "var(--foreground)", lineHeight: 1.2 }}>
                             {stripEmoji(p1.name).split(" ")[0]}
                           </span>
@@ -222,20 +210,7 @@ export function CompareView({
                             borderRadius: "var(--radius-card)",
                           }}
                         >
-                          {p2Rank && (
-                            <div
-                              className="w-8 h-8 rounded-lg flex items-center justify-center mb-0.5"
-                              style={{
-                                background: `color-mix(in srgb, ${p2Rank.color} 25%, transparent)`,
-                                border: `1.5px solid color-mix(in srgb, ${p2Rank.color} 40%, transparent)`,
-                                borderRadius: "var(--radius-card)",
-                              }}
-                            >
-                              <span style={{ fontFamily: FONT, fontSize: p2Rank.shortName.length > 3 ? "var(--text-xs)" : "var(--text-sm)", fontWeight: "var(--font-weight-bold)", color: p2Rank.color, lineHeight: 1 }}>
-                                {p2Rank.shortName}
-                              </span>
-                            </div>
-                          )}
+                          {p2Rank && <GruvrankBadge rank={p2Rank} size={40} className="mb-0.5" />}
                           <span className="truncate w-full" style={{ fontFamily: FONT, fontSize: "var(--text-label)", fontWeight: "var(--font-weight-bold)", color: "var(--foreground)", lineHeight: 1.2 }}>
                             {stripEmoji(p2.name).split(" ")[0]}
                           </span>

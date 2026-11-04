@@ -5,6 +5,7 @@ import type { EloEntry } from "../../../lib/elo";
 import type { PlayerStats } from "../../../lib/stats";
 import { FONT } from "../constants";
 import { EloSparkline } from "../elo-sparkline";
+import { GruvrankBadge } from "../gruvrank-badge";
 
 interface ProfileEloCardProps {
   eloRatings: Record<string, EloEntry>;
@@ -200,26 +201,7 @@ export function ProfileEloCard({
               style={{ borderColor: "var(--border)", background: csgoRank.bgColor }}
             >
               {/* Rank badge */}
-              <div
-                className="w-9 h-9 rounded-lg flex items-center justify-center shrink-0"
-                style={{
-                  background: `color-mix(in srgb, ${csgoRank.color} 25%, transparent)`,
-                  border: `1.5px solid color-mix(in srgb, ${csgoRank.color} 40%, transparent)`,
-                  borderRadius: "var(--radius-card)",
-                }}
-              >
-                <span
-                  style={{
-                    fontFamily: FONT,
-                    fontSize: csgoRank.shortName.length > 3 ? "var(--text-xs)" : "var(--text-sm)",
-                    fontWeight: "var(--font-weight-bold)",
-                    color: csgoRank.color,
-                    lineHeight: 1,
-                  }}
-                >
-                  {csgoRank.shortName}
-                </span>
-              </div>
+              <GruvrankBadge rank={csgoRank} size={40} />
               <div className="flex-1 min-w-0">
                 <span
                   className="block truncate"

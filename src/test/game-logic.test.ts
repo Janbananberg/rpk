@@ -19,7 +19,7 @@ import { computePerMonthEloDeltas, hasLostToMuchLowerElo, hasWonFinalBelowElo } 
 import { computeSeasonSummary } from "../app/lib/insights";
 import type { EloEntry } from "../app/lib/elo";
 import { matchPlayerName, stripEmoji } from "../app/lib/players";
-import { computePlayerPercentile, getCSGORank } from "../app/lib/rank";
+import { CSGO_RANKS, computePlayerPercentile, getCSGORank } from "../app/lib/rank";
 import { computeStats } from "../app/lib/stats";
 import { buildStatsCsv } from "../app/lib/stats-csv";
 import { isGoldenSet } from "../app/lib/golden-set";
@@ -248,13 +248,20 @@ describe("applyEloDecay", () => {
 
 describe("Gruvrank", () => {
   it("väljer högsta nivån vars tröskel nås", () => {
-    expect(getCSGORank(100).name).toBe("Match‑Point Monarch");
+    expect(getCSGORank(100).name).toBe("Kärnan");
     expect(getCSGORank(98).tier).toBe(7);
     expect(getCSGORank(97.9).tier).toBe(6);
-    expect(getCSGORank(78).shortName).toBe("NN");
+    expect(getCSGORank(78).shortName).toBe("HN");
     expect(getCSGORank(35).tier).toBe(3);
     expect(getCSGORank(14.9).tier).toBe(1);
-    expect(getCSGORank(0).name).toBe("Ball Boy/Girl");
+    expect(getCSGORank(0).name).toBe("Gråberg");
+  });
+
+  it("har sju nivåer med unika svenska gruvnamn, från Gråberg upp till Kärnan", () => {
+    const names = CSGO_RANKS.map((r) => r.rank.name);
+    expect(names).toEqual(["Kärnan", "Malmkroppen", "Huvudnivån", "Borrfronten", "Orten", "Dagbrottet", "Gråberg"]);
+    expect(new Set(CSGO_RANKS.map((r) => r.rank.shortName)).size).toBe(7);
+    expect(CSGO_RANKS.map((r) => r.rank.tier)).toEqual([7, 6, 5, 4, 3, 2, 1]);
   });
 
   it("faller tillbaka på lägsta nivån för negativa percentiler", () => {
