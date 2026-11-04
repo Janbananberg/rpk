@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo, useCallback, useRef } from "react";
+import { usePolling } from "../hooks/use-polling";
 import {
   Plus,
   Archive,
@@ -424,13 +425,8 @@ export function HighscorePage() {
     setLoading(false);
   }, []);
 
-  useEffect(() => {
-    loadData();
-    // Without a backend every poll answers empty and would wipe what was just added locally.
-    if (!API_BASE) return;
-    const interval = setInterval(loadData, 5000);
-    return () => clearInterval(interval);
-  }, [loadData]);
+  // Without a backend every poll answers empty and would wipe what was just added locally.
+  usePolling(loadData, { enabled: !!API_BASE });
 
   // Determine which sessions to show based on selected month view
   const activeSessions = useMemo(() => {

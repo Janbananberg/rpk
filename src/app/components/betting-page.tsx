@@ -10,6 +10,7 @@ import {
   getBettorToken,
 } from "./api";
 import { useState, useEffect, useCallback } from "react";
+import { usePolling } from "../hooks/use-polling";
 import { motion, AnimatePresence } from "motion/react";
 import { Ticket, TrendingUp, Trophy, Check, X, Coffee, ShoppingBag, Clock } from "lucide-react";
 import { Leaderboard } from "./leaderboard";
@@ -65,23 +66,20 @@ export function BettingPage() {
   const balance = profile?.balance ?? STARTING_BALANCE;
 
   // Poll for tournament winner odds + refresh profile/bets for server-side changes
-  useEffect(() => {
+  const refresh = useCallback(async () => {
     if (!nameConfirmed) return;
-    const load = async () => {
-      const odds = await fetchTournamentWinnerOdds();
-      if (odds) setTournamentOdds(odds);
-      // Refresh profile for server-side balance changes (e.g. bet resolution)
-      if (name) {
-        const p = await fetchBettorProfile(name);
-        if (p) setProfile(p);
-        const b = await fetchBets(name);
-        if (b) setBets(b);
-      }
-    };
-    load();
-    const interval = setInterval(load, 2000);
-    return () => clearInterval(interval);
+    const odds = await fetchTournamentWinnerOdds();
+    if (odds) setTournamentOdds(odds);
+    // Refresh profile for server-side balance changes (e.g. bet resolution)
+    if (name) {
+      const p = await fetchBettorProfile(name);
+      if (p) setProfile(p);
+      const b = await fetchBets(name);
+      if (b) setBets(b);
+    }
   }, [nameConfirmed, name]);
+  // Bets and odds move during a tournament, so this page polls more often than the others.
+  usePolling(refresh, { intervalMs: 10_000, enabled: nameConfirmed });
 
   /**
    * Place a bet — calls the server-side validated endpoint.

@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+import { useState, useCallback } from "react";
+import { usePolling } from "../hooks/use-polling";
 import { motion } from "motion/react";
 import { Trophy, TrendingUp, TrendingDown, Crown, Medal, Award, Flame, Star, Zap, Heart, Shield, Gem, Target, Swords } from "lucide-react";
 import type { BettorProfile } from "./betting-store";
@@ -26,16 +27,12 @@ export function Leaderboard({ currentName }: { currentName: string }) {
   const [bettors, setBettors] = useState<BettorProfile[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const load = async () => {
-      const data = await fetchAllBettors();
-      if (data.length > 0) setBettors(data);
-      setLoading(false);
-    };
-    load();
-    const interval = setInterval(load, 3000);
-    return () => clearInterval(interval);
+  const load = useCallback(async () => {
+    const data = await fetchAllBettors();
+    if (data.length > 0) setBettors(data);
+    setLoading(false);
   }, []);
+  usePolling(load);
 
   const sorted = [...bettors].sort((a, b) => b.balance - a.balance);
 

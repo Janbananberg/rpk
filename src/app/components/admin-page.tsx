@@ -1,4 +1,5 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useCallback } from "react";
+import { usePolling } from "../hooks/use-polling";
 import { motion, AnimatePresence } from "motion/react";
 import {
   Shield, Lock, Eye, EyeOff, Users, Ticket, TrendingUp, Trophy,
@@ -125,13 +126,7 @@ export function AdminPage() {
     setEloResetTs(eloTs);
   }, [authenticated]);
 
-  useEffect(() => {
-    loadData();
-    if (authenticated) {
-      const interval = setInterval(loadData, 5000);
-      return () => clearInterval(interval);
-    }
-  }, [loadData, authenticated]);
+  usePolling(loadData, { enabled: authenticated });
 
   const handleDeleteBettor = async (name: string) => {
     const ok = await adminDeleteBettor(name);
