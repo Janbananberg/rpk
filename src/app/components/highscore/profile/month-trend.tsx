@@ -2,7 +2,6 @@ import { ChevronDown } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { formatMonthLabel } from "../../../lib/dates";
 import type { PlayerStats } from "../../../lib/stats";
-import { FONT } from "../constants";
 
 interface ProfileMonthTrendProps {
   prevPlayerStats: PlayerStats | null;
@@ -73,7 +72,7 @@ export function ProfileMonthTrend({
                 />
                 <span
                   className="text-muted-foreground"
-                  style={{ fontSize: "var(--text-xs)", textTransform: "uppercase", letterSpacing: "0.05em", fontFamily: FONT }}
+                  style={{ fontSize: "var(--text-xs)", textTransform: "uppercase", letterSpacing: "0.05em" }}
                 >
                   Jämfört med {prevMonthLabel}
                 </span>
@@ -81,7 +80,6 @@ export function ProfileMonthTrend({
               <span
                 className="flex items-center gap-1 px-2 py-0.5 rounded-full"
                 style={{
-                  fontFamily: FONT,
                   fontSize: "var(--text-xs)",
                   fontWeight: "var(--font-weight-semibold)",
                   background: overallTrend === "up"
@@ -136,7 +134,7 @@ export function ProfileMonthTrend({
                     </span>
                     <span
                       className="text-foreground"
-                      style={{ fontFamily: FONT, fontSize: "var(--text-label)" }}
+                      style={{ fontSize: "var(--text-label)" }}
                     >
                       {row.label}
                     </span>
@@ -144,7 +142,6 @@ export function ProfileMonthTrend({
                   <div className="flex items-baseline gap-1.5">
                     <span
                       style={{
-                        fontFamily: FONT,
                         fontSize: "var(--text-label)",
                         fontWeight: "var(--font-weight-bold)",
                         color: row.delta > 0 ? "var(--success)" : "var(--destructive)",
@@ -154,7 +151,7 @@ export function ProfileMonthTrend({
                     </span>
                     <span
                       className="text-muted-foreground"
-                      style={{ fontFamily: FONT, fontSize: "var(--text-xs)" }}
+                      style={{ fontSize: "var(--text-xs)" }}
                     >
                       ({row.current.toFixed(1)}%)
                     </span>
@@ -183,7 +180,7 @@ export function ProfileMonthTrend({
                     </span>
                     <span
                       className="text-foreground"
-                      style={{ fontFamily: FONT, fontSize: "var(--text-label)" }}
+                      style={{ fontSize: "var(--text-label)" }}
                     >
                       {row.label}
                     </span>
@@ -191,7 +188,6 @@ export function ProfileMonthTrend({
                   <span
                     className="tabular-nums"
                     style={{
-                      fontFamily: FONT,
                       fontSize: "var(--text-label)",
                       fontWeight: "var(--font-weight-semibold)",
                       color: "var(--foreground)",

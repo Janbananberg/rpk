@@ -1,7 +1,6 @@
 import { Users, Code2, Download, Tv } from "lucide-react";
 import { Link } from "react-router";
 import type { PlayerStats } from "../../lib/stats";
-import { FONT } from "./constants";
 
 interface ActionRowProps {
   sortedStats: PlayerStats[];
@@ -30,7 +29,6 @@ export function ActionRow({
                 onClick={() => setShowAddPlayer(true)}
                 className="flex items-center gap-2 px-4 py-2 rounded-lg border border-border text-muted-foreground hover:text-foreground hover:border-border-strong transition-all cursor-pointer"
                 style={{
-                  fontFamily: FONT,
                   fontSize: "var(--text-sm)",
                   fontWeight: "var(--font-weight-semibold)" as any,
                   borderRadius: "var(--radius-button)",
@@ -47,7 +45,6 @@ export function ActionRow({
                 onClick={() => setShowApiModal(true)}
                 className="flex items-center gap-2 px-4 py-2 rounded-lg border border-border transition-all cursor-pointer hover:opacity-80"
                 style={{
-                  fontFamily: FONT,
                   fontSize: "var(--text-sm)",
                   fontWeight: "var(--font-weight-semibold)" as any,
                   color: "var(--foreground)",
@@ -62,7 +59,6 @@ export function ActionRow({
                 onClick={exportStatsCsv}
                 className="flex items-center gap-2 px-4 py-2 rounded-lg border border-border transition-all cursor-pointer hover:opacity-80"
                 style={{
-                  fontFamily: FONT,
                   fontSize: "var(--text-sm)",
                   fontWeight: "var(--font-weight-semibold)" as any,
                   color: "var(--foreground)",

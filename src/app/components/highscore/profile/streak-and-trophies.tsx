@@ -1,6 +1,5 @@
 import { Flame, Trophy } from "lucide-react";
 import type { PlayerStats } from "../../../lib/stats";
-import { FONT } from "../constants";
 
 interface ProfileStreakAndTrophiesProps {
   hasStreakData: boolean;
@@ -47,7 +46,6 @@ export function ProfileStreakAndTrophies({
               <span
                 className="text-muted-foreground"
                 style={{
-                  fontFamily: FONT,
                   fontSize: "var(--text-xs)",
                   textTransform: "uppercase",
                   letterSpacing: "0.05em",
@@ -59,7 +57,6 @@ export function ProfileStreakAndTrophies({
                 <span
                   className="text-warning"
                   style={{
-                    fontFamily: FONT,
                     fontSize: "var(--text-lg)",
                     fontWeight: "var(--font-weight-bold)",
                     lineHeight: 1.1,
@@ -70,7 +67,6 @@ export function ProfileStreakAndTrophies({
                 <span
                   className="text-muted-foreground"
                   style={{
-                    fontFamily: FONT,
                     fontSize: "var(--text-label)",
                   }}
                 >
@@ -101,7 +97,7 @@ export function ProfileStreakAndTrophies({
         <div>
           <span
             className="text-muted-foreground mb-2 block"
-            style={{ fontSize: "var(--text-xs)", textTransform: "uppercase", letterSpacing: "0.05em", fontFamily: FONT }}
+            style={{ fontSize: "var(--text-xs)", textTransform: "uppercase", letterSpacing: "0.05em" }}
           >
             Turneringsvinster
           </span>
@@ -119,7 +115,6 @@ export function ProfileStreakAndTrophies({
               <div>
                 <div
                   style={{
-                    fontFamily: FONT,
                     fontSize: "var(--text-h4)",
                     fontWeight: "var(--font-weight-bold)",
                     color: "var(--primary)",
@@ -130,7 +125,7 @@ export function ProfileStreakAndTrophies({
                 </div>
                 <div
                   className="text-muted-foreground"
-                  style={{ fontFamily: FONT, fontSize: "var(--text-xs)" }}
+                  style={{ fontSize: "var(--text-xs)" }}
                 >
                   {selectedPlayer.tournamentWins === 1 ? "turnering vunnen" : "turneringar vunna"}
                 </div>
@@ -150,14 +145,14 @@ export function ProfileStreakAndTrophies({
                       <Trophy className="w-4 h-4" style={{ color: "var(--primary)" }} aria-hidden />
                       <span
                         className="text-foreground"
-                        style={{ fontFamily: FONT, fontSize: "var(--text-label)", fontWeight: "var(--font-weight-semibold)" }}
+                        style={{ fontSize: "var(--text-label)", fontWeight: "var(--font-weight-semibold)" }}
                       >
                         Mästare
                       </span>
                     </div>
                     <span
                       className="text-muted-foreground"
-                      style={{ fontFamily: FONT, fontSize: "var(--text-xs)" }}
+                      style={{ fontSize: "var(--text-xs)" }}
                     >
                       {dateStr}
                     </span>
@@ -195,7 +190,7 @@ export function ProfileStreakAndTrophies({
             <div className="ml-auto flex gap-1">
               <button
                 onClick={(e) => { e.stopPropagation(); handleRemoveCard(selectedPlayer.name, "yellow"); }}
-                className="w-6 h-6 rounded flex items-center justify-center text-muted-foreground hover:bg-muted/30 transition-colors cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
+                className="w-6 h-6 rounded flex items-center justify-center text-muted-foreground hover:bg-muted/30 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                 style={{ fontSize: "var(--text-base)", borderRadius: "var(--radius-card)" }}
                 disabled={selectedPlayer.yellowCards === 0}
               >
@@ -227,7 +222,7 @@ export function ProfileStreakAndTrophies({
             <div className="ml-auto flex gap-1">
               <button
                 onClick={(e) => { e.stopPropagation(); handleRemoveCard(selectedPlayer.name, "red"); }}
-                className="w-6 h-6 rounded flex items-center justify-center text-muted-foreground hover:bg-muted/30 transition-colors cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
+                className="w-6 h-6 rounded flex items-center justify-center text-muted-foreground hover:bg-muted/30 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                 style={{ fontSize: "var(--text-base)", borderRadius: "var(--radius-card)" }}
                 disabled={selectedPlayer.redCards === 0}
               >

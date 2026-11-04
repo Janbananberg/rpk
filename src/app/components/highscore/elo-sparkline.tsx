@@ -119,7 +119,7 @@ export function EloSparkline({
             const textX = Math.max(pad + 14, Math.min(hp.x, width - pad - 14));
             return (
               <text x={textX} y={topPad - 4} textAnchor="middle" fill={color}
-                style={{ fontSize: 10, fontFamily: "'Titillium Web', sans-serif", fontWeight: 600 }}
+                style={{ fontSize: 10, fontWeight: 600 }}
               >{label}</text>
             );
           })()}

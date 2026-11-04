@@ -1,7 +1,6 @@
 import { AnimatePresence, motion } from "motion/react";
 import { Code2, X, Check, Copy, ExternalLink } from "lucide-react";
 import { API_BASE } from "../api";
-import { FONT } from "./constants";
 
 interface ApiInfoModalProps {
   showApiModal: boolean;
@@ -70,7 +69,6 @@ console.log(data.players);`;
                       onClick={(e) => e.stopPropagation()}
                       className="w-full max-w-2xl max-h-[85vh] overflow-y-auto rounded-2xl border border-border"
                       style={{
-                        fontFamily: FONT,
                         background: "var(--surface-container)",
                         borderRadius: "var(--radius-xl)",
                         boxShadow: "0 25px 50px -12px rgba(0,0,0,0.5)",
@@ -83,10 +81,10 @@ console.log(data.players);`;
                             <Code2 className="w-5 h-5" />
                           </div>
                           <div>
-                            <h2 style={{ fontFamily: FONT, fontSize: "var(--text-lg)", fontWeight: "var(--font-weight-bold)" as any, color: "var(--foreground)" }}>
+                            <h2 style={{ fontSize: "var(--text-lg)", fontWeight: "var(--font-weight-bold)" as any, color: "var(--foreground)" }}>
                               Statistik-API
                             </h2>
-                            <p style={{ fontFamily: FONT, fontSize: "var(--text-xs)", color: "var(--on-surface-variant)" }}>
+                            <p style={{ fontSize: "var(--text-xs)", color: "var(--on-surface-variant)" }}>
                               Rundpingisklubben — öppet JSON-API
                             </p>
                           </div>
@@ -99,7 +97,7 @@ console.log(data.players);`;
                       <div className="p-5 space-y-5">
                         {/* Endpoint */}
                         <div>
-                          <h3 style={{ fontFamily: FONT, fontSize: "var(--text-sm)", fontWeight: "var(--font-weight-semibold)" as any, color: "var(--foreground)", marginBottom: 6 }}>
+                          <h3 style={{ fontSize: "var(--text-sm)", fontWeight: "var(--font-weight-semibold)" as any, color: "var(--foreground)", marginBottom: 6 }}>
                             Endpoint
                           </h3>
                           <div style={codeBlockStyle}>
@@ -117,11 +115,11 @@ console.log(data.players);`;
 
                         {/* Query params */}
                         <div>
-                          <h3 style={{ fontFamily: FONT, fontSize: "var(--text-sm)", fontWeight: "var(--font-weight-semibold)" as any, color: "var(--foreground)", marginBottom: 6 }}>
+                          <h3 style={{ fontSize: "var(--text-sm)", fontWeight: "var(--font-weight-semibold)" as any, color: "var(--foreground)", marginBottom: 6 }}>
                             Query-parametrar
                           </h3>
                           <div className="rounded-lg overflow-hidden border border-border" style={{ borderRadius: "var(--radius-sm)" }}>
-                            <table className="w-full" style={{ fontSize: "var(--text-xs)", fontFamily: FONT }}>
+                            <table className="w-full" style={{ fontSize: "var(--text-xs)" }}>
                               <thead>
                                 <tr style={{ background: "var(--surface-container-high)" }}>
                                   <th className="text-left px-3 py-2" style={{ color: "var(--on-surface-variant)", fontWeight: "var(--font-weight-semibold)" as any }}>Parameter</th>
@@ -147,7 +145,7 @@ console.log(data.players);`;
 
                         {/* cURL example */}
                         <div>
-                          <h3 style={{ fontFamily: FONT, fontSize: "var(--text-sm)", fontWeight: "var(--font-weight-semibold)" as any, color: "var(--foreground)", marginBottom: 6 }}>
+                          <h3 style={{ fontSize: "var(--text-sm)", fontWeight: "var(--font-weight-semibold)" as any, color: "var(--foreground)", marginBottom: 6 }}>
                             cURL-exempel
                           </h3>
                           <div style={codeBlockStyle}>
@@ -164,7 +162,7 @@ console.log(data.players);`;
 
                         {/* JS/fetch example */}
                         <div>
-                          <h3 style={{ fontFamily: FONT, fontSize: "var(--text-sm)", fontWeight: "var(--font-weight-semibold)" as any, color: "var(--foreground)", marginBottom: 6 }}>
+                          <h3 style={{ fontSize: "var(--text-sm)", fontWeight: "var(--font-weight-semibold)" as any, color: "var(--foreground)", marginBottom: 6 }}>
                             JavaScript / fetch
                           </h3>
                           <div style={codeBlockStyle}>
@@ -181,11 +179,11 @@ console.log(data.players);`;
 
                         {/* Response fields */}
                         <div>
-                          <h3 style={{ fontFamily: FONT, fontSize: "var(--text-sm)", fontWeight: "var(--font-weight-semibold)" as any, color: "var(--foreground)", marginBottom: 6 }}>
+                          <h3 style={{ fontSize: "var(--text-sm)", fontWeight: "var(--font-weight-semibold)" as any, color: "var(--foreground)", marginBottom: 6 }}>
                             Svarsformat
                           </h3>
                           <div className="rounded-lg overflow-hidden border border-border" style={{ borderRadius: "var(--radius-sm)" }}>
-                            <table className="w-full" style={{ fontSize: "var(--text-xs)", fontFamily: FONT }}>
+                            <table className="w-full" style={{ fontSize: "var(--text-xs)" }}>
                               <thead>
                                 <tr style={{ background: "var(--surface-container-high)" }}>
                                   <th className="text-left px-3 py-2" style={{ color: "var(--on-surface-variant)", fontWeight: "var(--font-weight-semibold)" as any }}>Fält</th>
@@ -236,7 +234,6 @@ console.log(data.players);`;
                             }}
                             className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg transition-all hover:opacity-90 cursor-pointer"
                             style={{
-                              fontFamily: FONT,
                               fontSize: "var(--text-sm)",
                               fontWeight: "var(--font-weight-semibold)" as any,
                               background: "var(--primary)",
@@ -254,7 +251,7 @@ console.log(data.players);`;
                           {apiPreview && (
                             <div className="mt-3 relative">
                               <div className="flex items-center justify-between mb-1.5">
-                                <span style={{ fontFamily: FONT, fontSize: "var(--text-xs)", color: "var(--on-surface-variant)", fontWeight: "var(--font-weight-semibold)" as any }}>Svar (JSON)</span>
+                                <span style={{ fontSize: "var(--text-xs)", color: "var(--on-surface-variant)", fontWeight: "var(--font-weight-semibold)" as any }}>Svar (JSON)</span>
                                 <button
                                   onClick={() => { navigator.clipboard.writeText(apiPreview); setApiCopied("response"); setTimeout(() => setApiCopied(null), 2000); }}
                                   className="p-1.5 rounded-md hover:opacity-80 transition-opacity cursor-pointer"

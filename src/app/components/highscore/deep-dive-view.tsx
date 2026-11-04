@@ -7,7 +7,6 @@ import type { PlayerStats } from "../../lib/stats";
 import { stripEmoji } from "../../lib/players";
 import { H2HMatrix, WeekdayHeatmap } from "../highscore-insights";
 import type { GameSession } from "../api";
-import { FONT } from "./constants";
 import { getRankIcon } from "./rank-icon";
 
 interface DeepDiveViewProps {
@@ -41,7 +40,7 @@ export function DeepDiveView({
         >
           <div className="flex items-center gap-3 px-3 md:px-4 py-3 border-b border-border" style={{ background: "var(--surface-container-high)" }}>
             <Activity className="w-4 h-4 text-primary" />
-            <span style={{ fontFamily: FONT, fontSize: "var(--text-sm)", fontWeight: "var(--font-weight-semibold)", color: "var(--foreground)", letterSpacing: "0.02em" }}>
+            <span style={{ fontSize: "var(--text-sm)", fontWeight: "var(--font-weight-semibold)", color: "var(--foreground)", letterSpacing: "0.02em" }}>
               Fördjupning
             </span>
           </div>
@@ -66,14 +65,14 @@ export function DeepDiveView({
                     domain={[0, 100]}
                     tickFormatter={(v) => `${v}%`}
                     stroke="var(--muted-foreground)"
-                    tick={{ fontSize: 11, fontFamily: "'Titillium Web', sans-serif" }}
+                    tick={{ fontSize: 11 }}
                     tickLine={{ stroke: "var(--border)" }}
                   >
                     <Label
                       value="Finalvinst% — Vinstfrekvens i finaler (%)"
                       position="bottom"
                       offset={20}
-                      style={{ fontSize: 12, fill: "var(--muted-foreground)", fontFamily: "'Titillium Web', sans-serif" }}
+                      style={{ fontSize: 12, fill: "var(--muted-foreground)" }}
                     />
                   </XAxis>
                   <YAxis
@@ -82,7 +81,7 @@ export function DeepDiveView({
                     dataKey="elo"
                     domain={[minElo, maxElo]}
                     stroke="var(--muted-foreground)"
-                    tick={{ fontSize: 11, fontFamily: "'Titillium Web', sans-serif" }}
+                    tick={{ fontSize: 11 }}
                     tickLine={{ stroke: "var(--border)" }}
                   >
                     <Label
@@ -90,11 +89,11 @@ export function DeepDiveView({
                       angle={-90}
                       position="left"
                       offset={10}
-                      style={{ fontSize: 12, fill: "var(--muted-foreground)", fontFamily: "'Titillium Web', sans-serif" }}
+                      style={{ fontSize: 12, fill: "var(--muted-foreground)" }}
                     />
                   </YAxis>
                   <ReferenceLine key="ref-x" x={50} stroke="var(--border-strong)" strokeDasharray="5 5" strokeWidth={1} />
-                  <ReferenceLine key="ref-y" y={ELO_START} stroke="var(--border-strong)" strokeDasharray="5 5" strokeWidth={1} label={{ value: "Start", position: "right", fill: "var(--muted-foreground)", fontSize: 10, fontFamily: "'Titillium Web', sans-serif" }} />
+                  <ReferenceLine key="ref-y" y={ELO_START} stroke="var(--border-strong)" strokeDasharray="5 5" strokeWidth={1} label={{ value: "Start", position: "right", fill: "var(--muted-foreground)", fontSize: 10 }} />
                   <Tooltip
                     key="scatter-tooltip"
                     content={({ active, payload }) => {
@@ -112,7 +111,7 @@ export function DeepDiveView({
                         >
                           <div
                             className="text-foreground mb-2"
-                            style={{ fontFamily: FONT, fontWeight: "var(--font-weight-semibold)", fontSize: "var(--text-base)" }}
+                            style={{ fontWeight: "var(--font-weight-semibold)", fontSize: "var(--text-base)" }}
                           >
                             {d.name}
                           </div>
@@ -178,7 +177,7 @@ export function DeepDiveView({
                             y={cy - r - 5}
                             textAnchor="middle"
                             fill="var(--foreground)"
-                            style={{ fontSize: 10, fontWeight: payload.elo > ELO_START ? 600 : 400, fontFamily: "'Titillium Web', sans-serif" }}
+                            style={{ fontSize: 10, fontWeight: payload.elo > ELO_START ? 600 : 400 }}
                           >
                             {stripEmoji(payload.name).split(" ")[0]}
                           </text>
@@ -187,16 +186,16 @@ export function DeepDiveView({
                     }}
                   />
                   {/* Quadrant labels */}
-                  <text key="q-hype" x="18%" y="10%" textAnchor="middle" fill="var(--warning)" opacity={0.18} style={{ fontSize: 13, fontWeight: 700, letterSpacing: "0.08em", fontFamily: "'Titillium Web', sans-serif" }}>
+                  <text key="q-hype" x="18%" y="10%" textAnchor="middle" fill="var(--warning)" opacity={0.18} style={{ fontSize: 13, fontWeight: 700, letterSpacing: "0.08em" }}>
                     HÖG ELO
                   </text>
-                  <text key="q-elite" x="78%" y="10%" textAnchor="middle" fill="var(--success)" opacity={0.18} style={{ fontSize: 13, fontWeight: 700, letterSpacing: "0.08em", fontFamily: "'Titillium Web', sans-serif" }}>
+                  <text key="q-elite" x="78%" y="10%" textAnchor="middle" fill="var(--success)" opacity={0.18} style={{ fontSize: 13, fontWeight: 700, letterSpacing: "0.08em" }}>
                     ELIT
                   </text>
-                  <text key="q-weak" x="18%" y="92%" textAnchor="middle" fill="var(--muted-foreground)" opacity={0.18} style={{ fontSize: 13, fontWeight: 700, letterSpacing: "0.08em", fontFamily: "'Titillium Web', sans-serif" }}>
+                  <text key="q-weak" x="18%" y="92%" textAnchor="middle" fill="var(--muted-foreground)" opacity={0.18} style={{ fontSize: 13, fontWeight: 700, letterSpacing: "0.08em" }}>
                     SVAG
                   </text>
-                  <text key="q-clutch" x="78%" y="92%" textAnchor="middle" fill="var(--info)" opacity={0.18} style={{ fontSize: 13, fontWeight: 700, letterSpacing: "0.08em", fontFamily: "'Titillium Web', sans-serif" }}>
+                  <text key="q-clutch" x="78%" y="92%" textAnchor="middle" fill="var(--info)" opacity={0.18} style={{ fontSize: 13, fontWeight: 700, letterSpacing: "0.08em" }}>
                     AVGÖRARE
                   </text>
                 </ScatterChart>
@@ -212,7 +211,7 @@ export function DeepDiveView({
           >
             <div className="flex items-center gap-2 mb-4">
               <Grid3X3Icon className="w-4 h-4 text-primary" />
-              <span style={{ fontFamily: FONT, fontSize: "var(--text-base)", fontWeight: "var(--font-weight-semibold)", color: "var(--foreground)" }}>
+              <span style={{ fontSize: "var(--text-base)", fontWeight: "var(--font-weight-semibold)", color: "var(--foreground)" }}>
                 Inbördesmatris
               </span>
             </div>
@@ -226,7 +225,7 @@ export function DeepDiveView({
             >
               <div className="flex items-center gap-2 mb-4">
                 <CalendarDays className="w-4 h-4 text-primary" />
-                <span style={{ fontFamily: FONT, fontSize: "var(--text-base)", fontWeight: "var(--font-weight-semibold)", color: "var(--foreground)" }}>
+                <span style={{ fontSize: "var(--text-base)", fontWeight: "var(--font-weight-semibold)", color: "var(--foreground)" }}>
                   Speltider
                 </span>
               </div>
@@ -239,14 +238,14 @@ export function DeepDiveView({
             <div className="border-t border-border p-4">
               <div className="flex items-center gap-2 mb-4">
                 <TrendingUp className="w-4 h-4 text-primary" />
-                <span style={{ fontFamily: FONT, fontSize: "var(--text-base)", fontWeight: "var(--font-weight-semibold)", color: "var(--foreground)" }}>
+                <span style={{ fontSize: "var(--text-base)", fontWeight: "var(--font-weight-semibold)", color: "var(--foreground)" }}>
                   Elo-tal
                 </span>
               </div>
 
               {/* Elo table */}
               <div className="overflow-x-auto -mx-2">
-                <table className="w-full" style={{ fontFamily: FONT }}>
+                <table className="w-full">
                   <thead>
                     <tr className="border-b border-border">
                       <th className="text-left px-2 py-2" style={{ fontSize: "var(--text-xs)", fontWeight: "var(--font-weight-semibold)", color: "var(--muted-foreground)", letterSpacing: "0.05em", textTransform: "uppercase" }}>#</th>
@@ -294,10 +293,10 @@ export function DeepDiveView({
                 <div className="flex items-start gap-2">
                   <Info className="w-4 h-4 text-muted-foreground shrink-0 mt-0.5" />
                   <div>
-                    <span style={{ fontFamily: FONT, fontSize: "var(--text-sm)", fontWeight: "var(--font-weight-semibold)", color: "var(--foreground)" }}>
+                    <span style={{ fontSize: "var(--text-sm)", fontWeight: "var(--font-weight-semibold)", color: "var(--foreground)" }}>
                       Hur Elo-potten fungerar
                     </span>
-                    <div className="mt-1 space-y-1" style={{ fontFamily: FONT, fontSize: "var(--text-xs)", color: "var(--muted-foreground)", lineHeight: 1.5 }}>
+                    <div className="mt-1 space-y-1" style={{ fontSize: "var(--text-xs)", color: "var(--muted-foreground)", lineHeight: 1.5 }}>
                       <p>Alla spelare startar på <strong style={{ color: "var(--foreground)" }}>1000 Elo</strong>. Varje runda satsar alla deltagare <strong style={{ color: "var(--foreground)" }}>{ELO_ANTE} Elo</strong> i en gemensam pott.</p>
                       <p>
                         <strong style={{ color: "var(--foreground)" }}>Pott = N × {ELO_ANTE}</strong> &nbsp;→&nbsp;

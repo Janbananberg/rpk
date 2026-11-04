@@ -10,8 +10,6 @@ import type { MatchData } from "./match-card";
 import { ELO_START, eloWinProbability } from "../lib/elo";
 import type { EloRating, H2HRecord } from "../lib/elo";
 
-const FONT = "'Titillium Web', sans-serif";
-
 // ════════════════════════════════════════════════════════════════
 //  1. CONFETTI — Canvas-based gold particle celebration
 // ════════════════════════════════════════════════════════════════
@@ -170,13 +168,13 @@ export function TournamentProgressBar({
       <div className="flex items-center justify-between px-1">
         <span
           className="text-muted-foreground"
-          style={{ fontFamily: FONT, fontSize: "var(--text-xs)", fontWeight: "var(--font-weight-semibold)", letterSpacing: "0.1em", textTransform: "uppercase" }}
+          style={{ fontSize: "var(--text-xs)", fontWeight: "var(--font-weight-semibold)", letterSpacing: "0.1em", textTransform: "uppercase" }}
         >
           Framsteg
         </span>
         <span
           className="text-muted-foreground tabular-nums"
-          style={{ fontFamily: FONT, fontSize: "var(--text-xs)" }}
+          style={{ fontSize: "var(--text-xs)" }}
         >
           {completed}/{total}
         </span>
@@ -199,8 +197,8 @@ export function TournamentProgressBar({
               }`}
             />
             <span
-              className={`transition-colors duration-300 ${matches[i].winner ? "text-primary" : "text-muted-foreground/40"}`}
-              style={{ fontFamily: FONT, fontSize: "9px", fontWeight: "var(--font-weight-bold)" }}
+              className={`transition-colors duration-300 ${matches[i].winner ? "text-primary" : "text-muted-foreground/60"}`}
+              style={{ fontSize: "9px", fontWeight: "var(--font-weight-bold)" }}
             >
               {l}
             </span>
@@ -244,7 +242,6 @@ export function PlayerAvatar({ name, size = 24 }: { name: string; size?: number 
     >
       <span
         style={{
-          fontFamily: FONT,
           fontSize: size * 0.42,
           fontWeight: "var(--font-weight-bold)",
           color,
@@ -309,7 +306,7 @@ export function TaleOfTape({ p1, p2, elo, h2h, matchLabel, onContinue }: TaleOfT
             <Swords className="w-3.5 h-3.5 text-primary" />
             <span
               className="text-muted-foreground"
-              style={{ fontFamily: FONT, fontSize: "var(--text-xs)", fontWeight: "var(--font-weight-semibold)", letterSpacing: "0.15em", textTransform: "uppercase" }}
+              style={{ fontSize: "var(--text-xs)", fontWeight: "var(--font-weight-semibold)", letterSpacing: "0.15em", textTransform: "uppercase" }}
             >
               Inför matchen · {matchLabel}
             </span>
@@ -327,7 +324,7 @@ export function TaleOfTape({ p1, p2, elo, h2h, matchLabel, onContinue }: TaleOfT
             <PlayerAvatar name={p1} size={48} />
             <span
               className="text-foreground text-center"
-              style={{ fontFamily: FONT, fontSize: "var(--text-lg)", fontWeight: "var(--font-weight-bold)" }}
+              style={{ fontSize: "var(--text-lg)", fontWeight: "var(--font-weight-bold)" }}
             >
               {p1}
             </span>
@@ -340,8 +337,8 @@ export function TaleOfTape({ p1, p2, elo, h2h, matchLabel, onContinue }: TaleOfT
             className="px-4"
           >
             <span
-              className="text-muted-foreground/40"
-              style={{ fontFamily: FONT, fontSize: "var(--text-h3)", fontWeight: "var(--font-weight-bold)" }}
+              className="text-muted-foreground/60"
+              style={{ fontSize: "var(--text-h3)", fontWeight: "var(--font-weight-bold)" }}
             >
               VS
             </span>
@@ -356,7 +353,7 @@ export function TaleOfTape({ p1, p2, elo, h2h, matchLabel, onContinue }: TaleOfT
             <PlayerAvatar name={p2} size={48} />
             <span
               className="text-foreground text-center"
-              style={{ fontFamily: FONT, fontSize: "var(--text-lg)", fontWeight: "var(--font-weight-bold)" }}
+              style={{ fontSize: "var(--text-lg)", fontWeight: "var(--font-weight-bold)" }}
             >
               {p2}
             </span>
@@ -371,13 +368,13 @@ export function TaleOfTape({ p1, p2, elo, h2h, matchLabel, onContinue }: TaleOfT
           className="w-full"
         >
           <div className="flex items-center justify-between mb-1">
-            <span className="text-primary tabular-nums" style={{ fontFamily: FONT, fontSize: "var(--text-sm)", fontWeight: "var(--font-weight-bold)" }}>
+            <span className="text-primary tabular-nums" style={{ fontSize: "var(--text-sm)", fontWeight: "var(--font-weight-bold)" }}>
               {Math.round(prob1 * 100)}%
             </span>
-            <span className="text-muted-foreground" style={{ fontFamily: FONT, fontSize: "var(--text-xs)", letterSpacing: "0.1em", textTransform: "uppercase" }}>
+            <span className="text-muted-foreground" style={{ fontSize: "var(--text-xs)", letterSpacing: "0.1em", textTransform: "uppercase" }}>
               Vinstchans (Elo)
             </span>
-            <span className="text-primary tabular-nums" style={{ fontFamily: FONT, fontSize: "var(--text-sm)", fontWeight: "var(--font-weight-bold)" }}>
+            <span className="text-primary tabular-nums" style={{ fontSize: "var(--text-sm)", fontWeight: "var(--font-weight-bold)" }}>
               {Math.round(prob2 * 100)}%
             </span>
           </div>
@@ -400,19 +397,19 @@ export function TaleOfTape({ p1, p2, elo, h2h, matchLabel, onContinue }: TaleOfT
             >
               <span
                 className={`tabular-nums ${stat.better === 1 ? "text-primary" : "text-foreground"}`}
-                style={{ fontFamily: FONT, fontSize: "var(--text-base)", fontWeight: stat.better === 1 ? "var(--font-weight-bold)" : "var(--font-weight-normal)" }}
+                style={{ fontSize: "var(--text-base)", fontWeight: stat.better === 1 ? "var(--font-weight-bold)" : "var(--font-weight-normal)" }}
               >
                 {stat.v1}
               </span>
               <span
                 className="text-muted-foreground"
-                style={{ fontFamily: FONT, fontSize: "var(--text-xs)", fontWeight: "var(--font-weight-semibold)", letterSpacing: "0.05em" }}
+                style={{ fontSize: "var(--text-xs)", fontWeight: "var(--font-weight-semibold)", letterSpacing: "0.05em" }}
               >
                 {stat.label}
               </span>
               <span
                 className={`tabular-nums ${stat.better === 2 ? "text-primary" : "text-foreground"}`}
-                style={{ fontFamily: FONT, fontSize: "var(--text-base)", fontWeight: stat.better === 2 ? "var(--font-weight-bold)" : "var(--font-weight-normal)" }}
+                style={{ fontSize: "var(--text-base)", fontWeight: stat.better === 2 ? "var(--font-weight-bold)" : "var(--font-weight-normal)" }}
               >
                 {stat.v2}
               </span>
@@ -428,7 +425,7 @@ export function TaleOfTape({ p1, p2, elo, h2h, matchLabel, onContinue }: TaleOfT
             transition={{ delay: 0.9 }}
             className="text-center"
           >
-            <span className="text-muted-foreground" style={{ fontFamily: FONT, fontSize: "var(--text-label)" }}>
+            <span className="text-muted-foreground" style={{ fontSize: "var(--text-label)" }}>
               {h2h.total === 1
                 ? `De har mötts 1 gång i finalen tidigare.`
                 : `De har mötts ${h2h.total} gånger i finalen.`}
@@ -443,7 +440,7 @@ export function TaleOfTape({ p1, p2, elo, h2h, matchLabel, onContinue }: TaleOfT
           transition={{ delay: 1.0 }}
           onClick={onContinue}
           className="w-full py-3.5 rounded-[var(--radius-button)] bg-primary text-primary-foreground hover:opacity-90 transition-all cursor-pointer"
-          style={{ fontFamily: FONT, fontSize: "var(--text-base)", fontWeight: "var(--font-weight-semibold)" }}
+          style={{ fontSize: "var(--text-base)", fontWeight: "var(--font-weight-semibold)" }}
         >
           Starta match
         </motion.button>
@@ -489,11 +486,11 @@ export function UpsetAlert({
       <div className="flex flex-col">
         <span
           className="text-warning"
-          style={{ fontFamily: FONT, fontSize: "var(--text-label)", fontWeight: "var(--font-weight-bold)", letterSpacing: "0.15em", textTransform: "uppercase" }}
+          style={{ fontSize: "var(--text-label)", fontWeight: "var(--font-weight-bold)", letterSpacing: "0.15em", textTransform: "uppercase" }}
         >
           Skräll!
         </span>
-        <span className="text-foreground" style={{ fontFamily: FONT, fontSize: "var(--text-sm)" }}>
+        <span className="text-foreground" style={{ fontSize: "var(--text-sm)" }}>
           {winner} slår ut {loser} i {matchLabel}
         </span>
       </div>
@@ -581,14 +578,14 @@ export function MVPBadge({ mvp, champion }: { mvp: MVPData; champion: string }) 
       <div className="flex flex-col">
         <span
           className="text-muted-foreground"
-          style={{ fontFamily: FONT, fontSize: "var(--text-xs)", fontWeight: "var(--font-weight-semibold)", letterSpacing: "0.1em", textTransform: "uppercase" }}
+          style={{ fontSize: "var(--text-xs)", fontWeight: "var(--font-weight-semibold)", letterSpacing: "0.1em", textTransform: "uppercase" }}
         >
           Turneringens MVP
         </span>
         <div className="flex items-center gap-2">
           <span
             className="text-primary"
-            style={{ fontFamily: FONT, fontSize: "var(--text-base)", fontWeight: "var(--font-weight-bold)" }}
+            style={{ fontSize: "var(--text-base)", fontWeight: "var(--font-weight-bold)" }}
           >
             {mvp.name}
           </span>
@@ -598,7 +595,7 @@ export function MVPBadge({ mvp, champion }: { mvp: MVPData; champion: string }) 
         </div>
       </div>
       <div className="ml-auto flex flex-col items-end">
-        <span className="text-muted-foreground" style={{ fontFamily: FONT, fontSize: "var(--text-xs)" }}>
+        <span className="text-muted-foreground" style={{ fontSize: "var(--text-xs)" }}>
           {mvp.matchesWon}V · {mvp.setWins}S · {mvp.pointDiff > 0 ? "+" : ""}{mvp.pointDiff}p
         </span>
       </div>
@@ -618,7 +615,7 @@ export function WinProbBadge({ prob }: { prob: number; side: "left" | "right" })
   return (
     <span
       className={`tabular-nums ${isFavorite ? "text-primary/70" : "text-muted-foreground/50"}`}
-      style={{ fontFamily: FONT, fontSize: "10px", fontWeight: "var(--font-weight-semibold)" }}
+      style={{ fontSize: "10px", fontWeight: "var(--font-weight-semibold)" }}
     >
       {pct}%
     </span>
@@ -732,7 +729,7 @@ export function RoadToFinal({ entry }: {
         className="flex items-center gap-1.5 text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
       >
         <Target className="w-3 h-3" />
-        <span style={{ fontFamily: FONT, fontSize: "var(--text-xs)", fontWeight: "var(--font-weight-semibold)" }}>
+        <span style={{ fontSize: "var(--text-xs)", fontWeight: "var(--font-weight-semibold)" }}>
           Vägen till finalen
         </span>
         <ChevronDown
@@ -761,19 +758,19 @@ export function RoadToFinal({ entry }: {
                   </div>
                   <span
                     className="text-muted-foreground/60"
-                    style={{ fontFamily: FONT, fontSize: "10px", fontWeight: "var(--font-weight-bold)", letterSpacing: "0.1em", textTransform: "uppercase", minWidth: 72 }}
+                    style={{ fontSize: "10px", fontWeight: "var(--font-weight-bold)", letterSpacing: "0.1em", textTransform: "uppercase", minWidth: 72 }}
                   >
                     {step.round}
                   </span>
                   <span
                     className="text-foreground"
-                    style={{ fontFamily: FONT, fontSize: "var(--text-xs)" }}
+                    style={{ fontSize: "var(--text-xs)" }}
                   >
                     vs {step.opponent}
                   </span>
                   <span
                     className="text-success"
-                    style={{ fontFamily: FONT, fontSize: "10px", fontWeight: "var(--font-weight-bold)" }}
+                    style={{ fontSize: "10px", fontWeight: "var(--font-weight-bold)" }}
                   >
                     ✓
                   </span>

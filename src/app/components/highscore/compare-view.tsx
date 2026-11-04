@@ -5,7 +5,6 @@ import { stripEmoji } from "../../lib/players";
 import type { PlayerStats } from "../../lib/stats";
 import type { EloEntry } from "../../lib/elo";
 import type { H2HInsight } from "../../lib/insights";
-import { FONT } from "./constants";
 import { GruvrankBadge } from "./gruvrank-badge";
 
 interface CompareViewProps {
@@ -56,7 +55,6 @@ export function CompareView({
                 <span
                   className="text-foreground"
                   style={{
-                    fontFamily: FONT,
                     fontSize: "var(--text-base)",
                     fontWeight: "var(--font-weight-semibold)",
                   }}
@@ -74,7 +72,6 @@ export function CompareView({
                       onChange={(e) => setComparePlayer1(e.target.value || null)}
                       className="px-3 py-2.5 rounded-lg border border-border text-foreground w-full truncate appearance-none"
                       style={{
-                        fontFamily: FONT,
                         fontSize: "var(--text-label)",
                         background: "var(--input-background)",
                         borderRadius: "var(--radius-card)",
@@ -112,7 +109,6 @@ export function CompareView({
                       onChange={(e) => setComparePlayer2(e.target.value || null)}
                       className="px-3 py-2.5 rounded-lg border border-border text-foreground w-full truncate appearance-none"
                       style={{
-                        fontFamily: FONT,
                         fontSize: "var(--text-label)",
                         background: "var(--input-background)",
                         borderRadius: "var(--radius-card)",
@@ -171,16 +167,16 @@ export function CompareView({
                           }}
                         >
                           {p1Rank && <GruvrankBadge rank={p1Rank} size={40} className="mb-0.5" />}
-                          <span className="truncate w-full" style={{ fontFamily: FONT, fontSize: "var(--text-label)", fontWeight: "var(--font-weight-bold)", color: "var(--foreground)", lineHeight: 1.2 }}>
+                          <span className="truncate w-full" style={{ fontSize: "var(--text-label)", fontWeight: "var(--font-weight-bold)", color: "var(--foreground)", lineHeight: 1.2 }}>
                             {stripEmoji(p1.name).split(" ")[0]}
                           </span>
                           {p1Rank && (
-                            <span className="truncate w-full" style={{ fontFamily: FONT, fontSize: 10, color: p1Rank.color, fontWeight: "var(--font-weight-semibold)", lineHeight: 1 }}>
+                            <span className="truncate w-full" style={{ fontSize: 10, color: p1Rank.color, fontWeight: "var(--font-weight-semibold)", lineHeight: 1 }}>
                               {p1Rank.name}
                             </span>
                           )}
                           {p1Elo && (
-                            <span style={{ fontFamily: FONT, fontSize: "var(--text-xs)", color: "var(--muted-foreground)", lineHeight: 1 }}>
+                            <span style={{ fontSize: "var(--text-xs)", color: "var(--muted-foreground)", lineHeight: 1 }}>
                               {p1Elo.elo} Elo
                             </span>
                           )}
@@ -195,7 +191,7 @@ export function CompareView({
                             <Swords className="w-4 h-4" style={{ color: "var(--muted-foreground)" }} />
                           </div>
                           {totalMeetings > 0 && (
-                            <span style={{ fontFamily: FONT, fontSize: "var(--text-xs)", color: "var(--muted-foreground)" }}>
+                            <span style={{ fontSize: "var(--text-xs)", color: "var(--muted-foreground)" }}>
                               {totalMeetings}x
                             </span>
                           )}
@@ -211,16 +207,16 @@ export function CompareView({
                           }}
                         >
                           {p2Rank && <GruvrankBadge rank={p2Rank} size={40} className="mb-0.5" />}
-                          <span className="truncate w-full" style={{ fontFamily: FONT, fontSize: "var(--text-label)", fontWeight: "var(--font-weight-bold)", color: "var(--foreground)", lineHeight: 1.2 }}>
+                          <span className="truncate w-full" style={{ fontSize: "var(--text-label)", fontWeight: "var(--font-weight-bold)", color: "var(--foreground)", lineHeight: 1.2 }}>
                             {stripEmoji(p2.name).split(" ")[0]}
                           </span>
                           {p2Rank && (
-                            <span className="truncate w-full" style={{ fontFamily: FONT, fontSize: 10, color: p2Rank.color, fontWeight: "var(--font-weight-semibold)", lineHeight: 1 }}>
+                            <span className="truncate w-full" style={{ fontSize: 10, color: p2Rank.color, fontWeight: "var(--font-weight-semibold)", lineHeight: 1 }}>
                               {p2Rank.name}
                             </span>
                           )}
                           {p2Elo && (
-                            <span style={{ fontFamily: FONT, fontSize: "var(--text-xs)", color: "var(--muted-foreground)", lineHeight: 1 }}>
+                            <span style={{ fontSize: "var(--text-xs)", color: "var(--muted-foreground)", lineHeight: 1 }}>
                               {p2Elo.elo} Elo
                             </span>
                           )}
@@ -233,18 +229,18 @@ export function CompareView({
                         style={{ background: "linear-gradient(135deg, color-mix(in srgb, var(--primary) 8%, var(--surface-container-lowest)) 0%, color-mix(in srgb, var(--warning) 6%, var(--surface-container-lowest)) 100%)", borderColor: "var(--border)", borderRadius: "var(--radius-card)" }}
                       >
                         <div className="flex items-center justify-between mb-2">
-                          <span style={{ fontFamily: FONT, fontSize: "var(--text-sm)", color: "var(--muted-foreground)" }}>
+                          <span style={{ fontSize: "var(--text-sm)", color: "var(--muted-foreground)" }}>
                             Finalmöten
                           </span>
                           <span
-                            style={{ fontFamily: FONT, fontSize: "var(--text-sm)", fontWeight: "var(--font-weight-semibold)", color: "var(--foreground)" }}
+                            style={{ fontSize: "var(--text-sm)", fontWeight: "var(--font-weight-semibold)", color: "var(--foreground)" }}
                           >
                             {totalMeetings} matcher
                           </span>
                         </div>
                         <div className="flex items-center gap-3 mb-2">
                           <span
-                            style={{ fontFamily: FONT, fontSize: "var(--text-h3)", fontWeight: "var(--font-weight-bold)", color: "var(--primary)", minWidth: 32, textAlign: "center" }}
+                            style={{ fontSize: "var(--text-h3)", fontWeight: "var(--font-weight-bold)", color: "var(--primary)", minWidth: 32, textAlign: "center" }}
                           >
                             {h2h.wins}
                           </span>
@@ -277,25 +273,25 @@ export function CompareView({
                             )}
                           </div>
                           <span
-                            style={{ fontFamily: FONT, fontSize: "var(--text-h3)", fontWeight: "var(--font-weight-bold)", color: "var(--warning)", minWidth: 32, textAlign: "center" }}
+                            style={{ fontSize: "var(--text-h3)", fontWeight: "var(--font-weight-bold)", color: "var(--warning)", minWidth: 32, textAlign: "center" }}
                           >
                             {h2h.losses}
                           </span>
                         </div>
                         {totalMeetings === 0 && (
-                          <div className="text-center" style={{ fontSize: "var(--text-sm)", color: "var(--muted-foreground)", fontFamily: FONT }}>
+                          <div className="text-center" style={{ fontSize: "var(--text-sm)", color: "var(--muted-foreground)" }}>
                             Inget finalmöte ännu
                           </div>
                         )}
                         {totalMeetings > 0 && (
                           <div className="flex items-center justify-between mt-1">
                             <span
-                              style={{ fontFamily: FONT, fontSize: "var(--text-sm)", fontWeight: "var(--font-weight-semibold)", color: "var(--primary)" }}
+                              style={{ fontSize: "var(--text-sm)", fontWeight: "var(--font-weight-semibold)", color: "var(--primary)" }}
                             >
                               {h2hPct1.toFixed(0)}%
                             </span>
                             <span
-                              style={{ fontFamily: FONT, fontSize: "var(--text-sm)", fontWeight: "var(--font-weight-semibold)", color: "var(--warning)" }}
+                              style={{ fontSize: "var(--text-sm)", fontWeight: "var(--font-weight-semibold)", color: "var(--warning)" }}
                             >
                               {h2hPct2.toFixed(0)}%
                             </span>
@@ -315,18 +311,17 @@ export function CompareView({
                           >
                             <div className="flex items-center gap-1.5 mb-3">
                               <TrendingUp className="w-3.5 h-3.5 text-muted-foreground" />
-                              <span style={{ fontFamily: FONT, fontSize: "var(--text-sm)", color: "var(--muted-foreground)" }}>
+                              <span style={{ fontSize: "var(--text-sm)", color: "var(--muted-foreground)" }}>
                                 Elo-utbyte
                               </span>
                             </div>
                             <div className="grid grid-cols-2 gap-3">
                               <div className="text-center">
-                                <span className="block truncate" style={{ fontFamily: FONT, fontSize: "var(--text-xs)", color: "var(--muted-foreground)", marginBottom: 4 }}>
+                                <span className="block truncate" style={{ fontSize: "var(--text-xs)", color: "var(--muted-foreground)", marginBottom: 4 }}>
                                   {stripEmoji(comparePlayer1).split(" ")[0]}
                                 </span>
                                 <span
                                   style={{
-                                    fontFamily: FONT,
                                     fontSize: "var(--text-h3)",
                                     fontWeight: "var(--font-weight-bold)",
                                     color: p1EloNet > 0 ? "var(--success)" : p1EloNet < 0 ? "var(--destructive)" : "var(--muted-foreground)",
@@ -336,12 +331,11 @@ export function CompareView({
                                 </span>
                               </div>
                               <div className="text-center">
-                                <span className="block truncate" style={{ fontFamily: FONT, fontSize: "var(--text-xs)", color: "var(--muted-foreground)", marginBottom: 4 }}>
+                                <span className="block truncate" style={{ fontSize: "var(--text-xs)", color: "var(--muted-foreground)", marginBottom: 4 }}>
                                   {stripEmoji(comparePlayer2).split(" ")[0]}
                                 </span>
                                 <span
                                   style={{
-                                    fontFamily: FONT,
                                     fontSize: "var(--text-h3)",
                                     fontWeight: "var(--font-weight-bold)",
                                     color: p2EloNet > 0 ? "var(--success)" : p2EloNet < 0 ? "var(--destructive)" : "var(--muted-foreground)",
@@ -352,7 +346,7 @@ export function CompareView({
                               </div>
                             </div>
                             <div className="mt-2 text-center">
-                              <span style={{ fontFamily: FONT, fontSize: "var(--text-xs)", color: "var(--muted-foreground)" }}>
+                              <span style={{ fontSize: "var(--text-xs)", color: "var(--muted-foreground)" }}>
                                 Netto Elo vunnet/förlorat mot varandra
                               </span>
                             </div>
@@ -365,7 +359,7 @@ export function CompareView({
                         <div className="space-y-3">
                           <span
                             className="text-muted-foreground block"
-                            style={{ fontSize: "var(--text-xs)", textTransform: "uppercase", letterSpacing: "0.05em", fontFamily: FONT }}
+                            style={{ fontSize: "var(--text-xs)", textTransform: "uppercase", letterSpacing: "0.05em" }}
                           >
                             När möts de?
                           </span>
@@ -378,7 +372,7 @@ export function CompareView({
                             >
                               <div className="flex items-center gap-1.5 mb-2">
                                 <Clock className="w-3.5 h-3.5 text-muted-foreground" />
-                                <span className="text-muted-foreground" style={{ fontSize: "var(--text-xs)", textTransform: "uppercase", letterSpacing: "0.05em", fontFamily: FONT }}>
+                                <span className="text-muted-foreground" style={{ fontSize: "var(--text-xs)", textTransform: "uppercase", letterSpacing: "0.05em" }}>
                                   Tid på dagen
                                 </span>
                               </div>
@@ -386,10 +380,10 @@ export function CompareView({
                                 {/* Before lunch */}
                                 <div>
                                   <div className="flex items-center justify-between mb-1">
-                                    <span className="flex items-center gap-1" style={{ fontSize: "var(--text-sm)", color: "var(--warning)", fontFamily: FONT }}>
+                                    <span className="flex items-center gap-1" style={{ fontSize: "var(--text-sm)", color: "var(--warning)" }}>
                                       <Coffee className="w-3 h-3" /> Fm
                                     </span>
-                                    <span style={{ fontSize: "var(--text-xs)", color: "var(--muted-foreground)", fontFamily: FONT }}>
+                                    <span style={{ fontSize: "var(--text-xs)", color: "var(--muted-foreground)" }}>
                                       {h2hInsights.beforeLunch.total} möten
                                     </span>
                                   </div>
@@ -416,25 +410,25 @@ export function CompareView({
                                         </div>
                                       </div>
                                       <div className="flex items-center justify-between">
-                                        <span style={{ fontSize: "var(--text-xs)", fontWeight: "var(--font-weight-semibold)", color: "var(--primary)", fontFamily: FONT }}>
+                                        <span style={{ fontSize: "var(--text-xs)", fontWeight: "var(--font-weight-semibold)", color: "var(--primary)" }}>
                                           {h2hInsights.beforeLunch.p1Wins}
                                         </span>
-                                        <span style={{ fontSize: "var(--text-xs)", fontWeight: "var(--font-weight-semibold)", color: "var(--warning)", fontFamily: FONT }}>
+                                        <span style={{ fontSize: "var(--text-xs)", fontWeight: "var(--font-weight-semibold)", color: "var(--warning)" }}>
                                           {h2hInsights.beforeLunch.p2Wins}
                                         </span>
                                       </div>
                                     </>
                                   ) : (
-                                    <span className="text-muted-foreground" style={{ fontSize: "var(--text-xs)", fontFamily: FONT }}>Inga möten</span>
+                                    <span className="text-muted-foreground" style={{ fontSize: "var(--text-xs)" }}>Inga möten</span>
                                   )}
                                 </div>
                                 {/* After lunch */}
                                 <div>
                                   <div className="flex items-center justify-between mb-1">
-                                    <span className="flex items-center gap-1" style={{ fontSize: "var(--text-sm)", color: "var(--info)", fontFamily: FONT }}>
+                                    <span className="flex items-center gap-1" style={{ fontSize: "var(--text-sm)", color: "var(--info)" }}>
                                       <Sun className="w-3 h-3" /> Em
                                     </span>
-                                    <span style={{ fontSize: "var(--text-xs)", color: "var(--muted-foreground)", fontFamily: FONT }}>
+                                    <span style={{ fontSize: "var(--text-xs)", color: "var(--muted-foreground)" }}>
                                       {h2hInsights.afterLunch.total} möten
                                     </span>
                                   </div>
@@ -461,16 +455,16 @@ export function CompareView({
                                         </div>
                                       </div>
                                       <div className="flex items-center justify-between">
-                                        <span style={{ fontSize: "var(--text-xs)", fontWeight: "var(--font-weight-semibold)", color: "var(--primary)", fontFamily: FONT }}>
+                                        <span style={{ fontSize: "var(--text-xs)", fontWeight: "var(--font-weight-semibold)", color: "var(--primary)" }}>
                                           {h2hInsights.afterLunch.p1Wins}
                                         </span>
-                                        <span style={{ fontSize: "var(--text-xs)", fontWeight: "var(--font-weight-semibold)", color: "var(--warning)", fontFamily: FONT }}>
+                                        <span style={{ fontSize: "var(--text-xs)", fontWeight: "var(--font-weight-semibold)", color: "var(--warning)" }}>
                                           {h2hInsights.afterLunch.p2Wins}
                                         </span>
                                       </div>
                                     </>
                                   ) : (
-                                    <span className="text-muted-foreground" style={{ fontSize: "var(--text-xs)", fontFamily: FONT }}>Inga möten</span>
+                                    <span className="text-muted-foreground" style={{ fontSize: "var(--text-xs)" }}>Inga möten</span>
                                   )}
                                 </div>
                               </div>
@@ -485,7 +479,7 @@ export function CompareView({
                             >
                               <div className="flex items-center gap-1.5 mb-3">
                                 <CalendarDays className="w-3.5 h-3.5 text-muted-foreground" />
-                                <span className="text-muted-foreground" style={{ fontSize: "var(--text-xs)", textTransform: "uppercase", letterSpacing: "0.05em", fontFamily: FONT }}>
+                                <span className="text-muted-foreground" style={{ fontSize: "var(--text-xs)", textTransform: "uppercase", letterSpacing: "0.05em" }}>
                                   Veckodag
                                 </span>
                               </div>
@@ -527,7 +521,7 @@ export function CompareView({
                                   return (
                                     <div key={`h2h-score-${d.dayIndex}`} className="flex-1 text-center" style={{ minHeight: 12 }}>
                                       {d.total > 0 && (
-                                        <span style={{ fontSize: "var(--text-xs)", fontFamily: FONT, fontWeight: "var(--font-weight-semibold)", color: "var(--foreground)" }}>
+                                        <span style={{ fontSize: "var(--text-xs)", fontWeight: "var(--font-weight-semibold)", color: "var(--foreground)" }}>
                                           {d.p1Wins}-{d.p2Wins}
                                         </span>
                                       )}
@@ -541,7 +535,7 @@ export function CompareView({
                                   const d = h2hInsights.weekdays[dayIdx];
                                   return (
                                     <div key={`h2h-lbl-${d.dayIndex}`} className="flex-1 text-center">
-                                      <span style={{ fontSize: "var(--text-xs)", fontFamily: FONT, color: d.total > 0 ? "var(--foreground)" : "var(--muted-foreground)", lineHeight: 1 }}>
+                                      <span style={{ fontSize: "var(--text-xs)", color: d.total > 0 ? "var(--foreground)" : "var(--muted-foreground)", lineHeight: 1 }}>
                                         {d.dayShort}
                                       </span>
                                     </div>
@@ -552,13 +546,13 @@ export function CompareView({
                               <div className="flex items-center gap-3 mt-2 pt-2 border-t border-border">
                                 <div className="flex items-center gap-1.5">
                                   <div className="w-2.5 h-2.5 rounded-sm" style={{ background: "var(--primary)" }} />
-                                  <span className="text-muted-foreground truncate" style={{ fontSize: "var(--text-xs)", fontFamily: FONT }}>
+                                  <span className="text-muted-foreground truncate" style={{ fontSize: "var(--text-xs)" }}>
                                     {stripEmoji(p1.name).split(" ")[0]}
                                   </span>
                                 </div>
                                 <div className="flex items-center gap-1.5">
                                   <div className="w-2.5 h-2.5 rounded-sm" style={{ background: "var(--warning)" }} />
-                                  <span className="text-muted-foreground truncate" style={{ fontSize: "var(--text-xs)", fontFamily: FONT }}>
+                                  <span className="text-muted-foreground truncate" style={{ fontSize: "var(--text-xs)" }}>
                                     {stripEmoji(p2.name).split(" ")[0]}
                                   </span>
                                 </div>
@@ -585,7 +579,7 @@ export function CompareView({
                                   >
                                     <Lightbulb className="w-3.5 h-3.5" style={{ color: "var(--warning)" }} aria-hidden />
                                   </div>
-                                  <span style={{ fontSize: "var(--text-label)", lineHeight: 1.6, fontFamily: FONT, color: "var(--foreground)" }}>
+                                  <span style={{ fontSize: "var(--text-label)", lineHeight: 1.6, color: "var(--foreground)" }}>
                                     <strong style={{ color: "var(--primary)", fontWeight: "var(--font-weight-bold)" }}>{stripEmoji(p1.name).split(" ")[0]}</strong>
                                     {" "}presterar bäst mot{" "}
                                     <span style={{ color: "var(--muted-foreground)" }}>{stripEmoji(p2.name).split(" ")[0]}</span>
@@ -610,7 +604,7 @@ export function CompareView({
                                   >
                                     <Lightbulb className="w-3.5 h-3.5" style={{ color: "var(--warning)" }} aria-hidden />
                                   </div>
-                                  <span style={{ fontSize: "var(--text-label)", lineHeight: 1.6, fontFamily: FONT, color: "var(--foreground)" }}>
+                                  <span style={{ fontSize: "var(--text-label)", lineHeight: 1.6, color: "var(--foreground)" }}>
                                     <strong style={{ color: "var(--warning)", fontWeight: "var(--font-weight-bold)" }}>{stripEmoji(p2.name).split(" ")[0]}</strong>
                                     {" "}presterar bäst mot{" "}
                                     <span style={{ color: "var(--muted-foreground)" }}>{stripEmoji(p1.name).split(" ")[0]}</span>

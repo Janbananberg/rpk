@@ -480,13 +480,13 @@ export function CoinFlip({ player1, player2, onResult, onSkip }: CoinFlipProps) 
           >
             <span
               className="text-muted-foreground"
-              style={{ fontSize: "var(--text-base)", fontWeight: "var(--font-weight-semibold)", letterSpacing: "0.2em", textTransform: "uppercase", fontFamily: "'Titillium Web', sans-serif" }}
+              style={{ fontSize: "var(--text-base)", fontWeight: "var(--font-weight-semibold)", letterSpacing: "0.2em", textTransform: "uppercase" }}
             >
               Vem servar först?
             </span>
             <span
               className="text-foreground"
-              style={{ fontSize: "var(--text-h2)", fontWeight: "var(--font-weight-bold)", fontFamily: "'Titillium Web', sans-serif" }}
+              style={{ fontSize: "var(--text-h2)", fontWeight: "var(--font-weight-bold)" }}
             >
               Singla slant
             </span>
@@ -579,26 +579,26 @@ export function CoinFlip({ player1, player2, onResult, onSkip }: CoinFlipProps) 
             <div className="flex items-center gap-5">
               <span
                 className="text-foreground"
-                style={{ fontSize: "var(--text-h4)", fontWeight: "var(--font-weight-semibold)", fontFamily: "'Titillium Web', sans-serif" }}
+                style={{ fontSize: "var(--text-h4)", fontWeight: "var(--font-weight-semibold)" }}
               >
                 {player1}
               </span>
               <span
                 className="text-muted-foreground/50"
-                style={{ fontSize: "var(--text-base)", fontFamily: "'Titillium Web', sans-serif" }}
+                style={{ fontSize: "var(--text-base)" }}
               >
                 vs
               </span>
               <span
                 className="text-foreground"
-                style={{ fontSize: "var(--text-h4)", fontWeight: "var(--font-weight-semibold)", fontFamily: "'Titillium Web', sans-serif" }}
+                style={{ fontSize: "var(--text-h4)", fontWeight: "var(--font-weight-semibold)" }}
               >
                 {player2}
               </span>
             </div>
             <span
               className="text-muted-foreground/60"
-              style={{ fontSize: "var(--text-base)", fontFamily: "'Titillium Web', sans-serif" }}
+              style={{ fontSize: "var(--text-base)" }}
             >
               Tryck på myntet för att singla
             </span>

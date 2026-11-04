@@ -2,8 +2,6 @@ import { useState, useEffect, useMemo } from "react";
 import { ArrowRight, Shuffle, ChevronDown, TrendingUp, Calendar, X, Check, UserMinus, Users } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 
-const FONT = "'Titillium Web', sans-serif";
-
 interface BwpEntry {
   name: string;
   eloDelta: number;
@@ -156,18 +154,17 @@ export function PlayerSetup({
                     onChange={(e) => setSelectedBwpMonth(e.target.value)}
                     className="w-full appearance-none px-3 py-2 pr-8 rounded-[var(--radius-button)] bg-surface-container/60 border border-border/40 text-foreground focus:outline-none focus:border-primary/40 transition-all duration-200 cursor-pointer"
                     style={{
-                      fontFamily: FONT,
                       fontSize: "var(--text-xs)",
                     }}
                   >
-                    <option value="" style={{ fontFamily: FONT }}>
+                    <option value="">
                       Innevarande månad
                     </option>
                     {availableMonths.map((m) => {
                       const [y, mo] = m.split("-");
                       const label = new Date(Number(y), Number(mo) - 1, 1).toLocaleString("sv-SE", { month: "long", year: "numeric" });
                       return (
-                        <option key={m} value={m} style={{ fontFamily: FONT }}>
+                        <option key={m} value={m}>
                           {label.charAt(0).toUpperCase() + label.slice(1)}
                         </option>
                       );
@@ -203,7 +200,6 @@ export function PlayerSetup({
                 <span
                   className={`transition-colors ${hasRankedPlayers ? "text-foreground" : "text-muted-foreground"}`}
                   style={{
-                    fontFamily: FONT,
                     fontSize: "var(--text-label)",
                     fontWeight: "var(--font-weight-semibold)",
                   }}
@@ -213,14 +209,14 @@ export function PlayerSetup({
                 {hasRankedPlayers ? (
                   <span
                     className="text-muted-foreground"
-                    style={{ fontFamily: FONT, fontSize: "var(--text-xs)" }}
+                    style={{ fontSize: "var(--text-xs)" }}
                   >
                     {top8Bwp.length} rankade spelare tillgängliga
                   </span>
                 ) : (
                   <span
                     className="text-muted-foreground/60"
-                    style={{ fontFamily: FONT, fontSize: "var(--text-xs)" }}
+                    style={{ fontSize: "var(--text-xs)" }}
                   >
                     {loadingBwp
                       ? "Beräknar ranking..."
@@ -236,7 +232,6 @@ export function PlayerSetup({
                 <span
                   className="text-primary/70 group-hover:text-primary shrink-0 transition-colors"
                   style={{
-                    fontFamily: FONT,
                     fontSize: "var(--text-xs)",
                     fontWeight: "var(--font-weight-semibold)",
                     letterSpacing: "0.05em",
@@ -258,7 +253,6 @@ export function PlayerSetup({
               <span
                 className="text-muted-foreground shrink-0"
                 style={{
-                  fontFamily: FONT,
                   fontSize: "var(--text-xs)",
                   fontWeight: "var(--font-weight-semibold)",
                   letterSpacing: "0.15em",
@@ -278,7 +272,7 @@ export function PlayerSetup({
                 <div key={i} className="flex items-center gap-2">
                   <span
                     className="text-muted-foreground w-5 text-center shrink-0"
-                    style={{ fontFamily: FONT, fontSize: "var(--text-label)", fontWeight: "var(--font-weight-bold)" }}
+                    style={{ fontSize: "var(--text-label)", fontWeight: "var(--font-weight-bold)" }}
                   >
                     {i + 1}
                   </span>
@@ -289,24 +283,23 @@ export function PlayerSetup({
                       value={names[i]}
                       onChange={(e) => updateName(i, e.target.value)}
                       disabled={loadingPlayers || availablePlayers.length === 0}
-                      className="w-full appearance-none px-4 py-3 pr-10 rounded-[var(--radius-card)] bg-surface-container border border-border/60 text-foreground focus:outline-none focus:border-primary/60 focus:bg-surface-container-high transition-all duration-200 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+                      className="w-full appearance-none px-4 py-3 pr-10 rounded-[var(--radius-card)] bg-surface-container border border-border/60 text-foreground focus:outline-none focus:border-primary/60 focus:bg-surface-container-high transition-all duration-200 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                       style={{
-                        fontFamily: FONT,
                         fontSize: "var(--text-base)",
                         color: names[i] ? "var(--foreground)" : "var(--muted-foreground)",
                       }}
                     >
-                      <option value="" disabled style={{ fontFamily: FONT, color: "var(--muted-foreground)" }}>
+                      <option value="" disabled style={{ color: "var(--muted-foreground)" }}>
                         Välj spelare {i + 1}...
                       </option>
                       {options.map((p) => (
-                        <option key={p} value={p} style={{ fontFamily: FONT }}>
+                        <option key={p} value={p}>
                           {p}
                         </option>
                       ))}
                       {/* If this slot already has a value not in options (e.g. already selected), keep it */}
                       {names[i] && !options.includes(names[i]) && (
-                        <option key={names[i]} value={names[i]} style={{ fontFamily: FONT }}>
+                        <option key={names[i]} value={names[i]}>
                           {names[i]}
                         </option>
                       )}
@@ -324,7 +317,7 @@ export function PlayerSetup({
         {loadingPlayers && (
           <div className="flex items-center justify-center gap-2 py-2">
             <div className="w-4 h-4 border-2 border-primary/30 border-t-primary rounded-full animate-spin" />
-            <span className="text-muted-foreground" style={{ fontFamily: FONT, fontSize: "var(--text-xs)" }}>
+            <span className="text-muted-foreground" style={{ fontSize: "var(--text-xs)" }}>
               Laddar spelare...
             </span>
           </div>
@@ -336,13 +329,13 @@ export function PlayerSetup({
           >
             <span
               className="text-muted-foreground text-center"
-              style={{ fontFamily: FONT, fontSize: "var(--text-label)" }}
+              style={{ fontSize: "var(--text-label)" }}
             >
               Inga spelare registrerade ännu.
             </span>
             <span
               className="text-muted-foreground/60 text-center"
-              style={{ fontFamily: FONT, fontSize: "var(--text-sm)" }}
+              style={{ fontSize: "var(--text-sm)" }}
             >
               Lägg till spelare via <strong className="text-foreground">Spela</strong>-fliken först.
             </span>
@@ -357,7 +350,6 @@ export function PlayerSetup({
           <span
             className="text-muted-foreground shrink-0"
             style={{
-              fontFamily: FONT,
               fontSize: "var(--text-xs)",
               fontWeight: "var(--font-weight-semibold)",
               letterSpacing: "0.15em",
@@ -377,7 +369,6 @@ export function PlayerSetup({
             <span
               className="text-muted-foreground"
               style={{
-                fontFamily: FONT,
                 fontSize: "var(--text-sm)",
                 fontWeight: "var(--font-weight-semibold)",
                 letterSpacing: "0.1em",
@@ -398,7 +389,6 @@ export function PlayerSetup({
                       : "bg-surface-container-high/50 border-border/30 text-muted-foreground hover:text-foreground hover:border-border/60"
                   }`}
                   style={{
-                    fontFamily: FONT,
                     fontSize: "var(--text-label)",
                     fontWeight: "var(--font-weight-semibold)",
                   }}
@@ -416,7 +406,6 @@ export function PlayerSetup({
             <span
               className="text-muted-foreground"
               style={{
-                fontFamily: FONT,
                 fontSize: "var(--text-sm)",
                 fontWeight: "var(--font-weight-semibold)",
                 letterSpacing: "0.1em",
@@ -437,7 +426,6 @@ export function PlayerSetup({
                       : "bg-surface-container-high/50 border-border/30 text-muted-foreground hover:text-foreground hover:border-border/60"
                   }`}
                   style={{
-                    fontFamily: FONT,
                     fontSize: "var(--text-label)",
                     fontWeight: "var(--font-weight-semibold)",
                   }}
@@ -455,7 +443,6 @@ export function PlayerSetup({
             <span
               className="text-muted-foreground"
               style={{
-                fontFamily: FONT,
                 fontSize: "var(--text-sm)",
                 fontWeight: "var(--font-weight-semibold)",
                 letterSpacing: "0.1em",
@@ -475,7 +462,6 @@ export function PlayerSetup({
                       : "bg-surface-container-high/50 border-border/30 text-muted-foreground hover:text-foreground hover:border-border/60"
                   }`}
                   style={{
-                    fontFamily: FONT,
                     fontSize: "var(--text-label)",
                     fontWeight: "var(--font-weight-semibold)",
                   }}
@@ -493,8 +479,8 @@ export function PlayerSetup({
         <button
           onClick={shuffleNames}
           disabled={!allFilled}
-          className="flex items-center gap-1.5 px-4 py-2.5 rounded-[var(--radius-button)] text-muted-foreground hover:text-foreground hover:bg-surface-container-high/60 disabled:opacity-20 transition-all duration-200 cursor-pointer disabled:cursor-not-allowed"
-          style={{ fontFamily: FONT, fontSize: "var(--text-label)" }}
+          className="flex items-center gap-1.5 px-4 py-2.5 rounded-[var(--radius-button)] text-muted-foreground hover:text-foreground hover:bg-surface-container-high/60 disabled:opacity-50 transition-all duration-200 cursor-pointer disabled:cursor-not-allowed"
+          style={{ fontSize: "var(--text-label)" }}
           title="Slumpa ordning"
         >
           <Shuffle className="w-4 h-4" />
@@ -503,8 +489,8 @@ export function PlayerSetup({
         <button
           onClick={() => onStart(names as [string, string, string, string, string, string, string, string], { quarter: quarterBestOf, semi: semiBestOf, final: finalBestOf })}
           disabled={!allFilled}
-          className="flex-1 flex items-center justify-center gap-2 px-6 py-3 rounded-[var(--radius-button)] bg-primary text-primary-foreground hover:opacity-90 disabled:opacity-25 transition-all duration-200 cursor-pointer disabled:cursor-not-allowed"
-          style={{ fontFamily: FONT, fontSize: "var(--text-base)", fontWeight: "var(--font-weight-semibold)" }}
+          className="flex-1 flex items-center justify-center gap-2 px-6 py-3 rounded-[var(--radius-button)] bg-primary text-primary-foreground hover:opacity-90 disabled:opacity-50 transition-all duration-200 cursor-pointer disabled:cursor-not-allowed"
+          style={{ fontSize: "var(--text-base)", fontWeight: "var(--font-weight-semibold)" }}
         >
           Starta turnering
           <ArrowRight className="w-4 h-4" />
@@ -551,7 +537,6 @@ export function PlayerSetup({
                   <h3
                     className="text-foreground"
                     style={{
-                      fontFamily: FONT,
                       fontSize: "var(--text-lg)",
                       fontWeight: "var(--font-weight-semibold)",
                     }}
@@ -560,7 +545,7 @@ export function PlayerSetup({
                   </h3>
                   <span
                     className="text-muted-foreground"
-                    style={{ fontFamily: FONT, fontSize: "var(--text-xs)" }}
+                    style={{ fontSize: "var(--text-xs)" }}
                   >
                     {monthLabel} — Välj bort spelare som inte kan delta
                   </span>
@@ -582,7 +567,7 @@ export function PlayerSetup({
                   <Users className="w-3.5 h-3.5 text-muted-foreground" />
                   <span
                     className="text-muted-foreground"
-                    style={{ fontFamily: FONT, fontSize: "var(--text-xs)" }}
+                    style={{ fontSize: "var(--text-xs)" }}
                   >
                     {activeRanked.length} aktiva av {top8Bwp.length} rankade
                   </span>
@@ -590,7 +575,6 @@ export function PlayerSetup({
                 <span
                   className={activeRanked.length >= 8 ? "text-primary" : "text-destructive"}
                   style={{
-                    fontFamily: FONT,
                     fontSize: "var(--text-xs)",
                     fontWeight: "var(--font-weight-semibold)",
                   }}
@@ -621,7 +605,6 @@ export function PlayerSetup({
                           ? "border-primary/30 bg-primary/[0.06]"
                           : "border-border/30 bg-surface-container/40"
                       }`}
-                      style={{ fontFamily: FONT }}
                     >
                       {/* Rank number */}
                       <div
@@ -713,11 +696,11 @@ export function PlayerSetup({
                       >
                         <span
                           className="text-muted-foreground shrink-0"
-                          style={{ fontFamily: FONT, fontSize: "var(--text-xs)", fontWeight: "var(--font-weight-semibold)" }}
+                          style={{ fontSize: "var(--text-xs)", fontWeight: "var(--font-weight-semibold)" }}
                         >
                           {qf}
                         </span>
-                        <div className="flex flex-col min-w-0 flex-1" style={{ fontSize: "var(--text-xs)", fontFamily: FONT }}>
+                        <div className="flex flex-col min-w-0 flex-1" style={{ fontSize: "var(--text-xs)" }}>
                           <span className="text-foreground truncate">
                             <span className="text-primary/60">#{s1 + 1}</span> {selectedTop8[s1]?.name}
                           </span>
@@ -733,8 +716,8 @@ export function PlayerSetup({
                 <button
                   onClick={confirmSelection}
                   disabled={!canConfirmTop8}
-                  className="w-full flex items-center justify-center gap-2 px-6 py-3 rounded-[var(--radius-button)] bg-primary text-primary-foreground hover:opacity-90 disabled:opacity-25 transition-all duration-200 cursor-pointer disabled:cursor-not-allowed"
-                  style={{ fontFamily: FONT, fontSize: "var(--text-base)", fontWeight: "var(--font-weight-semibold)" }}
+                  className="w-full flex items-center justify-center gap-2 px-6 py-3 rounded-[var(--radius-button)] bg-primary text-primary-foreground hover:opacity-90 disabled:opacity-50 transition-all duration-200 cursor-pointer disabled:cursor-not-allowed"
+                  style={{ fontSize: "var(--text-base)", fontWeight: "var(--font-weight-semibold)" }}
                 >
                   <Check className="w-4 h-4" />
                   Bekräfta seedning

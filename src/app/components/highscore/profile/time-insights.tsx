@@ -1,6 +1,5 @@
 import { CalendarDays, Coffee, Sun, Users, UserMinus, Clock, TriangleAlert } from "lucide-react";
 import type { PlayerInsights } from "../../../lib/insights";
-import { FONT } from "../constants";
 
 interface ProfileTimeInsightsProps {
   playerInsights: PlayerInsights | null;
@@ -34,7 +33,7 @@ export function ProfileTimeInsights({
                     Bästa dag
                   </span>
                 </div>
-                <div style={{ fontFamily: FONT, fontSize: "var(--text-base)", fontWeight: "var(--font-weight-semibold)", color: "var(--primary)" }}>
+                <div style={{ fontSize: "var(--text-base)", fontWeight: "var(--font-weight-semibold)", color: "var(--primary)" }}>
                   {playerInsights.bestWeekday.day}
                 </div>
                 <div className="text-muted-foreground" style={{ fontSize: "var(--text-xs)" }}>
@@ -59,7 +58,6 @@ export function ProfileTimeInsights({
                 </span>
               </div>
               <div style={{
-                fontFamily: FONT,
                 fontSize: "var(--text-base)",
                 fontWeight: "var(--font-weight-semibold)",
                 color: playerInsights.timePreference === "morning" ? "var(--warning)" : "var(--info)",
@@ -99,7 +97,6 @@ export function ProfileTimeInsights({
                 </span>
               </div>
               <div style={{
-                fontFamily: FONT,
                 fontSize: "var(--text-base)",
                 fontWeight: "var(--font-weight-semibold)",
                 color: playerInsights.crowdPreference === "extrovert"
@@ -145,10 +142,10 @@ export function ProfileTimeInsights({
               <div className="space-y-3">
                 <div>
                   <div className="flex items-center justify-between mb-1">
-                    <span className="flex items-center gap-1.5" style={{ fontSize: "var(--text-sm)", color: "var(--warning)", fontFamily: "'Titillium Web', sans-serif" }}>
+                    <span className="flex items-center gap-1.5" style={{ fontSize: "var(--text-sm)", color: "var(--warning)" }}>
                       <Coffee className="w-3.5 h-3.5" /> Förmiddag
                     </span>
-                    <span style={{ fontSize: "var(--text-sm)", fontWeight: "var(--font-weight-semibold)", color: "var(--foreground)", fontFamily: "'Titillium Web', sans-serif" }}>
+                    <span style={{ fontSize: "var(--text-sm)", fontWeight: "var(--font-weight-semibold)", color: "var(--foreground)" }}>
                       {playerInsights.beforeLunch.winRate.toFixed(1)}%
                     </span>
                   </div>
@@ -161,16 +158,16 @@ export function ProfileTimeInsights({
                       }}
                     />
                   </div>
-                  <div className="text-muted-foreground mt-1" style={{ fontSize: "var(--text-xs)", fontFamily: "'Titillium Web', sans-serif" }}>
+                  <div className="text-muted-foreground mt-1" style={{ fontSize: "var(--text-xs)" }}>
                     {playerInsights.beforeLunch.wins} vinster av {playerInsights.beforeLunch.games} finaler
                   </div>
                 </div>
                 <div>
                   <div className="flex items-center justify-between mb-1">
-                    <span className="flex items-center gap-1.5" style={{ fontSize: "var(--text-sm)", color: "var(--info)", fontFamily: "'Titillium Web', sans-serif" }}>
+                    <span className="flex items-center gap-1.5" style={{ fontSize: "var(--text-sm)", color: "var(--info)" }}>
                       <Sun className="w-3.5 h-3.5" /> Eftermiddag
                     </span>
-                    <span style={{ fontSize: "var(--text-sm)", fontWeight: "var(--font-weight-semibold)", color: "var(--foreground)", fontFamily: "'Titillium Web', sans-serif" }}>
+                    <span style={{ fontSize: "var(--text-sm)", fontWeight: "var(--font-weight-semibold)", color: "var(--foreground)" }}>
                       {playerInsights.afterLunch.winRate.toFixed(1)}%
                     </span>
                   </div>
@@ -183,7 +180,7 @@ export function ProfileTimeInsights({
                       }}
                     />
                   </div>
-                  <div className="text-muted-foreground mt-1" style={{ fontSize: "var(--text-xs)", fontFamily: "'Titillium Web', sans-serif" }}>
+                  <div className="text-muted-foreground mt-1" style={{ fontSize: "var(--text-xs)" }}>
                     {playerInsights.afterLunch.wins} vinster av {playerInsights.afterLunch.games} finaler
                   </div>
                 </div>
@@ -245,7 +242,6 @@ export function ProfileTimeInsights({
                       {hasData && (
                         <span style={{
                           fontSize: "var(--text-xs)",
-                          fontFamily: "'Titillium Web', sans-serif",
                           fontWeight: "var(--font-weight-semibold)",
                           color: isBest ? "var(--primary)" : "var(--muted-foreground)",
                           lineHeight: 1,
@@ -266,7 +262,6 @@ export function ProfileTimeInsights({
                     <div key={`lbl-${d.dayIndex}`} className="flex-1 text-center">
                       <span style={{
                         fontSize: "var(--text-xs)",
-                        fontFamily: "'Titillium Web', sans-serif",
                         color: isBest ? "var(--primary)" : "var(--muted-foreground)",
                         fontWeight: isBest ? "var(--font-weight-semibold)" : "var(--font-weight-normal)",
                         lineHeight: 1,

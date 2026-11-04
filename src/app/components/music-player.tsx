@@ -52,7 +52,6 @@ function formatTime(sec: number): string {
   return `${m}:${s.toString().padStart(2, "0")}`;
 }
 
-const FONT = "inherit";
 
 /* ════════════════════════════════════════════════════════════════════ */
 /*  MusicPlayerBar — Spotify-style fixed bottom bar                    */
@@ -241,7 +240,7 @@ export function MusicPlayerBar({ onNostalgiaToggle, nostalgiaActive }: MusicPlay
             <div className="flex items-center justify-between px-5 pt-4 pb-2">
               <span
                 className="text-foreground"
-                style={{ fontFamily: FONT, fontSize: "var(--text-base)", fontWeight: "var(--font-weight-semibold)" }}
+                style={{ fontSize: "var(--text-base)", fontWeight: "var(--font-weight-semibold)" }}
               >
                 Spellista
               </span>
@@ -249,7 +248,7 @@ export function MusicPlayerBar({ onNostalgiaToggle, nostalgiaActive }: MusicPlay
                 <button
                   onClick={() => fileInputRef.current?.click()}
                   className="flex items-center gap-1.5 px-3 py-1.5 rounded-[var(--radius-button)] bg-primary/12 text-primary hover:bg-primary/20 transition-all duration-200 cursor-pointer"
-                  style={{ fontFamily: FONT, fontSize: "var(--text-label)", fontWeight: "var(--font-weight-semibold)" }}
+                  style={{ fontSize: "var(--text-label)", fontWeight: "var(--font-weight-semibold)" }}
                 >
                   <Upload className="w-3.5 h-3.5" />
                   Lägg till
@@ -271,7 +270,7 @@ export function MusicPlayerBar({ onNostalgiaToggle, nostalgiaActive }: MusicPlay
                   onClick={() => fileInputRef.current?.click()}
                 >
                   <Upload className="w-6 h-6 text-muted-foreground group-hover:text-foreground transition-colors" />
-                  <p className="text-muted-foreground" style={{ fontFamily: FONT, fontSize: "var(--text-label)" }}>
+                  <p className="text-muted-foreground" style={{ fontSize: "var(--text-label)" }}>
                     Ladda upp MP3, WAV, OGG …
                   </p>
                 </div>
@@ -294,7 +293,7 @@ export function MusicPlayerBar({ onNostalgiaToggle, nostalgiaActive }: MusicPlay
                     ) : (
                       <span
                         className={idx === currentIndex ? "text-primary" : "text-muted-foreground"}
-                        style={{ fontFamily: FONT, fontSize: "12px" }}
+                        style={{ fontSize: "12px" }}
                       >
                         {idx + 1}
                       </span>
@@ -302,13 +301,13 @@ export function MusicPlayerBar({ onNostalgiaToggle, nostalgiaActive }: MusicPlay
                   </div>
                   <span
                     className={`flex-1 truncate ${idx === currentIndex ? "text-primary" : "text-foreground"}`}
-                    style={{ fontFamily: FONT, fontSize: "var(--text-label)" }}
+                    style={{ fontSize: "var(--text-label)" }}
                   >
                     {track.name}
                   </span>
                   <button
                     onClick={(e) => { e.stopPropagation(); removeTrack(idx); }}
-                    className="p-1 rounded-full text-muted-foreground/40 hover:text-destructive opacity-0 group-hover:opacity-100 transition-all duration-150 cursor-pointer"
+                    className="p-1 rounded-full text-muted-foreground/60 hover:text-destructive opacity-0 group-hover:opacity-100 transition-all duration-150 cursor-pointer"
                   >
                     <Trash2 className="w-3.5 h-3.5" />
                   </button>
@@ -354,12 +353,12 @@ export function MusicPlayerBar({ onNostalgiaToggle, nostalgiaActive }: MusicPlay
                 <div className="min-w-0 flex-1">
                   <p
                     className="text-foreground truncate"
-                    style={{ fontFamily: FONT, fontSize: "var(--text-label)", fontWeight: "var(--font-weight-semibold)" }}
+                    style={{ fontSize: "var(--text-label)", fontWeight: "var(--font-weight-semibold)" }}
                   >
                     {currentTrack.name}
                   </p>
-                  <p className="text-muted-foreground" style={{ fontFamily: FONT, fontSize: "12px" }}>
-                    {formatTime(currentTime)}<span className="text-muted-foreground/40"> / </span>{formatTime(duration)}
+                  <p className="text-muted-foreground" style={{ fontSize: "12px" }}>
+                    {formatTime(currentTime)}<span className="text-muted-foreground/60"> / </span>{formatTime(duration)}
                   </p>
                 </div>
               </>
@@ -374,7 +373,7 @@ export function MusicPlayerBar({ onNostalgiaToggle, nostalgiaActive }: MusicPlay
                 >
                   <Upload className="w-4 h-4" />
                 </div>
-                <span style={{ fontFamily: FONT, fontSize: "var(--text-label)" }}>
+                <span style={{ fontSize: "var(--text-label)" }}>
                   Ladda upp musik
                 </span>
               </button>
@@ -585,16 +584,16 @@ export function NostalgiaOverlay({ onClose }: { onClose: () => void }) {
       </div>
       <div className="absolute bottom-24 sm:bottom-28 left-0 right-0 flex flex-col items-center gap-3 px-6 z-10">
         <AnimatePresence mode="wait">
-          <motion.span key={`year-${visibleIndex}`} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 0.5, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.7, ease: "easeOut" }} className="text-foreground/50" style={{ fontFamily: FONT, fontSize: "clamp(48px, 10vw, 96px)", fontWeight: 700, letterSpacing: "-0.03em", lineHeight: 1 }}>{photo.year}</motion.span>
+          <motion.span key={`year-${visibleIndex}`} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 0.5, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.7, ease: "easeOut" }} className="text-foreground/50" style={{ fontSize: "clamp(48px, 10vw, 96px)", fontWeight: 700, letterSpacing: "-0.03em", lineHeight: 1 }}>{photo.year}</motion.span>
         </AnimatePresence>
         <AnimatePresence mode="wait">
-          <motion.p key={`cap-${visibleIndex}`} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }} transition={{ duration: 0.7, delay: 0.1, ease: "easeOut" }} className="text-foreground/80 text-center max-w-lg" style={{ fontFamily: FONT, fontSize: "var(--text-base)", fontWeight: "var(--font-weight-semibold)", letterSpacing: "0.02em" }}>{photo.caption}</motion.p>
+          <motion.p key={`cap-${visibleIndex}`} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }} transition={{ duration: 0.7, delay: 0.1, ease: "easeOut" }} className="text-foreground/80 text-center max-w-lg" style={{ fontSize: "var(--text-base)", fontWeight: "var(--font-weight-semibold)", letterSpacing: "0.02em" }}>{photo.caption}</motion.p>
         </AnimatePresence>
         <div className="flex items-center gap-2 mt-2">
           {NOSTALGIA_PHOTOS.map((_, i) => (<div key={i} className="w-1.5 h-1.5 rounded-full transition-all duration-500" style={{ background: i === visibleIndex ? "var(--primary)" : "var(--muted-foreground)", opacity: i === visibleIndex ? 1 : 0.3, transform: i === visibleIndex ? "scale(1.4)" : "scale(1)" }} />))}
         </div>
       </div>
-      <motion.p initial={{ opacity: 0 }} animate={{ opacity: 0.4 }} transition={{ delay: 2, duration: 1 }} className="absolute top-6 left-0 right-0 text-center text-foreground/40 z-10" style={{ fontFamily: FONT, fontSize: "var(--text-label)" }}>Tryck för att stänga</motion.p>
+      <motion.p initial={{ opacity: 0 }} animate={{ opacity: 0.4 }} transition={{ delay: 2, duration: 1 }} className="absolute top-6 left-0 right-0 text-center text-foreground/40 z-10" style={{ fontSize: "var(--text-label)" }}>Tryck för att stänga</motion.p>
     </motion.div>
   );
 }

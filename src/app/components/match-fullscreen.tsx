@@ -352,7 +352,7 @@ export function MatchFullscreen({
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.3, duration: 0.4 }}
                   className="flex flex-col items-center gap-2 px-5 py-3 rounded-[var(--radius-card)] border border-border/40"
-                  style={{ background: "var(--surface-container-high)", fontFamily: "'Titillium Web', sans-serif" }}
+                  style={{ background: "var(--surface-container-high)" }}
                 >
                   <div className="flex items-center gap-1.5" style={{ fontSize: "var(--text-xs)", color: "var(--muted-foreground)" }}>
                     <span>Elo-pott:</span>
@@ -456,7 +456,7 @@ export function MatchFullscreen({
               <div className="flex items-center gap-2 justify-center">
                 <span
                   className={`truncate max-w-[35vw] text-center transition-colors duration-300 ${
-                    p1Won ? "text-primary" : p2Won ? "text-muted-foreground/40" : "text-foreground"
+                    p1Won ? "text-primary" : p2Won ? "text-muted-foreground/60" : "text-foreground"
                   } ${!server && matchIsFresh ? "cursor-pointer hover:text-primary/80" : ""}`}
                   style={{
                     fontSize: "clamp(16px, 3vw, var(--text-h3))",
@@ -492,7 +492,7 @@ export function MatchFullscreen({
 
               {/* Big score */}
               <span
-                className={`tabular-nums transition-colors duration-300 ${p1Won ? "text-primary" : p2Won ? "text-muted-foreground/30" : "text-foreground"}`}
+                className={`tabular-nums transition-colors duration-300 ${p1Won ? "text-primary" : p2Won ? "text-muted-foreground/60" : "text-foreground"}`}
                 style={{
                   fontSize: "clamp(100px, 22vw, 220px)",
                   fontWeight: "var(--font-weight-bold)",
@@ -520,7 +520,7 @@ export function MatchFullscreen({
                   {match.player1.matchWins}
                 </span>
                 <span
-                  className="text-muted-foreground/40"
+                  className="text-muted-foreground/60"
                   style={{ fontSize: "clamp(22px, 4vw, 32px)" }}
                 >
                   :
@@ -574,7 +574,7 @@ export function MatchFullscreen({
               <div className="flex items-center gap-2 justify-center">
                 <span
                   className={`truncate max-w-[35vw] text-center transition-colors duration-300 ${
-                    p2Won ? "text-primary" : p1Won ? "text-muted-foreground/40" : "text-foreground"
+                    p2Won ? "text-primary" : p1Won ? "text-muted-foreground/60" : "text-foreground"
                   } ${!server && matchIsFresh ? "cursor-pointer hover:text-primary/80" : ""}`}
                   style={{
                     fontSize: "clamp(16px, 3vw, var(--text-h3))",
@@ -610,7 +610,7 @@ export function MatchFullscreen({
 
               {/* Big score */}
               <span
-                className={`tabular-nums transition-colors duration-300 ${p2Won ? "text-primary" : p1Won ? "text-muted-foreground/30" : "text-foreground"}`}
+                className={`tabular-nums transition-colors duration-300 ${p2Won ? "text-primary" : p1Won ? "text-muted-foreground/60" : "text-foreground"}`}
                 style={{
                   fontSize: "clamp(100px, 22vw, 220px)",
                   fontWeight: "var(--font-weight-bold)",
@@ -661,7 +661,7 @@ export function MatchFullscreen({
                       {s1}
                     </span>
                     <span
-                      className="text-muted-foreground/30"
+                      className="text-muted-foreground/60"
                       style={{ fontSize: "var(--text-sm)" }}
                     >
                       –
@@ -693,7 +693,7 @@ export function MatchFullscreen({
         return (
           <div
             className="shrink-0 flex flex-col items-center border-t border-border/20"
-            style={{ fontFamily: "'Titillium Web', sans-serif", background: "var(--surface-container)" }}
+            style={{ background: "var(--surface-container)" }}
           >
             <div className="flex items-center justify-center gap-2 sm:gap-4 px-3 py-1.5 w-full">
               <div className="flex items-center gap-1.5">
@@ -752,14 +752,14 @@ export function MatchFullscreen({
                 <button
                   onClick={() => updateSetScore("player1", activeSet, -1)}
                   disabled={disabled}
-                  className="w-14 h-14 sm:w-16 sm:h-16 flex items-center justify-center rounded-full bg-surface-container-high/80 border border-border/30 text-muted-foreground hover:text-destructive hover:bg-destructive/10 hover:border-destructive/20 disabled:opacity-15 transition-all duration-200 cursor-pointer disabled:cursor-not-allowed active:scale-95"
+                  className="w-14 h-14 sm:w-16 sm:h-16 flex items-center justify-center rounded-full bg-surface-container-high/80 border border-border/30 text-muted-foreground hover:text-destructive hover:bg-destructive/10 hover:border-destructive/20 disabled:opacity-50 transition-all duration-200 cursor-pointer disabled:cursor-not-allowed active:scale-95"
                 >
                   <Minus className="w-5 h-5" />
                 </button>
                 <button
                   onClick={() => updateSetScore("player1", activeSet, 1)}
                   disabled={disabled}
-                  className="w-14 h-14 sm:w-16 sm:h-16 flex items-center justify-center rounded-full bg-primary/12 border border-primary/20 text-primary hover:bg-primary/20 disabled:opacity-15 transition-all duration-200 cursor-pointer disabled:cursor-not-allowed active:scale-95"
+                  className="w-14 h-14 sm:w-16 sm:h-16 flex items-center justify-center rounded-full bg-primary/12 border border-primary/20 text-primary hover:bg-primary/20 disabled:opacity-50 transition-all duration-200 cursor-pointer disabled:cursor-not-allowed active:scale-95"
                 >
                   <Plus className="w-5 h-5" />
                 </button>
@@ -828,14 +828,14 @@ export function MatchFullscreen({
                 <button
                   onClick={() => updateSetScore("player2", activeSet, -1)}
                   disabled={disabled}
-                  className="w-14 h-14 sm:w-16 sm:h-16 flex items-center justify-center rounded-full bg-surface-container-high/80 border border-border/30 text-muted-foreground hover:text-destructive hover:bg-destructive/10 hover:border-destructive/20 disabled:opacity-15 transition-all duration-200 cursor-pointer disabled:cursor-not-allowed active:scale-95"
+                  className="w-14 h-14 sm:w-16 sm:h-16 flex items-center justify-center rounded-full bg-surface-container-high/80 border border-border/30 text-muted-foreground hover:text-destructive hover:bg-destructive/10 hover:border-destructive/20 disabled:opacity-50 transition-all duration-200 cursor-pointer disabled:cursor-not-allowed active:scale-95"
                 >
                   <Minus className="w-5 h-5" />
                 </button>
                 <button
                   onClick={() => updateSetScore("player2", activeSet, 1)}
                   disabled={disabled}
-                  className="w-14 h-14 sm:w-16 sm:h-16 flex items-center justify-center rounded-full bg-primary/12 border border-primary/20 text-primary hover:bg-primary/20 disabled:opacity-15 transition-all duration-200 cursor-pointer disabled:cursor-not-allowed active:scale-95"
+                  className="w-14 h-14 sm:w-16 sm:h-16 flex items-center justify-center rounded-full bg-primary/12 border border-primary/20 text-primary hover:bg-primary/20 disabled:opacity-50 transition-all duration-200 cursor-pointer disabled:cursor-not-allowed active:scale-95"
                 >
                   <Plus className="w-5 h-5" />
                 </button>

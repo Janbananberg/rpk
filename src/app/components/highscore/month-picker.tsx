@@ -1,7 +1,6 @@
 import { CalendarDays, BarChart3, Archive, ChevronDown, Check } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { formatMonthShort, formatMonthLabel } from "../../lib/dates";
-import { FONT } from "./constants";
 
 interface MonthPickerProps {
   monthList: string[];
@@ -52,7 +51,6 @@ export function MonthPicker({
                 onClick={() => { setSelectedMonth(currentMonth); setMonthPickerOpen(false); }}
                 className="cursor-pointer transition-all"
                 style={{
-                  fontFamily: FONT,
                   fontSize: "var(--text-label)",
                   fontWeight: "var(--font-weight-semibold)",
                   padding: "7px 14px",
@@ -84,7 +82,6 @@ export function MonthPicker({
                 onClick={() => { setSelectedMonth("total"); setMonthPickerOpen(false); }}
                 className="cursor-pointer transition-all"
                 style={{
-                  fontFamily: FONT,
                   fontSize: "var(--text-label)",
                   fontWeight: "var(--font-weight-semibold)",
                   padding: "7px 14px",
@@ -108,7 +105,6 @@ export function MonthPicker({
                     onClick={() => setMonthPickerOpen(!monthPickerOpen)}
                     className="cursor-pointer transition-all"
                     style={{
-                      fontFamily: FONT,
                       fontSize: "var(--text-label)",
                       fontWeight: "var(--font-weight-semibold)",
                       padding: "7px 14px",
@@ -159,7 +155,6 @@ export function MonthPicker({
                                 onClick={() => { setSelectedMonth(month); setMonthPickerOpen(false); }}
                                 className="w-full text-left cursor-pointer transition-colors"
                                 style={{
-                                  fontFamily: FONT,
                                   fontSize: "var(--text-label)",
                                   fontWeight: isActive ? "var(--font-weight-semibold)" : "var(--font-weight-normal)",
                                   padding: "9px 12px",

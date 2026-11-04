@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Check, Clock, Trophy, Users, X } from "lucide-react";
 import { motion } from "motion/react";
 import type { PlayerStats } from "../../lib/stats";
-import { FONT } from "./constants";
 import { EloSparkline } from "./elo-sparkline";
 import { FormDots } from "./form-dots";
 
@@ -40,7 +39,6 @@ export function PlayerSelectStep({
       <h3
         className="text-foreground mb-1"
         style={{
-          fontFamily: FONT,
           fontSize: "var(--text-h4)",
           fontWeight: "var(--font-weight-semibold)",
         }}
@@ -49,7 +47,7 @@ export function PlayerSelectStep({
       </h3>
       <p
         className="text-muted-foreground mb-4"
-        style={{ fontFamily: FONT, fontSize: "var(--text-label)" }}
+        style={{ fontSize: "var(--text-label)" }}
       >
         Välj alla spelare som deltar
       </p>
@@ -68,7 +66,6 @@ export function PlayerSelectStep({
           style={{
             background: "var(--surface-container)",
             borderRadius: "var(--radius-full, 9999px)",
-            fontFamily: FONT,
             fontSize: "var(--text-sm)",
             color: "var(--foreground)",
           }}
@@ -89,7 +86,6 @@ export function PlayerSelectStep({
             style={{
               background: "var(--surface-container)",
               borderRadius: "var(--radius-full, 9999px)",
-              fontFamily: FONT,
               fontSize: "var(--text-sm)",
               color: "var(--foreground)",
             }}
@@ -110,7 +106,6 @@ export function PlayerSelectStep({
             placeholder="Sök spelare…"
             className="w-full pl-9 pr-3 py-2 rounded-lg border border-border bg-transparent text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary transition-colors"
             style={{
-              fontFamily: FONT,
               fontSize: "var(--text-sm)",
               background: "var(--surface-container-low, var(--surface-container))",
               borderRadius: "var(--radius-card)",
@@ -164,14 +159,14 @@ export function PlayerSelectStep({
               <div className="flex flex-col items-start min-w-0 flex-1">
                 <span
                   className="text-foreground truncate w-full text-left"
-                  style={{ fontFamily: FONT, fontSize: "var(--text-base)", fontWeight: "var(--font-weight-medium, 500)" }}
+                  style={{ fontSize: "var(--text-base)", fontWeight: "var(--font-weight-medium, 500)" }}
                 >
                   {name}
                 </span>
                 {ps && ps.gamesPlayed > 0 ? (
                   <span
                     className="text-muted-foreground flex items-center gap-1.5 mt-0.5"
-                    style={{ fontFamily: FONT, fontSize: "var(--text-xs)" }}
+                    style={{ fontSize: "var(--text-xs)" }}
                   >
                     <Trophy className="w-3 h-3 shrink-0" />
                     {ps.wins}V
@@ -183,7 +178,7 @@ export function PlayerSelectStep({
                 ) : (
                   <span
                     className="text-muted-foreground flex items-center gap-1.5 mt-0.5"
-                    style={{ fontFamily: FONT, fontSize: "var(--text-xs)" }}
+                    style={{ fontSize: "var(--text-xs)" }}
                   >
                     Elo {elo ?? 1000}
                   </span>
@@ -208,7 +203,7 @@ export function PlayerSelectStep({
       {filtered.length === 0 && playerSearch.trim() && (
         <p
           className="text-center text-muted-foreground py-6"
-          style={{ fontFamily: FONT, fontSize: "var(--text-sm)" }}
+          style={{ fontSize: "var(--text-sm)" }}
         >
           Ingen spelare matchar &ldquo;{playerSearch}&rdquo;
         </p>
@@ -219,9 +214,8 @@ export function PlayerSelectStep({
         <button
           onClick={proceedToFinalists}
           disabled={selectedPlayers.length < 5}
-          className="w-full py-3 rounded-lg transition-all cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+          className="w-full py-3 rounded-lg transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
           style={{
-            fontFamily: FONT,
             fontSize: "var(--text-label)",
             fontWeight: "var(--font-weight-semibold)",
             background: "var(--primary)",

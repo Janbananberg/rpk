@@ -15,8 +15,6 @@ import {
   X,
 } from "lucide-react";
 
-const FONT = "'Titillium Web', sans-serif";
-
 /* ── Types ── */
 type AmericanoMatch = {
   team1: [string, string];
@@ -247,7 +245,6 @@ export function AmericanoTournament() {
           <div className="flex flex-col">
             <span
               style={{
-                fontFamily: FONT,
                 fontSize: "var(--text-lg)",
                 fontWeight: "var(--font-weight-bold)",
                 color: "var(--foreground)",
@@ -257,7 +254,7 @@ export function AmericanoTournament() {
             </span>
             <span
               className="text-muted-foreground"
-              style={{ fontFamily: FONT, fontSize: "var(--text-sm)" }}
+              style={{ fontSize: "var(--text-sm)" }}
             >
               Alla spelar med alla — poäng avgör
             </span>
@@ -271,7 +268,7 @@ export function AmericanoTournament() {
         >
           <span
             className="text-muted-foreground block mb-3"
-            style={{ fontFamily: FONT, fontSize: "var(--text-label)", fontWeight: "var(--font-weight-semibold)" }}
+            style={{ fontSize: "var(--text-label)", fontWeight: "var(--font-weight-semibold)" }}
           >
             Poäng per match
           </span>
@@ -286,7 +283,6 @@ export function AmericanoTournament() {
                     : "border-border/40 text-muted-foreground hover:text-foreground hover:border-border/60"
                 }`}
                 style={{
-                  fontFamily: FONT,
                   fontSize: "var(--text-label)",
                   fontWeight: "var(--font-weight-semibold)",
                 }}
@@ -305,13 +301,13 @@ export function AmericanoTournament() {
           <div className="flex items-center justify-between mb-1">
             <span
               className="text-muted-foreground"
-              style={{ fontFamily: FONT, fontSize: "var(--text-label)", fontWeight: "var(--font-weight-semibold)" }}
+              style={{ fontSize: "var(--text-label)", fontWeight: "var(--font-weight-semibold)" }}
             >
               Spelare (minst 4)
             </span>
             <span
               className="text-muted-foreground"
-              style={{ fontFamily: FONT, fontSize: "var(--text-xs)" }}
+              style={{ fontSize: "var(--text-xs)" }}
             >
               {validPlayers.length} spelare
             </span>
@@ -323,7 +319,6 @@ export function AmericanoTournament() {
                 className="w-6 h-6 rounded-full flex items-center justify-center shrink-0 text-muted-foreground"
                 style={{
                   background: "var(--surface-container-high)",
-                  fontFamily: FONT,
                   fontSize: "var(--text-xs)",
                   fontWeight: "var(--font-weight-bold)",
                 }}
@@ -339,7 +334,7 @@ export function AmericanoTournament() {
                 }}
                 placeholder={`Spelare ${i + 1}`}
                 className="flex-1 px-3 py-2 rounded-[var(--radius-button)] border border-border/40 bg-surface-container-low text-foreground placeholder:text-muted-foreground/50 outline-none focus:border-primary/50 transition-colors"
-                style={{ fontFamily: FONT, fontSize: "var(--text-label)" }}
+                style={{ fontSize: "var(--text-label)" }}
               />
               {playerNames.length > 1 && (
                 <button
@@ -355,7 +350,7 @@ export function AmericanoTournament() {
           <button
             onClick={() => setPlayerNames((prev) => [...prev, ""])}
             className="flex items-center justify-center gap-2 py-2 rounded-[var(--radius-button)] border border-dashed border-border/40 text-muted-foreground hover:text-foreground hover:border-border/60 transition-colors cursor-pointer mt-1"
-            style={{ fontFamily: FONT, fontSize: "var(--text-label)" }}
+            style={{ fontSize: "var(--text-label)" }}
           >
             <Plus className="w-4 h-4" />
             Lägg till spelare
@@ -366,9 +361,8 @@ export function AmericanoTournament() {
         <button
           onClick={startTournament}
           disabled={validPlayers.length < 4}
-          className="w-full py-3 rounded-[var(--radius-card)] border transition-all cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+          className="w-full py-3 rounded-[var(--radius-card)] border transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
           style={{
-            fontFamily: FONT,
             fontSize: "var(--text-base)",
             fontWeight: "var(--font-weight-bold)",
             color: validPlayers.length >= 4 ? "var(--primary)" : "var(--muted-foreground)",
@@ -407,7 +401,6 @@ export function AmericanoTournament() {
           <Crown className="w-8 h-8 mx-auto mb-2" style={{ color: "var(--warning)" }} />
           <div
             style={{
-              fontFamily: FONT,
               fontSize: "var(--text-h3)",
               fontWeight: "var(--font-weight-bold)",
               color: "var(--primary)",
@@ -417,7 +410,7 @@ export function AmericanoTournament() {
           </div>
           <div
             className="text-muted-foreground mt-1"
-            style={{ fontFamily: FONT, fontSize: "var(--text-label)" }}
+            style={{ fontSize: "var(--text-label)" }}
           >
             {winner?.points} poäng · {winner?.wins} vinster · Diff: {winner?.diff > 0 ? "+" : ""}{winner?.diff}
           </div>
@@ -429,7 +422,7 @@ export function AmericanoTournament() {
         <button
           onClick={resetTournament}
           className="w-full py-3 rounded-[var(--radius-card)] border border-border/40 text-muted-foreground hover:text-foreground hover:border-border/60 transition-colors cursor-pointer"
-          style={{ fontFamily: FONT, fontSize: "var(--text-label)", fontWeight: "var(--font-weight-semibold)" }}
+          style={{ fontSize: "var(--text-label)", fontWeight: "var(--font-weight-semibold)" }}
         >
           <RotateCcw className="w-4 h-4 inline mr-2" />
           Ny turnering
@@ -451,7 +444,6 @@ export function AmericanoTournament() {
           <Swords className="w-4 h-4 text-primary" />
           <span
             style={{
-              fontFamily: FONT,
               fontSize: "var(--text-base)",
               fontWeight: "var(--font-weight-bold)",
               color: "var(--foreground)",
@@ -463,7 +455,7 @@ export function AmericanoTournament() {
         <button
           onClick={resetTournament}
           className="flex items-center gap-1.5 px-3 py-1.5 rounded-[var(--radius-button)] text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors cursor-pointer"
-          style={{ fontFamily: FONT, fontSize: "var(--text-sm)" }}
+          style={{ fontSize: "var(--text-sm)" }}
         >
           <RotateCcw className="w-3.5 h-3.5" />
           Avbryt
@@ -498,7 +490,7 @@ export function AmericanoTournament() {
           {currentRoundData.sitOut && (
             <div
               className="rounded-[var(--radius-button)] px-3 py-2 flex items-center gap-2 text-muted-foreground"
-              style={{ background: "var(--surface-container)", fontFamily: FONT, fontSize: "var(--text-sm)" }}
+              style={{ background: "var(--surface-container)", fontSize: "var(--text-sm)" }}
             >
               <Users className="w-3.5 h-3.5" />
               <span>{currentRoundData.sitOut} vilar denna runda</span>
@@ -525,7 +517,6 @@ export function AmericanoTournament() {
               onClick={() => setCurrentRound((p) => p + 1)}
               className="w-full py-3 rounded-[var(--radius-card)] border transition-all cursor-pointer"
               style={{
-                fontFamily: FONT,
                 fontSize: "var(--text-label)",
                 fontWeight: "var(--font-weight-semibold)",
                 color: "var(--primary)",
@@ -541,7 +532,6 @@ export function AmericanoTournament() {
               onClick={() => setState("finished")}
               className="w-full py-3 rounded-[var(--radius-card)] border transition-all cursor-pointer"
               style={{
-                fontFamily: FONT,
                 fontSize: "var(--text-label)",
                 fontWeight: "var(--font-weight-semibold)",
                 color: "var(--success)",
@@ -562,7 +552,7 @@ export function AmericanoTournament() {
           <Trophy className="w-4 h-4 text-muted-foreground" />
           <span
             className="text-muted-foreground"
-            style={{ fontFamily: FONT, fontSize: "var(--text-label)", fontWeight: "var(--font-weight-semibold)" }}
+            style={{ fontSize: "var(--text-label)", fontWeight: "var(--font-weight-semibold)" }}
           >
             Ställning
           </span>
@@ -608,7 +598,6 @@ function MatchCard({
           <span
             className="truncate w-full text-right"
             style={{
-              fontFamily: FONT,
               fontSize: "var(--text-label)",
               fontWeight: "var(--font-weight-semibold)",
               color: match.completed && match.score1 > match.score2 ? "var(--success)" : "var(--foreground)",
@@ -629,7 +618,6 @@ function MatchCard({
           <span
             className="w-8 text-center tabular-nums"
             style={{
-              fontFamily: FONT,
               fontSize: "var(--text-h4)",
               fontWeight: "var(--font-weight-bold)",
               color: match.completed && match.score1 > match.score2 ? "var(--success)" : "var(--foreground)",
@@ -637,13 +625,12 @@ function MatchCard({
           >
             {match.score1}
           </span>
-          <span className="text-muted-foreground" style={{ fontFamily: FONT, fontSize: "var(--text-sm)" }}>
+          <span className="text-muted-foreground" style={{ fontSize: "var(--text-sm)" }}>
             –
           </span>
           <span
             className="w-8 text-center tabular-nums"
             style={{
-              fontFamily: FONT,
               fontSize: "var(--text-h4)",
               fontWeight: "var(--font-weight-bold)",
               color: match.completed && match.score2 > match.score1 ? "var(--success)" : "var(--foreground)",
@@ -658,7 +645,6 @@ function MatchCard({
           <span
             className="truncate w-full"
             style={{
-              fontFamily: FONT,
               fontSize: "var(--text-label)",
               fontWeight: "var(--font-weight-semibold)",
               color: match.completed && match.score2 > match.score1 ? "var(--success)" : "var(--foreground)",
@@ -681,7 +667,6 @@ function MatchCard({
           onClick={onComplete}
           className="w-full mt-3 py-2 rounded-[var(--radius-button)] border transition-all cursor-pointer"
           style={{
-            fontFamily: FONT,
             fontSize: "var(--text-sm)",
             fontWeight: "var(--font-weight-semibold)",
             color: "var(--success)",
@@ -695,7 +680,7 @@ function MatchCard({
       )}
 
       {match.completed && (
-        <div className="flex items-center justify-center gap-1.5 mt-2 text-muted-foreground" style={{ fontSize: "var(--text-xs)", fontFamily: FONT }}>
+        <div className="flex items-center justify-center gap-1.5 mt-2 text-muted-foreground" style={{ fontSize: "var(--text-xs)" }}>
           <Check className="w-3 h-3" style={{ color: "var(--success)" }} />
           Slutförd
         </div>
@@ -741,7 +726,6 @@ function StandingsTable({
         className="grid px-4 py-2 border-b border-border/30 text-muted-foreground"
         style={{
           gridTemplateColumns: "2rem 1fr 3.5rem 3rem 3.5rem",
-          fontFamily: FONT,
           fontSize: "var(--text-xs)",
           fontWeight: "var(--font-weight-semibold)",
           letterSpacing: "0.05em",
@@ -766,7 +750,6 @@ function StandingsTable({
         >
           <span
             style={{
-              fontFamily: FONT,
               fontSize: "var(--text-label)",
               fontWeight: "var(--font-weight-bold)",
               color: i < 3 && highlightTop > 0 ? "var(--primary)" : "var(--muted-foreground)",
@@ -777,7 +760,6 @@ function StandingsTable({
           <span
             className="truncate"
             style={{
-              fontFamily: FONT,
               fontSize: "var(--text-label)",
               fontWeight: "var(--font-weight-semibold)",
               color: "var(--foreground)",
@@ -788,7 +770,6 @@ function StandingsTable({
           <span
             className="text-right tabular-nums"
             style={{
-              fontFamily: FONT,
               fontSize: "var(--text-label)",
               fontWeight: "var(--font-weight-bold)",
               color: "var(--primary)",
@@ -798,14 +779,13 @@ function StandingsTable({
           </span>
           <span
             className="text-right tabular-nums text-muted-foreground"
-            style={{ fontFamily: FONT, fontSize: "var(--text-sm)" }}
+            style={{ fontSize: "var(--text-sm)" }}
           >
             {s.wins}
           </span>
           <span
             className="text-right tabular-nums"
             style={{
-              fontFamily: FONT,
               fontSize: "var(--text-sm)",
               color: s.diff > 0 ? "var(--success)" : s.diff < 0 ? "var(--destructive)" : "var(--muted-foreground)",
             }}

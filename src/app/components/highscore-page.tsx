@@ -47,7 +47,7 @@ import type { EloEntry } from "../lib/elo";
 import { computeRevengeData, computeSeasonSummary, generateFunFacts, computePlayerInsights, computeH2HInsights } from "../lib/insights";
 import { buildStatsCsv } from "../lib/stats-csv";
 import { ALL_ACHIEVEMENTS, MYTHIC_COMPLETIONIST, computePlayerAchievements, syncAchievements } from "../lib/achievements";
-import { FONT, MIN_PLAYERS_FOR_ROUND, INACTIVE_WEEKS } from "./highscore/constants";
+import { MIN_PLAYERS_FOR_ROUND, INACTIVE_WEEKS } from "./highscore/constants";
 import type { RegStep } from "./highscore/constants";
 import { HighscoreEmptyState } from "./highscore/empty-state";
 import { Podium } from "./highscore/podium";
@@ -950,7 +950,6 @@ export function HighscorePage() {
     setAllMonthlySessions((prev) => ({ ...prev, [targetMonth!]: updated }));
     await deleteMonthlySession(sessionId, targetMonth);
 
-
   }
 
   // ── Rename player ──
@@ -993,8 +992,6 @@ export function HighscorePage() {
     }
 
     setRenamingPlayer(false);
-
-
 
     // Save all monthly sessions with renamed player
     await Promise.all([
@@ -1082,7 +1079,6 @@ export function HighscorePage() {
   }, [comparePlayer1, comparePlayer2, activeSessions]);
 
   // Always show all columns regardless of whether data exists
-
 
   // All known players: sorted by most games played (descending), then alphabetically as tiebreaker.
   // We intentionally do NOT merge in session-derived stats names here, so that removed players stay removed.
@@ -1410,8 +1406,6 @@ export function HighscorePage() {
         duplicateError={duplicateError}
       />
 
-
-
       {/* ── Archived month info banner ── */}
       {isArchivedStatMonth && (
         <div
@@ -1420,10 +1414,10 @@ export function HighscorePage() {
         >
           <Archive className="w-4 h-4 text-muted-foreground shrink-0 mt-0.5" />
           <div>
-            <span className="text-foreground block" style={{ fontFamily: FONT, fontSize: "var(--text-sm)", fontWeight: "var(--font-weight-semibold)" }}>
+            <span className="text-foreground block" style={{ fontSize: "var(--text-sm)", fontWeight: "var(--font-weight-semibold)" }}>
               Arkiverad statistik
             </span>
-            <span className="text-muted-foreground" style={{ fontFamily: FONT, fontSize: "var(--text-xs)" }}>
+            <span className="text-muted-foreground" style={{ fontSize: "var(--text-xs)" }}>
               Den här månaden har sammanställd statistik — inga detaljerade speltillfällen.
             </span>
           </div>
@@ -1460,7 +1454,6 @@ export function HighscorePage() {
             background: "var(--primary)",
             color: "var(--primary-foreground)",
             boxShadow: "0 6px 20px rgba(0,0,0,0.35), 0 2px 8px rgba(0,0,0,0.2)",
-            fontFamily: FONT,
             fontSize: "var(--text-label)",
             fontWeight: "var(--font-weight-semibold)",
           }}

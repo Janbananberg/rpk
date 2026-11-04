@@ -22,8 +22,6 @@ import {
   fetchEloResetTimestamp,
 } from "./api";
 
-const FONT = "'Titillium Web', sans-serif";
-
 type AdminTab = "tournaments" | "history" | "settings";
 
 export function AdminPage() {
@@ -101,9 +99,9 @@ export function AdminPage() {
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-sm flex flex-col items-center gap-6">
           <div className="flex items-center gap-3">
             <Shield className="w-8 h-8 text-primary" />
-            <span style={{ fontFamily: FONT, fontSize: "var(--text-h3)", fontWeight: 700 }} className="text-foreground">Admin</span>
+            <span style={{ fontSize: "var(--text-h3)", fontWeight: 700 }} className="text-foreground">Admin</span>
           </div>
-          <p className="text-muted-foreground text-center" style={{ fontFamily: FONT, fontSize: "var(--text-base)" }}>
+          <p className="text-muted-foreground text-center" style={{ fontSize: "var(--text-base)" }}>
             Ange lösenord för att komma åt adminpanelen
           </p>
           <div className="w-full flex flex-col gap-3">
@@ -115,7 +113,7 @@ export function AdminPage() {
                 onKeyDown={(e) => e.key === "Enter" && handleLogin()}
                 placeholder="Lösenord..."
                 className="w-full px-4 py-3 pr-12 rounded-[var(--radius-card)] border border-border bg-surface-container-low text-foreground placeholder:text-muted-foreground/50 outline-none focus:border-primary transition-colors"
-                style={{ fontFamily: FONT, fontSize: "var(--text-base)" }}
+                style={{ fontSize: "var(--text-base)" }}
                 autoFocus
                 autoComplete="current-password"
               />
@@ -123,12 +121,12 @@ export function AdminPage() {
                 {showPw ? <EyeOff className="w-4.5 h-4.5" /> : <Eye className="w-4.5 h-4.5" />}
               </button>
             </div>
-            {authError && <p className="text-destructive text-center" style={{ fontFamily: FONT, fontSize: "var(--text-label)" }}>{authError}</p>}
+            {authError && <p className="text-destructive text-center" style={{ fontSize: "var(--text-label)" }}>{authError}</p>}
             <button
               onClick={handleLogin}
               disabled={!password || loading}
-              className="w-full py-3 rounded-[var(--radius-button)] bg-primary text-primary-foreground disabled:opacity-30 hover:opacity-90 transition-all cursor-pointer disabled:cursor-not-allowed flex items-center justify-center gap-2"
-              style={{ fontFamily: FONT, fontSize: "var(--text-base)", fontWeight: "var(--font-weight-semibold)" }}
+              className="w-full py-3 rounded-[var(--radius-button)] bg-primary text-primary-foreground disabled:opacity-50 hover:opacity-90 transition-all cursor-pointer disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              style={{ fontSize: "var(--text-base)", fontWeight: "var(--font-weight-semibold)" }}
             >
               {loading ? <div className="w-4 h-4 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" /> : <Lock className="w-4 h-4" />}
               Logga in
@@ -152,7 +150,7 @@ export function AdminPage() {
         <div className="max-w-2xl mx-auto flex items-center justify-between px-4 h-12">
           <div className="flex items-center gap-2">
             <Shield className="w-4 h-4 text-primary" />
-            <span style={{ fontFamily: FONT, fontSize: "var(--text-base)", fontWeight: "var(--font-weight-semibold)" }} className="text-foreground">Adminpanel</span>
+            <span style={{ fontSize: "var(--text-base)", fontWeight: "var(--font-weight-semibold)" }} className="text-foreground">Adminpanel</span>
           </div>
           <div className="flex items-center gap-2">
             <button onClick={handleLogout} className="p-1.5 rounded-full text-muted-foreground hover:text-foreground transition-colors cursor-pointer" title="Logga ut">
@@ -168,7 +166,7 @@ export function AdminPage() {
               className={`flex-1 flex items-center justify-center gap-1 py-3 border-b-2 transition-all duration-200 cursor-pointer whitespace-nowrap min-w-0 px-1 ${
                 activeTab === key ? "border-primary text-primary" : "border-transparent text-muted-foreground hover:text-foreground"
               }`}
-              style={{ fontFamily: FONT, fontSize: "var(--text-sm)", fontWeight: activeTab === key ? "var(--font-weight-semibold)" : "var(--font-weight-normal)" }}
+              style={{ fontSize: "var(--text-sm)", fontWeight: activeTab === key ? "var(--font-weight-semibold)" : "var(--font-weight-normal)" }}
             >
               <Icon className="w-3.5 h-3.5 shrink-0" />
               <span className="truncate">{label}</span>
@@ -184,7 +182,7 @@ export function AdminPage() {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <Swords className="w-4 h-4 text-primary" />
-                <span style={{ fontFamily: FONT, fontSize: "var(--text-base)", fontWeight: "var(--font-weight-semibold)" }} className="text-foreground">
+                <span style={{ fontSize: "var(--text-base)", fontWeight: "var(--font-weight-semibold)" }} className="text-foreground">
                   Aktiv turnering
                 </span>
               </div>
@@ -192,7 +190,7 @@ export function AdminPage() {
                 <button
                   onClick={() => setConfirmDeleteTournament(true)}
                   className="flex items-center gap-1.5 px-3 py-1.5 rounded-[var(--radius-button)] text-destructive border border-destructive/20 hover:bg-destructive/10 transition-all cursor-pointer"
-                  style={{ fontFamily: FONT, fontSize: "var(--text-label)" }}
+                  style={{ fontSize: "var(--text-label)" }}
                 >
                   <Trash2 className="w-3 h-3" />
                   Radera
@@ -203,13 +201,13 @@ export function AdminPage() {
             {!activeTournament ? (
               <div className="flex flex-col items-center gap-4 py-16 text-center">
                 <div className="w-16 h-16 rounded-full flex items-center justify-center bg-surface-container-high">
-                  <Swords className="w-8 h-8 text-muted-foreground/30" />
+                  <Swords className="w-8 h-8 text-muted-foreground/60" />
                 </div>
                 <div>
-                  <p style={{ fontFamily: FONT, fontSize: "var(--text-base)", fontWeight: "var(--font-weight-semibold)" }} className="text-foreground">
+                  <p style={{ fontSize: "var(--text-base)", fontWeight: "var(--font-weight-semibold)" }} className="text-foreground">
                     Ingen aktiv turnering
                   </p>
-                  <p className="text-muted-foreground mt-1 max-w-xs mx-auto" style={{ fontFamily: FONT, fontSize: "var(--text-label)" }}>
+                  <p className="text-muted-foreground mt-1 max-w-xs mx-auto" style={{ fontSize: "var(--text-label)" }}>
                     Starta en ny turnering via Turnerings-fliken. Bracketets status synkas hit automatiskt.
                   </p>
                 </div>
@@ -229,10 +227,10 @@ export function AdminPage() {
                         }
                       </div>
                       <div>
-                        <p style={{ fontFamily: FONT, fontSize: "var(--text-base)", fontWeight: "var(--font-weight-semibold)" }} className="text-foreground">
+                        <p style={{ fontSize: "var(--text-base)", fontWeight: "var(--font-weight-semibold)" }} className="text-foreground">
                           {activeTournament.champion ? `Mästare: ${activeTournament.champion}` : "Turnering pågår"}
                         </p>
-                        <p style={{ fontFamily: FONT, fontSize: "12px" }} className="text-muted-foreground">
+                        <p style={{ fontSize: "12px" }} className="text-muted-foreground">
                           Bo{activeTournament.bestOfConfig.quarter || 3}/{activeTournament.bestOfConfig.semi}/{activeTournament.bestOfConfig.final} · Startad {new Date(activeTournament.createdAt).toLocaleString("sv-SE", { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })}
                         </p>
                       </div>
@@ -246,7 +244,7 @@ export function AdminPage() {
                         ? <CheckCircle2 className="w-3.5 h-3.5" />
                         : <Loader2 className="w-3.5 h-3.5 animate-spin" />
                       }
-                      <span style={{ fontFamily: FONT, fontSize: "var(--text-label)", fontWeight: "var(--font-weight-semibold)" }}>
+                      <span style={{ fontSize: "var(--text-label)", fontWeight: "var(--font-weight-semibold)" }}>
                         {activeTournament.status === "completed" ? "Avslutad" : "Pågår"}
                       </span>
                     </div>
@@ -264,10 +262,10 @@ export function AdminPage() {
                             isChampion
                               ? "border-[var(--success)]/30 bg-[var(--success)]/[0.06] text-[var(--success)]"
                               : isEliminated
-                              ? "border-border/20 text-muted-foreground/40"
+                              ? "border-border/20 text-muted-foreground/60"
                               : "border-border/30 text-foreground"
                           }`}
-                          style={{ fontFamily: FONT, fontSize: "12px", fontWeight: isChampion ? 700 : "var(--font-weight-normal)" }}
+                          style={{ fontSize: "12px", fontWeight: isChampion ? 700 : "var(--font-weight-normal)" }}
                         >
                           {isChampion && <Trophy className="w-3 h-3" />}
                           {name}
@@ -291,7 +289,7 @@ export function AdminPage() {
                 {/* Live update indicator */}
                 <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-[var(--radius-button)] self-start border border-[var(--success)]/20" style={{ background: "var(--surface-container-low)" }}>
                   <div className="w-1.5 h-1.5 rounded-full bg-[var(--success)] animate-pulse" />
-                  <span className="text-[var(--success)]" style={{ fontFamily: FONT, fontSize: "11px", fontWeight: "var(--font-weight-semibold)" }}>
+                  <span className="text-[var(--success)]" style={{ fontSize: "11px", fontWeight: "var(--font-weight-semibold)" }}>
                     Auto-uppdatering var 5:e sekund
                   </span>
                 </div>
@@ -302,13 +300,13 @@ export function AdminPage() {
             {tournamentHistory.length > 0 && (
               <div className="flex flex-col gap-3 pt-4 border-t border-border/30">
                 <div className="flex items-center justify-between">
-                  <span style={{ fontFamily: FONT, fontSize: "var(--text-label)", fontWeight: "var(--font-weight-semibold)" }} className="text-muted-foreground">
+                  <span style={{ fontSize: "var(--text-label)", fontWeight: "var(--font-weight-semibold)" }} className="text-muted-foreground">
                     Senaste turneringar
                   </span>
                   <button
                     onClick={() => setActiveTab("history")}
                     className="text-primary hover:underline cursor-pointer"
-                    style={{ fontFamily: FONT, fontSize: "12px" }}
+                    style={{ fontSize: "12px" }}
                   >
                     Visa alla →
                   </button>
@@ -317,8 +315,8 @@ export function AdminPage() {
                   <div key={entry.id} className="flex items-center gap-3 px-3 py-2.5 rounded-[var(--radius-card)] border border-border/30" style={{ background: "var(--surface-container)" }}>
                     <Trophy className="w-4 h-4 text-primary shrink-0" />
                     <div className="flex-1 min-w-0">
-                      <span className="text-primary truncate block" style={{ fontFamily: FONT, fontSize: "var(--text-label)", fontWeight: "var(--font-weight-semibold)" }}>{entry.champion}</span>
-                      <span className="text-muted-foreground" style={{ fontFamily: FONT, fontSize: "11px" }}>
+                      <span className="text-primary truncate block" style={{ fontSize: "var(--text-label)", fontWeight: "var(--font-weight-semibold)" }}>{entry.champion}</span>
+                      <span className="text-muted-foreground" style={{ fontSize: "11px" }}>
                         {new Date(entry.date).toLocaleDateString("sv-SE", { month: "short", day: "numeric" })} · {entry.players.length} spelare
                       </span>
                     </div>
@@ -333,9 +331,9 @@ export function AdminPage() {
         {activeTab === "history" && (
           <motion.div key="history" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col gap-5">
             <div className="flex items-center justify-between">
-              <span style={{ fontFamily: FONT, fontSize: "var(--text-base)", fontWeight: "var(--font-weight-semibold)" }} className="text-foreground">Turneringshistorik</span>
+              <span style={{ fontSize: "var(--text-base)", fontWeight: "var(--font-weight-semibold)" }} className="text-foreground">Turneringshistorik</span>
               {tournamentHistory.length > 0 && (
-                <button onClick={() => setConfirmClearHistory(true)} className="flex items-center gap-1.5 px-4 py-2 rounded-[var(--radius-button)] bg-destructive text-destructive-foreground hover:opacity-90 transition-all cursor-pointer" style={{ fontFamily: FONT, fontSize: "var(--text-label)", fontWeight: "var(--font-weight-semibold)" }}>
+                <button onClick={() => setConfirmClearHistory(true)} className="flex items-center gap-1.5 px-4 py-2 rounded-[var(--radius-button)] bg-destructive text-destructive-foreground hover:opacity-90 transition-all cursor-pointer" style={{ fontSize: "var(--text-label)", fontWeight: "var(--font-weight-semibold)" }}>
                   <Trash2 className="w-3.5 h-3.5" /> Rensa alla
                 </button>
               )}
@@ -352,13 +350,13 @@ export function AdminPage() {
                         <div className="flex items-center gap-3 min-w-0">
                           <div className="w-10 h-10 rounded-full flex items-center justify-center shrink-0 bg-primary/10"><Trophy className="w-5 h-5 text-primary" /></div>
                           <div className="flex flex-col min-w-0">
-                            <span className="text-primary truncate" style={{ fontFamily: FONT, fontSize: "var(--text-base)", fontWeight: "var(--font-weight-semibold)" }}>{entry.champion}</span>
+                            <span className="text-primary truncate" style={{ fontSize: "var(--text-base)", fontWeight: "var(--font-weight-semibold)" }}>{entry.champion}</span>
                             <div className="flex items-center gap-1.5 flex-wrap">
-                              <span className="text-muted-foreground" style={{ fontFamily: FONT, fontSize: "12px" }}>{dateStr} {timeStr}</span>
-                              <span className="text-muted-foreground/40">|</span>
-                              <span className="text-muted-foreground" style={{ fontFamily: FONT, fontSize: "12px" }}>Bo{entry.bestOfQuarter || 3}/{entry.bestOfSemi}/{entry.bestOfFinal}</span>
-                              <span className="text-muted-foreground/40">|</span>
-                              <span className="text-muted-foreground" style={{ fontFamily: FONT, fontSize: "12px" }}>{entry.players.join(", ")}</span>
+                              <span className="text-muted-foreground" style={{ fontSize: "12px" }}>{dateStr} {timeStr}</span>
+                              <span className="text-muted-foreground/60">|</span>
+                              <span className="text-muted-foreground" style={{ fontSize: "12px" }}>Bo{entry.bestOfQuarter || 3}/{entry.bestOfSemi}/{entry.bestOfFinal}</span>
+                              <span className="text-muted-foreground/60">|</span>
+                              <span className="text-muted-foreground" style={{ fontSize: "12px" }}>{entry.players.join(", ")}</span>
                             </div>
                           </div>
                         </div>
@@ -370,17 +368,17 @@ export function AdminPage() {
                             const w = (entry as any)[k];
                             return w ? (
                               <div key={k} className="flex flex-col gap-0.5">
-                                <span className="text-muted-foreground/40 uppercase" style={{ fontFamily: FONT, fontSize: "9px", fontWeight: 700, letterSpacing: "0.1em" }}>QF{i + 1}</span>
-                                <span className="text-muted-foreground truncate" style={{ fontFamily: FONT, fontSize: "var(--text-xs)" }}>{w}</span>
+                                <span className="text-muted-foreground/60 uppercase" style={{ fontSize: "9px", fontWeight: 700, letterSpacing: "0.1em" }}>QF{i + 1}</span>
+                                <span className="text-muted-foreground truncate" style={{ fontSize: "var(--text-xs)" }}>{w}</span>
                               </div>
                             ) : null;
                           })}
                         </div>
                       )}
                       <div className="mt-2 flex gap-3 pl-[52px]">
-                        <div className="flex-1 flex flex-col gap-0.5"><span className="text-muted-foreground/60 uppercase" style={{ fontFamily: FONT, fontSize: "10px", fontWeight: 700, letterSpacing: "0.1em" }}>SF1</span><span className="text-foreground truncate" style={{ fontFamily: FONT, fontSize: "var(--text-label)" }}>{entry.semi1Winner}</span></div>
-                        <div className="flex-1 flex flex-col gap-0.5"><span className="text-muted-foreground/60 uppercase" style={{ fontFamily: FONT, fontSize: "10px", fontWeight: 700, letterSpacing: "0.1em" }}>SF2</span><span className="text-foreground truncate" style={{ fontFamily: FONT, fontSize: "var(--text-label)" }}>{entry.semi2Winner}</span></div>
-                        <div className="flex-1 flex flex-col gap-0.5"><span className="text-primary/60 uppercase" style={{ fontFamily: FONT, fontSize: "10px", fontWeight: 700, letterSpacing: "0.1em" }}>Final</span><span className="text-primary truncate" style={{ fontFamily: FONT, fontSize: "var(--text-label)", fontWeight: "var(--font-weight-semibold)" }}>{entry.champion}</span></div>
+                        <div className="flex-1 flex flex-col gap-0.5"><span className="text-muted-foreground/60 uppercase" style={{ fontSize: "10px", fontWeight: 700, letterSpacing: "0.1em" }}>SF1</span><span className="text-foreground truncate" style={{ fontSize: "var(--text-label)" }}>{entry.semi1Winner}</span></div>
+                        <div className="flex-1 flex flex-col gap-0.5"><span className="text-muted-foreground/60 uppercase" style={{ fontSize: "10px", fontWeight: 700, letterSpacing: "0.1em" }}>SF2</span><span className="text-foreground truncate" style={{ fontSize: "var(--text-label)" }}>{entry.semi2Winner}</span></div>
+                        <div className="flex-1 flex flex-col gap-0.5"><span className="text-primary/60 uppercase" style={{ fontSize: "10px", fontWeight: 700, letterSpacing: "0.1em" }}>Final</span><span className="text-primary truncate" style={{ fontSize: "var(--text-label)", fontWeight: "var(--font-weight-semibold)" }}>{entry.champion}</span></div>
                       </div>
                     </div>
                   );
@@ -389,7 +387,7 @@ export function AdminPage() {
             ) : (
               <div className="flex flex-col items-center gap-2 py-12 text-muted-foreground">
                 <Trophy className="w-8 h-8 opacity-30" />
-                <span style={{ fontFamily: FONT, fontSize: "var(--text-label)" }}>Inga avslutade turneringar</span>
+                <span style={{ fontSize: "var(--text-label)" }}>Inga avslutade turneringar</span>
               </div>
             )}
           </motion.div>
@@ -403,15 +401,15 @@ export function AdminPage() {
             <div className="rounded-[var(--radius-card)] border border-border/50 p-5 flex flex-col gap-4" style={{ background: "var(--surface-container-low)" }}>
               <div className="flex items-center gap-2">
                 <RotateCcw className="w-4 h-4 text-primary" />
-                <span style={{ fontFamily: FONT, fontSize: "var(--text-base)", fontWeight: "var(--font-weight-semibold)" }} className="text-foreground">Återställ Elo</span>
+                <span style={{ fontSize: "var(--text-base)", fontWeight: "var(--font-weight-semibold)" }} className="text-foreground">Återställ Elo</span>
               </div>
-              <p className="text-muted-foreground" style={{ fontFamily: FONT, fontSize: "var(--text-label)", lineHeight: 1.5 }}>
-                Återställer alla spelares Elo-rating till 1000 och tar bort alla Elo-relaterade achievements (Underdog, Peak Performance, Free Fall, G.O.A.T., Untouchable, Transcendent, Rock Bottom). Historisk data raderas inte — bara Elo-beräkningen börjar om från noll.
+              <p className="text-muted-foreground" style={{ fontSize: "var(--text-label)", lineHeight: 1.5 }}>
+                Återställer alla spelares Elo-rating till 1000 och tar bort alla Elo-relaterade achievements (Skrällmakaren, Toppform, Fritt Fall, Tidernas bästa, Oberörbar, Överjordisk, Botten nådd). Historisk data raderas inte — bara Elo-beräkningen börjar om från noll.
               </p>
               {eloResetTs && (
                 <div className="flex items-center gap-2 px-3 py-2 rounded-[var(--radius-button)] border border-border/30" style={{ background: "var(--surface-container)" }}>
                   <Clock className="w-3.5 h-3.5 text-muted-foreground" />
-                  <span className="text-muted-foreground" style={{ fontFamily: FONT, fontSize: "var(--text-xs)" }}>
+                  <span className="text-muted-foreground" style={{ fontSize: "var(--text-xs)" }}>
                     Senaste reset: {new Date(eloResetTs).toLocaleDateString("sv-SE", { year: "numeric", month: "long", day: "numeric", hour: "2-digit", minute: "2-digit" })}
                   </span>
                 </div>
@@ -420,7 +418,7 @@ export function AdminPage() {
                 onClick={() => setConfirmEloReset(true)}
                 disabled={eloResetting}
                 className="self-start flex items-center gap-1.5 px-4 py-2 rounded-[var(--radius-button)] border border-primary/40 text-primary hover:bg-primary/10 transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-                style={{ fontFamily: FONT, fontSize: "var(--text-label)", fontWeight: "var(--font-weight-semibold)" }}
+                style={{ fontSize: "var(--text-label)", fontWeight: "var(--font-weight-semibold)" }}
               >
                 {eloResetting ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <RotateCcw className="w-3.5 h-3.5" />}
                 {eloResetting ? "Återställer..." : "Återställ Elo nu"}
@@ -484,7 +482,7 @@ export function AdminPage() {
         {toast && (
           <motion.div initial={{ opacity: 0, y: 50, scale: 0.9 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: 20, scale: 0.95 }} className="fixed bottom-20 md:bottom-6 left-1/2 -translate-x-1/2 z-50 px-5 py-3 rounded-[var(--radius-button)] bg-primary text-primary-foreground shadow-lg flex items-center gap-2">
             <Check className="w-4 h-4" />
-            <span style={{ fontFamily: FONT, fontSize: "var(--text-label)", fontWeight: "var(--font-weight-semibold)" }}>{toast}</span>
+            <span style={{ fontSize: "var(--text-label)", fontWeight: "var(--font-weight-semibold)" }}>{toast}</span>
           </motion.div>
         )}
       </AnimatePresence>
@@ -502,7 +500,6 @@ interface MatchStatusProps {
 }
 
 function MatchStatusCard({ label, match, isFinal }: MatchStatusProps) {
-  const F = "'Titillium Web', sans-serif";
   const isDone = !!match.winner;
   const isWaiting = !match.player1 || !match.player2;
   const totalSets = match.scores1.length;
@@ -526,26 +523,26 @@ function MatchStatusCard({ label, match, isFinal }: MatchStatusProps) {
             {isDone ? (
               isFinal ? <Trophy className="w-3 h-3 text-[var(--success)]" /> : <CheckCircle2 className="w-3 h-3 text-primary" />
             ) : isWaiting ? (
-              <Pause className="w-3 h-3 text-muted-foreground/40" />
+              <Pause className="w-3 h-3 text-muted-foreground/60" />
             ) : (
               <Zap className="w-3 h-3 text-primary" />
             )}
           </div>
-          <span style={{ fontFamily: F, fontSize: "var(--text-label)", fontWeight: "var(--font-weight-semibold)" }} className="text-foreground">{label}</span>
+          <span style={{ fontSize: "var(--text-label)", fontWeight: "var(--font-weight-semibold)" }} className="text-foreground">{label}</span>
         </div>
         <div className="flex items-center gap-2">
           {!isWaiting && !isDone && (
-            <span className="text-primary" style={{ fontFamily: F, fontSize: "11px", fontWeight: "var(--font-weight-semibold)" }}>
+            <span className="text-primary" style={{ fontSize: "11px", fontWeight: "var(--font-weight-semibold)" }}>
               Set {playedSets}/{totalSets}
             </span>
           )}
           {isDone && (
-            <span className={isFinal ? "text-[var(--success)]" : "text-primary"} style={{ fontFamily: F, fontSize: "11px", fontWeight: "var(--font-weight-semibold)" }}>
+            <span className={isFinal ? "text-[var(--success)]" : "text-primary"} style={{ fontSize: "11px", fontWeight: "var(--font-weight-semibold)" }}>
               Klar
             </span>
           )}
           {isWaiting && (
-            <span className="text-muted-foreground/40" style={{ fontFamily: F, fontSize: "11px" }}>Väntar</span>
+            <span className="text-muted-foreground/60" style={{ fontSize: "11px" }}>Väntar</span>
           )}
         </div>
       </div>
@@ -563,7 +560,6 @@ function MatchStatusCard({ label, match, isFinal }: MatchStatusProps) {
 function PlayerRow({ name, wins, isWinner, scores, opponentScores, placeholder }: {
   name: string; wins: number; isWinner: boolean; scores: number[]; opponentScores: number[]; placeholder: string;
 }) {
-  const F = "'Titillium Web', sans-serif";
   const displayName = name || placeholder;
 
   return (
@@ -571,12 +567,12 @@ function PlayerRow({ name, wins, isWinner, scores, opponentScores, placeholder }
       {isWinner && <Trophy className="w-3 h-3 text-primary shrink-0" />}
       {!isWinner && <div className="w-3 shrink-0" />}
       <span
-        className={`flex-1 truncate ${!name ? "text-muted-foreground/30 italic" : isWinner ? "text-primary" : "text-foreground"}`}
-        style={{ fontFamily: F, fontSize: "var(--text-label)", fontWeight: isWinner ? 700 : "var(--font-weight-normal)" }}
+        className={`flex-1 truncate ${!name ? "text-muted-foreground/60 italic" : isWinner ? "text-primary" : "text-foreground"}`}
+        style={{ fontSize: "var(--text-label)", fontWeight: isWinner ? 700 : "var(--font-weight-normal)" }}
       >
         {displayName}
       </span>
-      <span className="text-foreground tabular-nums" style={{ fontFamily: F, fontSize: "var(--text-label)", fontWeight: 700 }}>
+      <span className="text-foreground tabular-nums" style={{ fontSize: "var(--text-label)", fontWeight: 700 }}>
         {wins}
       </span>
       <div className="flex gap-1">
@@ -587,9 +583,9 @@ function PlayerRow({ name, wins, isWinner, scores, opponentScores, placeholder }
             <span
               key={i}
               className={`w-5 h-5 rounded flex items-center justify-center tabular-nums ${
-                !played ? "text-muted-foreground/20" : won ? "bg-primary/10 text-primary" : "text-muted-foreground"
+                !played ? "text-muted-foreground/60" : won ? "bg-primary/10 text-primary" : "text-muted-foreground"
               }`}
-              style={{ fontFamily: F, fontSize: "11px", fontWeight: played ? 700 : "var(--font-weight-normal)" }}
+              style={{ fontSize: "11px", fontWeight: played ? 700 : "var(--font-weight-normal)" }}
             >
               {played ? s : "–"}
             </span>
@@ -603,19 +599,18 @@ function PlayerRow({ name, wins, isWinner, scores, opponentScores, placeholder }
 function ConfirmDialog({ title, description, onConfirm, onCancel, destructive }: {
   title: string; description: string; onConfirm: () => void; onCancel: () => void; destructive?: boolean;
 }) {
-  const F = "'Titillium Web', sans-serif";
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[60] flex items-center justify-center p-4" onClick={onCancel}>
       <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
       <motion.div initial={{ opacity: 0, scale: 0.9, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95, y: 10 }} transition={{ type: "spring", damping: 25, stiffness: 300 }} className="relative w-full max-w-sm rounded-[var(--radius-card)] border border-border overflow-hidden p-6 flex flex-col gap-4" style={{ background: "var(--surface-container)" }} onClick={(e) => e.stopPropagation()}>
         <div className="flex items-center gap-2">
           <AlertTriangle className={`w-5 h-5 ${destructive ? "text-destructive" : "text-primary"}`} />
-          <span style={{ fontFamily: F, fontSize: "var(--text-base)", fontWeight: "var(--font-weight-semibold)" }} className="text-foreground">{title}</span>
+          <span style={{ fontSize: "var(--text-base)", fontWeight: "var(--font-weight-semibold)" }} className="text-foreground">{title}</span>
         </div>
-        <p className="text-muted-foreground" style={{ fontFamily: F, fontSize: "var(--text-label)" }}>{description}</p>
+        <p className="text-muted-foreground" style={{ fontSize: "var(--text-label)" }}>{description}</p>
         <div className="flex gap-2">
-          <button onClick={onCancel} className="flex-1 py-2.5 rounded-[var(--radius-button)] border border-border/50 text-foreground hover:bg-surface-container-high transition-all cursor-pointer" style={{ fontFamily: F, fontSize: "var(--text-label)", fontWeight: "var(--font-weight-semibold)" }}>Avbryt</button>
-          <button onClick={onConfirm} className={`flex-1 py-2.5 rounded-[var(--radius-button)] hover:opacity-90 transition-all cursor-pointer ${destructive ? "bg-destructive text-destructive-foreground" : "bg-primary text-primary-foreground"}`} style={{ fontFamily: F, fontSize: "var(--text-label)", fontWeight: "var(--font-weight-semibold)" }}>Bekräfta</button>
+          <button onClick={onCancel} className="flex-1 py-2.5 rounded-[var(--radius-button)] border border-border/50 text-foreground hover:bg-surface-container-high transition-all cursor-pointer" style={{ fontSize: "var(--text-label)", fontWeight: "var(--font-weight-semibold)" }}>Avbryt</button>
+          <button onClick={onConfirm} className={`flex-1 py-2.5 rounded-[var(--radius-button)] hover:opacity-90 transition-all cursor-pointer ${destructive ? "bg-destructive text-destructive-foreground" : "bg-primary text-primary-foreground"}`} style={{ fontSize: "var(--text-label)", fontWeight: "var(--font-weight-semibold)" }}>Bekräfta</button>
         </div>
       </motion.div>
     </motion.div>

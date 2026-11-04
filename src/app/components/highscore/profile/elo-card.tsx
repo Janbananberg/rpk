@@ -3,7 +3,6 @@ import { computePlayerPercentile, getCSGORank } from "../../../lib/rank";
 import { SEED_MIN_ROUNDS, weightedDelta } from "../../../lib/elo";
 import type { EloEntry } from "../../../lib/elo";
 import type { PlayerStats } from "../../../lib/stats";
-import { FONT } from "../constants";
 import { EloSparkline } from "../elo-sparkline";
 import { GruvrankBadge } from "../gruvrank-badge";
 
@@ -50,7 +49,6 @@ export function ProfileEloCard({
                 <div className="flex items-baseline gap-2">
                   <span
                     style={{
-                      fontFamily: FONT,
                       fontSize: "var(--text-h4)",
                       fontWeight: "var(--font-weight-bold)",
                       color: "var(--primary)",
@@ -62,7 +60,6 @@ export function ProfileEloCard({
                   {entry.delta !== 0 && (
                     <span
                       style={{
-                        fontFamily: FONT,
                         fontSize: "var(--text-xs)",
                         fontWeight: "var(--font-weight-semibold)",
                         color: entry.delta > 0 ? "var(--success)" : "var(--destructive)",
@@ -73,16 +70,16 @@ export function ProfileEloCard({
                   )}
                   <span
                     className="text-muted-foreground"
-                    style={{ fontFamily: FONT, fontSize: "var(--text-xs)" }}
+                    style={{ fontSize: "var(--text-xs)" }}
                   >
                     Elo-tal
                   </span>
                 </div>
                 <div className="flex items-center gap-3 mt-0.5">
-                  <span className="text-muted-foreground" style={{ fontFamily: FONT, fontSize: "var(--text-xs)" }}>
+                  <span className="text-muted-foreground" style={{ fontSize: "var(--text-xs)" }}>
                     Högsta <strong style={{ color: "var(--foreground)" }}>{entry.peakElo}</strong>
                   </span>
-                  <span className="text-muted-foreground" style={{ fontFamily: FONT, fontSize: "var(--text-xs)" }}>
+                  <span className="text-muted-foreground" style={{ fontSize: "var(--text-xs)" }}>
                     {entry.matches} rundor
                   </span>
                 </div>
@@ -119,7 +116,6 @@ export function ProfileEloCard({
                         <>
                           <span
                             style={{
-                              fontFamily: FONT,
                               fontSize: "var(--text-h4)",
                               fontWeight: "var(--font-weight-bold)",
                               color: effColor,
@@ -130,13 +126,12 @@ export function ProfileEloCard({
                           </span>
                           <span
                             className="text-muted-foreground"
-                            style={{ fontFamily: FONT, fontSize: 9, textTransform: "uppercase" as const, letterSpacing: "0.05em", marginTop: 2 }}
+                            style={{ fontSize: 9, textTransform: "uppercase" as const, letterSpacing: "0.05em", marginTop: 2 }}
                           >
                             Eff. Δ
                           </span>
                           <span
                             style={{
-                              fontFamily: FONT,
                               fontSize: 9,
                               color: "var(--muted-foreground)",
                               marginTop: 2,
@@ -152,7 +147,6 @@ export function ProfileEloCard({
                     {monthRank !== null && (
                       <span
                         style={{
-                          fontFamily: FONT,
                           fontSize: 9,
                           fontWeight: "var(--font-weight-semibold)",
                           color: monthRank <= 3 ? "var(--warning)" : "var(--muted-foreground)",
@@ -174,7 +168,7 @@ export function ProfileEloCard({
                 <div className="flex items-center justify-between mb-1">
                   <span
                     className="text-muted-foreground"
-                    style={{ fontFamily: FONT, fontSize: "var(--text-xs)", letterSpacing: "0.05em", textTransform: "uppercase" as const }}
+                    style={{ fontSize: "var(--text-xs)", letterSpacing: "0.05em", textTransform: "uppercase" as const }}
                   >
                     Elo-utveckling
                   </span>
@@ -186,7 +180,7 @@ export function ProfileEloCard({
                     })()}
                     <span
                       className="text-muted-foreground"
-                      style={{ fontFamily: FONT, fontSize: "var(--text-xs)" }}
+                      style={{ fontSize: "var(--text-xs)" }}
                     >
                       Senaste {Math.min(eloHistory[selectedPlayer.name].length, 20)} matcher
                     </span>
@@ -206,7 +200,6 @@ export function ProfileEloCard({
                 <span
                   className="block truncate"
                   style={{
-                    fontFamily: FONT,
                     fontSize: "var(--text-sm)",
                     fontWeight: "var(--font-weight-semibold)",
                     color: csgoRank.color,
@@ -218,7 +211,6 @@ export function ProfileEloCard({
                 <span
                   className="block"
                   style={{
-                    fontFamily: FONT,
                     fontSize: "var(--text-xs)",
                     color: "var(--muted-foreground)",
                     marginTop: 1,
@@ -244,7 +236,7 @@ export function ProfileEloCard({
                     />
                   ))}
                 </div>
-                <span style={{ fontFamily: FONT, fontSize: 9, color: "var(--muted-foreground)", marginTop: 2 }}>
+                <span style={{ fontSize: 9, color: "var(--muted-foreground)", marginTop: 2 }}>
                   {csgoRank.tier}/7
                 </span>
               </div>

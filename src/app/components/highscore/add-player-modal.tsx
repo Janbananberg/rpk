@@ -1,7 +1,6 @@
 import { AnimatePresence, motion } from "motion/react";
 import { Users, X, Plus } from "lucide-react";
 import { PLAYER_EMOJIS } from "../../lib/players";
-import { FONT } from "./constants";
 
 interface AddPlayerModalProps {
   showAddPlayer: boolean;
@@ -76,7 +75,6 @@ export function AddPlayerModal({
                   <span
                     className="text-foreground"
                     style={{
-                      fontFamily: FONT,
                       fontSize: "var(--text-base)",
                       fontWeight: "var(--font-weight-semibold)",
                     }}
@@ -151,7 +149,6 @@ export function AddPlayerModal({
                   autoFocus
                   className="flex-1 px-4 py-3 rounded-lg border bg-input-background text-foreground placeholder:text-muted-foreground"
                   style={{
-                    fontFamily: FONT,
                     fontSize: "var(--text-base)",
                     borderRadius: "var(--radius-card)",
                     borderColor: duplicateError ? "var(--destructive)" : "var(--border)",
@@ -165,7 +162,6 @@ export function AddPlayerModal({
                 <div
                   className="mb-4 px-3 py-2 rounded-lg flex items-center gap-2"
                   style={{
-                    fontFamily: FONT,
                     fontSize: "var(--text-label)",
                     borderRadius: "var(--radius-card)",
                     background: "color-mix(in srgb, var(--destructive) 12%, transparent)",
@@ -181,7 +177,7 @@ export function AddPlayerModal({
               {newPlayerName.trim() && !duplicateError && (
                 <div
                   className="mb-4 px-3 py-2 rounded-lg bg-muted/20 text-muted-foreground"
-                  style={{ fontFamily: FONT, fontSize: "var(--text-label)", borderRadius: "var(--radius-card)" }}
+                  style={{ fontSize: "var(--text-label)", borderRadius: "var(--radius-card)" }}
                 >
                   Visas som:{" "}
                   <span
@@ -198,9 +194,8 @@ export function AddPlayerModal({
                 <button
                   onClick={handleAddPlayer}
                   disabled={!newPlayerName.trim()}
-                  className="flex-1 py-3 rounded-lg transition-all cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+                  className="flex-1 py-3 rounded-lg transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                   style={{
-                    fontFamily: FONT,
                     fontSize: "var(--text-label)",
                     fontWeight: "var(--font-weight-semibold)",
                     background: "var(--primary)",
@@ -220,7 +215,6 @@ export function AddPlayerModal({
                   }}
                   className="px-5 py-3 rounded-lg border border-border text-muted-foreground hover:text-foreground cursor-pointer transition-all"
                   style={{
-                    fontFamily: FONT,
                     fontSize: "var(--text-label)",
                     borderRadius: "var(--radius-card)",
                   }}

@@ -2,8 +2,6 @@ import React from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Lock, Eye, EyeOff, Users } from "lucide-react";
 
-const FONT = "'Titillium Web', sans-serif";
-
 type AchievementRarity = "common" | "uncommon" | "rare" | "legendary" | "mythic";
 
 interface Achievement {
@@ -79,14 +77,13 @@ export function AchievementDisplay({
         <div className="flex items-center gap-2">
           <span
             className="text-muted-foreground"
-            style={{ fontSize: "var(--text-xs)", textTransform: "uppercase", letterSpacing: "0.05em", fontFamily: FONT }}
+            style={{ fontSize: "var(--text-xs)", textTransform: "uppercase", letterSpacing: "0.05em" }}
           >
             Achievements
           </span>
           <span
             className="px-1.5 py-0.5 rounded-full"
             style={{
-              fontFamily: FONT,
               fontSize: 10,
               fontWeight: "var(--font-weight-bold)",
               background: "var(--primary)",
@@ -103,7 +100,6 @@ export function AchievementDisplay({
             className="flex items-center gap-1 px-2 py-1 rounded-full border border-border cursor-pointer transition-all"
             style={{
               background: showLocked ? "var(--surface-container-high)" : "transparent",
-              fontFamily: FONT,
               fontSize: "var(--text-xs)",
               color: "var(--muted-foreground)",
               borderRadius: "var(--radius)",
@@ -129,11 +125,11 @@ export function AchievementDisplay({
           />
         </div>
         <div className="flex items-center justify-between mt-1">
-          <span style={{ fontFamily: FONT, fontSize: 10, color: "var(--muted-foreground)" }}>
+          <span style={{ fontSize: 10, color: "var(--muted-foreground)" }}>
             {pct}% upplåst
           </span>
           {unlocked.length > 0 && (
-            <span style={{ fontFamily: FONT, fontSize: 10, color: "var(--muted-foreground)" }}>
+            <span style={{ fontSize: 10, color: "var(--muted-foreground)" }}>
               {lockedAchievements.length} kvar
             </span>
           )}
@@ -144,10 +140,10 @@ export function AchievementDisplay({
       {unlocked.length === 0 && (
         <div className="flex flex-col items-center justify-center py-4 text-center" style={{ opacity: 0.6 }}>
           <Lock className="w-7 h-7 text-muted-foreground" style={{ marginBottom: 6 }} aria-hidden />
-          <span className="text-muted-foreground" style={{ fontFamily: FONT, fontSize: "var(--text-sm)" }}>
+          <span className="text-muted-foreground" style={{ fontSize: "var(--text-sm)" }}>
             Inga achievements upplåsta ännu
           </span>
-          <span className="text-muted-foreground" style={{ fontFamily: FONT, fontSize: "var(--text-xs)", marginTop: 2 }}>
+          <span className="text-muted-foreground" style={{ fontSize: "var(--text-xs)", marginTop: 2 }}>
             Spela fler matcher för att låsa upp!
           </span>
         </div>
@@ -163,7 +159,6 @@ export function AchievementDisplay({
             />
             <span
               style={{
-                fontFamily: FONT,
                 fontSize: 9,
                 fontWeight: "var(--font-weight-semibold)",
                 textTransform: "uppercase",
@@ -195,7 +190,6 @@ export function AchievementDisplay({
                       style={{
                         background: rc.color,
                         color: "var(--background)",
-                        fontFamily: FONT,
                         fontSize: 7,
                         fontWeight: "var(--font-weight-bold)",
                         lineHeight: 1,
@@ -209,7 +203,6 @@ export function AchievementDisplay({
                   <div className="flex flex-col">
                     <span
                       style={{
-                        fontFamily: FONT,
                         fontSize: "var(--text-xs)",
                         fontWeight: "var(--font-weight-semibold)",
                         color: rc.color,
@@ -220,7 +213,6 @@ export function AchievementDisplay({
                     </span>
                     <span
                       style={{
-                        fontFamily: FONT,
                         fontSize: 9,
                         color: `color-mix(in srgb, ${rc.color} 60%, transparent)`,
                         lineHeight: 1.2,
@@ -231,7 +223,6 @@ export function AchievementDisplay({
                   </div>
                   <span
                     style={{
-                      fontFamily: FONT,
                       fontSize: 8,
                       fontWeight: "var(--font-weight-semibold)",
                       color: `color-mix(in srgb, ${rc.color} 45%, transparent)`,
@@ -267,7 +258,7 @@ export function AchievementDisplay({
                 <Lock className="w-3 h-3 text-muted-foreground" />
                 <span
                   className="text-muted-foreground"
-                  style={{ fontSize: "var(--text-xs)", textTransform: "uppercase", letterSpacing: "0.05em", fontFamily: FONT }}
+                  style={{ fontSize: "var(--text-xs)", textTransform: "uppercase", letterSpacing: "0.05em" }}
                 >
                   Låsta ({lockedAchievements.length})
                 </span>
@@ -281,7 +272,6 @@ export function AchievementDisplay({
                     />
                     <span
                       style={{
-                        fontFamily: FONT,
                         fontSize: 9,
                         fontWeight: "var(--font-weight-semibold)",
                         textTransform: "uppercase",
@@ -314,7 +304,6 @@ export function AchievementDisplay({
                             <div className="flex items-center gap-1.5">
                               <span
                                 style={{
-                                  fontFamily: FONT,
                                   fontSize: "var(--text-xs)",
                                   fontWeight: "var(--font-weight-semibold)",
                                   color: "var(--foreground)",
@@ -326,7 +315,6 @@ export function AchievementDisplay({
                               <span
                                 className="px-1 py-0.5 rounded-full"
                                 style={{
-                                  fontFamily: FONT,
                                   fontSize: 8,
                                   fontWeight: "var(--font-weight-semibold)",
                                   background: `color-mix(in srgb, ${rc.color} 15%, transparent)`,
@@ -339,7 +327,6 @@ export function AchievementDisplay({
                             </div>
                             <span
                               style={{
-                                fontFamily: FONT,
                                 fontSize: 10,
                                 color: "var(--muted-foreground)",
                                 lineHeight: 1.3,
@@ -352,7 +339,6 @@ export function AchievementDisplay({
                             <Lock className="w-3 h-3" style={{ color: "var(--muted-foreground)", opacity: 0.5 }} />
                             <span
                               style={{
-                                fontFamily: FONT,
                                 fontSize: 8,
                                 color: "var(--muted-foreground)",
                                 display: "flex",

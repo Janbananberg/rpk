@@ -3,8 +3,6 @@ import { motion } from "motion/react";
 import type { GameSession } from "./api";
 import { CalendarDays, ChevronDown } from "lucide-react";
 
-const FONT = "'Titillium Web', sans-serif";
-
 /** Strip leading emoji(s) from a player name */
 function stripEmoji(name: string): string {
   return name.replace(/^(?:\p{Emoji_Presentation}|\p{Extended_Pictographic}|\u200d|\ufe0f|[\u{1f3fb}-\u{1f3ff}])+\s*/gu, "").trim();
@@ -37,7 +35,7 @@ export function H2HMatrix({ stats }: { stats: PlayerStatsMinimal[] }) {
     return (
       <div
         className="p-6 text-center text-muted-foreground"
-        style={{ fontFamily: FONT, fontSize: "var(--text-base)" }}
+        style={{ fontSize: "var(--text-base)" }}
       >
         Behöver minst 2 spelare med finalmöten för att visa matrisen
       </div>
@@ -87,7 +85,6 @@ export function H2HMatrix({ stats }: { stats: PlayerStatsMinimal[] }) {
               <th
                 className="sticky left-0 z-10 text-left px-2 py-2"
                 style={{
-                  fontFamily: FONT,
                   fontSize: "var(--text-xs)",
                   color: "var(--muted-foreground)",
                   background: "var(--surface-container)",
@@ -102,7 +99,6 @@ export function H2HMatrix({ stats }: { stats: PlayerStatsMinimal[] }) {
                   key={p.name}
                   className="px-1 py-2 text-center"
                   style={{
-                    fontFamily: FONT,
                     fontSize: "var(--text-xs)",
                     color: "var(--muted-foreground)",
                     fontWeight: "var(--font-weight-normal)",
@@ -123,7 +119,6 @@ export function H2HMatrix({ stats }: { stats: PlayerStatsMinimal[] }) {
                 <td
                   className="sticky left-0 z-10 px-2 py-1.5 truncate"
                   style={{
-                    fontFamily: FONT,
                     fontSize: "var(--text-xs)",
                     color: "var(--foreground)",
                     fontWeight: "var(--font-weight-semibold)",
@@ -144,7 +139,6 @@ export function H2HMatrix({ stats }: { stats: PlayerStatsMinimal[] }) {
                           background: "var(--surface-container-high)",
                           width: 48,
                           height: 36,
-                          fontFamily: FONT,
                           fontSize: "var(--text-xs)",
                           color: "var(--muted-foreground)",
                         }}
@@ -163,7 +157,6 @@ export function H2HMatrix({ stats }: { stats: PlayerStatsMinimal[] }) {
                         ...cellStyle,
                         width: 48,
                         height: 36,
-                        fontFamily: FONT,
                         fontSize: "var(--text-xs)",
                         fontWeight: record && (record.wins + record.losses) > 0 ? "var(--font-weight-semibold)" : "var(--font-weight-normal)",
                         borderRight: "1px solid var(--border)",
@@ -186,7 +179,7 @@ export function H2HMatrix({ stats }: { stats: PlayerStatsMinimal[] }) {
         <button
           onClick={() => setExpanded(!expanded)}
           className="mt-3 flex items-center gap-1.5 mx-auto text-primary cursor-pointer hover:underline"
-          style={{ fontFamily: FONT, fontSize: "var(--text-label)" }}
+          style={{ fontSize: "var(--text-label)" }}
         >
           <ChevronDown className="w-3.5 h-3.5" style={{ transform: expanded ? "rotate(180deg)" : "rotate(0)" }} />
           {expanded ? "Visa färre" : `Visa alla (${matrixPlayers.length})`}
@@ -236,7 +229,7 @@ export function WeekdayHeatmap({ sessions }: { sessions: GameSession[] }) {
     return (
       <div
         className="p-6 text-center text-muted-foreground"
-        style={{ fontFamily: FONT, fontSize: "var(--text-base)" }}
+        style={{ fontSize: "var(--text-base)" }}
       >
         Inga speltillfällen med tidsstämplar att visa
       </div>
@@ -276,7 +269,6 @@ export function WeekdayHeatmap({ sessions }: { sessions: GameSession[] }) {
                 key={slot}
                 className="flex-1 text-center"
                 style={{
-                  fontFamily: FONT,
                   fontSize: "var(--text-xs)",
                   color: "var(--muted-foreground)",
                 }}
@@ -292,7 +284,6 @@ export function WeekdayHeatmap({ sessions }: { sessions: GameSession[] }) {
               <span
                 className="w-10 text-right pr-1 shrink-0"
                 style={{
-                  fontFamily: FONT,
                   fontSize: "var(--text-xs)",
                   color: "var(--muted-foreground)",
                 }}
@@ -320,7 +311,6 @@ export function WeekdayHeatmap({ sessions }: { sessions: GameSession[] }) {
                     {val > 0 && (
                       <span
                         style={{
-                          fontFamily: FONT,
                           fontSize: "var(--text-xs)",
                           fontWeight: isPeak ? "var(--font-weight-bold)" : "var(--font-weight-semibold)",
                           color: getOpacity(val) > 0.5 ? "var(--primary-foreground)" : "var(--primary)",
@@ -339,14 +329,14 @@ export function WeekdayHeatmap({ sessions }: { sessions: GameSession[] }) {
 
       {/* Summary */}
       <div className="flex items-center justify-between mt-4 px-1">
-        <span style={{ fontFamily: FONT, fontSize: "var(--text-sm)", color: "var(--muted-foreground)" }}>
+        <span style={{ fontSize: "var(--text-sm)", color: "var(--muted-foreground)" }}>
           Flest:{" "}
           <span style={{ color: "var(--primary)", fontWeight: "var(--font-weight-semibold)" }}>
             {WEEKDAY_SHORT[peakDay]} {TIME_SLOTS[peakSlot]}
           </span>
           {" "}({peakVal} rundor)
         </span>
-        <span style={{ fontFamily: FONT, fontSize: "var(--text-sm)", color: "var(--muted-foreground)" }}>
+        <span style={{ fontSize: "var(--text-sm)", color: "var(--muted-foreground)" }}>
           Totalt: {totalRounds} rundor
         </span>
       </div>
@@ -370,7 +360,6 @@ export function WeekdayHeatmap({ sessions }: { sessions: GameSession[] }) {
           <span
             key={d}
             style={{
-              fontFamily: FONT,
               fontSize: 9,
               color: dayTotals[i] === Math.max(...dayTotals) ? "var(--primary)" : "var(--muted-foreground)",
               fontWeight: dayTotals[i] === Math.max(...dayTotals) ? "var(--font-weight-bold)" : "var(--font-weight-normal)",
@@ -404,7 +393,6 @@ export function InsightsSection({
         <CalendarDays className="w-3.5 h-3.5 text-primary" />
         <span
           style={{
-            fontFamily: FONT,
             fontSize: "var(--text-label)",
             fontWeight: "var(--font-weight-semibold)",
             color: "var(--foreground)",

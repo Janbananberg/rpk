@@ -58,7 +58,7 @@ function FlipDigit({ value, size = "lg" }: { value: number; size?: "lg" | "sm" }
         >
           <div
             className="absolute left-0 right-0 flex items-center justify-center text-foreground"
-            style={{ height: cardH, top: 0, fontSize, fontWeight: 700, lineHeight: 1, fontFamily: "'Titillium Web', sans-serif" }}
+            style={{ height: cardH, top: 0, fontSize, fontWeight: 700, lineHeight: 1 }}
           >
             {digitStr(current)}
           </div>
@@ -76,7 +76,7 @@ function FlipDigit({ value, size = "lg" }: { value: number; size?: "lg" | "sm" }
         >
           <div
             className="absolute left-0 right-0 flex items-center justify-center text-foreground"
-            style={{ height: cardH, bottom: 0, fontSize, fontWeight: 700, lineHeight: 1, fontFamily: "'Titillium Web', sans-serif" }}
+            style={{ height: cardH, bottom: 0, fontSize, fontWeight: 700, lineHeight: 1 }}
           >
             {digitStr(current)}
           </div>
@@ -352,7 +352,7 @@ export function FlipScoreboard({
               {p1MatchWins}
             </span>
             <span
-              className="text-muted-foreground/40"
+              className="text-muted-foreground/60"
               style={{ fontSize: "var(--text-label)" }}
             >
               –
@@ -403,7 +403,7 @@ export function FlipScoreboard({
             <div className="flex items-center gap-2 justify-center">
               <span
                 className={`truncate max-w-[34vw] text-center transition-colors duration-300 ${
-                  p1Won ? "text-primary" : p2Won ? "text-muted-foreground/40" : "text-foreground"
+                  p1Won ? "text-primary" : p2Won ? "text-muted-foreground/60" : "text-foreground"
                 } ${showServePrompt ? "cursor-pointer hover:text-primary/80" : ""}`}
                 style={{
                   fontSize: "clamp(16px, 3vw, var(--text-h4))",
@@ -484,7 +484,7 @@ export function FlipScoreboard({
             <div className="flex items-center gap-2 justify-center">
               <span
                 className={`truncate max-w-[34vw] text-center transition-colors duration-300 ${
-                  p2Won ? "text-primary" : p1Won ? "text-muted-foreground/40" : "text-foreground"
+                  p2Won ? "text-primary" : p1Won ? "text-muted-foreground/60" : "text-foreground"
                 } ${showServePrompt ? "cursor-pointer hover:text-primary/80" : ""}`}
                 style={{
                   fontSize: "clamp(16px, 3vw, var(--text-h4))",

@@ -1,7 +1,7 @@
 import { Info, BarChart3, Swords, Plus, UserPlus, Trophy } from "lucide-react";
 import { formatMonthLabel } from "../../lib/dates";
 import type { PlayerStats } from "../../lib/stats";
-import { FONT, MIN_PLAYERS_FOR_ROUND } from "./constants";
+import { MIN_PLAYERS_FOR_ROUND } from "./constants";
 
 interface TitleRowProps {
   selectedMonth: string;
@@ -47,7 +47,6 @@ export function TitleRow({
           <h2
             className="text-foreground flex items-center gap-2 flex-wrap"
             style={{
-              fontFamily: FONT,
               fontSize: "var(--text-h3)",
               fontWeight: "var(--font-weight-semibold)",
             }}
@@ -81,7 +80,6 @@ export function TitleRow({
                 : "border-border text-muted-foreground hover:text-foreground hover:border-border-strong"
             }`}
             style={{
-              fontFamily: FONT,
               fontSize: "var(--text-label)",
               fontWeight: showGraphView ? "var(--font-weight-semibold)" : "var(--font-weight-normal)",
               borderRadius: "var(--radius-card)",
@@ -103,7 +101,6 @@ export function TitleRow({
                 compareMode ? "border-primary bg-primary/10 text-primary" : "border-border text-muted-foreground hover:text-foreground"
               }`}
               style={{
-                fontFamily: FONT,
                 fontSize: "var(--text-label)",
                 borderRadius: "var(--radius-card)",
               }}
@@ -139,7 +136,6 @@ export function TitleRow({
               title={canStartRound ? undefined : `Minst ${MIN_PLAYERS_FOR_ROUND} spelare behövs`}
               className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all cursor-pointer disabled:cursor-not-allowed"
               style={{
-                fontFamily: FONT,
                 fontSize: "var(--text-label)",
                 fontWeight: "var(--font-weight-semibold)",
                 background: canStartRound ? "var(--primary)" : "var(--surface-container-high)",

@@ -8,8 +8,6 @@ import { RoadToFinal } from "./tournament-enhancements";
 import { AmericanoTournament } from "./americano-tournament";
 import { Shuffle, GitBranch } from "lucide-react";
 
-const FONT = "'Titillium Web', sans-serif";
-
 /**
  * Material 3 Dark High-Contrast overrides — scoped to .tournament-high-contrast.
  *
@@ -156,7 +154,6 @@ export function TournamentPage() {
                       }`}
                       style={{
                         background: active ? "color-mix(in srgb, var(--primary) 10%, var(--surface-container-high))" : "transparent",
-                        fontFamily: FONT,
                         fontSize: "var(--text-label)",
                         fontWeight: active ? "var(--font-weight-semibold)" : "var(--font-weight-normal)",
                       }}
@@ -185,7 +182,7 @@ export function TournamentPage() {
                 title={highContrast ? "Stäng av ökad kontrast" : "Slå på ökad kontrast"}
               >
                 <Contrast className={`w-4 h-4 transition-transform duration-300 ${highContrast ? "scale-110" : "group-hover:scale-105"}`} />
-                <span className="hidden sm:inline" style={{ fontFamily: FONT, fontSize: "var(--text-label)", fontWeight: "var(--font-weight-semibold)" }}>
+                <span className="hidden sm:inline" style={{ fontSize: "var(--text-label)", fontWeight: "var(--font-weight-semibold)" }}>
                   {highContrast ? "På" : "Kontrast"}
                 </span>
               </button>
@@ -229,7 +226,6 @@ export function TournamentPage() {
                   <span
                     className="text-foreground"
                     style={{
-                      fontFamily: FONT,
                       fontSize: "var(--text-base)",
                       fontWeight: "var(--font-weight-semibold)",
                       letterSpacing: "0.05em",
@@ -240,7 +236,7 @@ export function TournamentPage() {
                   {history.length > 0 && (
                     <span
                       className="px-2 py-0.5 rounded-full bg-surface-container-highest text-muted-foreground tabular-nums"
-                      style={{ fontFamily: FONT, fontSize: "11px", fontWeight: 700 }}
+                      style={{ fontSize: "11px", fontWeight: 700 }}
                     >
                       {history.length}
                     </span>
@@ -273,7 +269,6 @@ export function TournamentPage() {
                         <Trophy className="w-8 h-8 opacity-30" />
                         <span
                           style={{
-                            fontFamily: FONT,
                             fontSize: "var(--text-label)",
                           }}
                         >
@@ -338,7 +333,6 @@ function HistoryCard({ entry }: { entry: TournamentHistoryEntry }) {
             <span
               className="text-primary truncate"
               style={{
-                fontFamily: FONT,
                 fontSize: "var(--text-base)",
                 fontWeight: "var(--font-weight-semibold)",
               }}
@@ -348,14 +342,14 @@ function HistoryCard({ entry }: { entry: TournamentHistoryEntry }) {
             <div className="flex items-center gap-1.5 flex-wrap">
               <span
                 className="text-muted-foreground"
-                style={{ fontFamily: FONT, fontSize: "12px" }}
+                style={{ fontSize: "12px" }}
               >
                 {dateStr} {timeStr}
               </span>
-              <span className="text-muted-foreground/40">|</span>
+              <span className="text-muted-foreground/60">|</span>
               <span
                 className="text-muted-foreground"
-                style={{ fontFamily: FONT, fontSize: "12px" }}
+                style={{ fontSize: "12px" }}
               >
                 Bo{entry.bestOfSemi}/{entry.bestOfFinal}
               </span>
@@ -368,7 +362,7 @@ function HistoryCard({ entry }: { entry: TournamentHistoryEntry }) {
           <Users className="w-3.5 h-3.5 text-muted-foreground/60" />
           <span
             className="text-muted-foreground"
-            style={{ fontFamily: FONT, fontSize: "12px" }}
+            style={{ fontSize: "12px" }}
           >
             {entry.players.length}
           </span>
@@ -383,13 +377,13 @@ function HistoryCard({ entry }: { entry: TournamentHistoryEntry }) {
           <div className="flex-1 flex flex-col gap-1">
             <span
               className="text-muted-foreground/60 uppercase"
-              style={{ fontFamily: FONT, fontSize: "10px", fontWeight: 700, letterSpacing: "0.1em" }}
+              style={{ fontSize: "10px", fontWeight: 700, letterSpacing: "0.1em" }}
             >
               SF1
             </span>
             <span
               className="text-foreground truncate"
-              style={{ fontFamily: FONT, fontSize: "var(--text-label)" }}
+              style={{ fontSize: "var(--text-label)" }}
             >
               {entry.semi1Winner}
             </span>
@@ -397,13 +391,13 @@ function HistoryCard({ entry }: { entry: TournamentHistoryEntry }) {
           <div className="flex-1 flex flex-col gap-1">
             <span
               className="text-muted-foreground/60 uppercase"
-              style={{ fontFamily: FONT, fontSize: "10px", fontWeight: 700, letterSpacing: "0.1em" }}
+              style={{ fontSize: "10px", fontWeight: 700, letterSpacing: "0.1em" }}
             >
               SF2
             </span>
             <span
               className="text-foreground truncate"
-              style={{ fontFamily: FONT, fontSize: "var(--text-label)" }}
+              style={{ fontSize: "var(--text-label)" }}
             >
               {entry.semi2Winner}
             </span>
@@ -411,14 +405,13 @@ function HistoryCard({ entry }: { entry: TournamentHistoryEntry }) {
           <div className="flex-1 flex flex-col gap-1">
             <span
               className="text-primary/60 uppercase"
-              style={{ fontFamily: FONT, fontSize: "10px", fontWeight: 700, letterSpacing: "0.1em" }}
+              style={{ fontSize: "10px", fontWeight: 700, letterSpacing: "0.1em" }}
             >
               Final
             </span>
             <span
               className="text-primary truncate"
               style={{
-                fontFamily: FONT,
                 fontSize: "var(--text-label)",
                 fontWeight: "var(--font-weight-semibold)",
               }}
@@ -493,7 +486,7 @@ function MatchScoreLine({ label, match, formatScore, isFinal }: {
     <div className="flex flex-col gap-0.5">
       <span
         className={`uppercase ${isFinal ? "text-primary/60" : "text-muted-foreground/60"}`}
-        style={{ fontFamily: FONT, fontSize: "10px", fontWeight: 700, letterSpacing: "0.1em" }}
+        style={{ fontSize: "10px", fontWeight: 700, letterSpacing: "0.1em" }}
       >
         {label}
       </span>
@@ -502,14 +495,13 @@ function MatchScoreLine({ label, match, formatScore, isFinal }: {
           <span
             className={`truncate ${isP1Winner ? (isFinal ? "text-primary" : "text-foreground") : "text-muted-foreground/70"}`}
             style={{
-              fontFamily: FONT,
               fontSize: "var(--text-xs)",
               fontWeight: isP1Winner ? "var(--font-weight-semibold)" : "var(--font-weight-normal)",
             }}
           >
             {match.player1}
           </span>
-          <span className="text-muted-foreground/40 tabular-nums" style={{ fontFamily: FONT, fontSize: "10px" }}>
+          <span className="text-muted-foreground/60 tabular-nums" style={{ fontSize: "10px" }}>
             {match.wins1}
           </span>
         </div>
@@ -517,21 +509,20 @@ function MatchScoreLine({ label, match, formatScore, isFinal }: {
           <span
             className={`truncate ${!isP1Winner ? (isFinal ? "text-primary" : "text-foreground") : "text-muted-foreground/70"}`}
             style={{
-              fontFamily: FONT,
               fontSize: "var(--text-xs)",
               fontWeight: !isP1Winner ? "var(--font-weight-semibold)" : "var(--font-weight-normal)",
             }}
           >
             {match.player2}
           </span>
-          <span className="text-muted-foreground/40 tabular-nums" style={{ fontFamily: FONT, fontSize: "10px" }}>
+          <span className="text-muted-foreground/60 tabular-nums" style={{ fontSize: "10px" }}>
             {match.wins2}
           </span>
         </div>
       </div>
       <span
         className="text-muted-foreground/50 tabular-nums"
-        style={{ fontFamily: FONT, fontSize: "9px" }}
+        style={{ fontSize: "9px" }}
       >
         {formatScore(match)}
       </span>

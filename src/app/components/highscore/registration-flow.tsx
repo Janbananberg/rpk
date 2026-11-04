@@ -5,7 +5,6 @@ import { computePotDistribution, ELO_ANTE, ELO_UPSET_THRESHOLD } from "../../lib
 import type { EloEntry } from "../../lib/elo";
 import { ConfirmDialog } from "../confirm-dialog";
 import type { GameRound, GameSession } from "../api";
-import { FONT } from "./constants";
 import type { RegStep } from "./constants";
 import { PlayerSelectStep } from "./player-select-step";
 
@@ -154,7 +153,6 @@ export function RegistrationFlow({
                     fontSize: "var(--text-label)",
                     color: "var(--primary)",
                     fontWeight: "var(--font-weight-semibold)",
-                    fontFamily: FONT,
                   }}
                 >
                   {currentRounds.length} {currentRounds.length === 1 ? "runda" : "rundor"} registrerade
@@ -165,7 +163,6 @@ export function RegistrationFlow({
                   disabled={hasUndone}
                   className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border transition-all"
                   style={{
-                    fontFamily: FONT,
                     fontSize: "var(--text-xs)",
                     fontWeight: "var(--font-weight-semibold)",
                     color: hasUndone ? "var(--muted-foreground)" : "var(--warning, #f59e0b)",
@@ -213,7 +210,6 @@ export function RegistrationFlow({
               <h3
                 className="text-foreground mb-1 text-center"
                 style={{
-                  fontFamily: FONT,
                   fontSize: "var(--text-h4)",
                   fontWeight: "var(--font-weight-semibold)",
                 }}
@@ -222,7 +218,7 @@ export function RegistrationFlow({
               </h3>
               <p
                 className="text-muted-foreground text-center mb-6"
-                style={{ fontFamily: FONT, fontSize: "var(--text-label)" }}
+                style={{ fontSize: "var(--text-label)" }}
               >
                 Runda {currentRounds.length + 1}
               </p>
@@ -254,14 +250,14 @@ export function RegistrationFlow({
                     >
                       <span
                         className="text-foreground"
-                        style={{ fontFamily: FONT, fontSize: "var(--text-base)" }}
+                        style={{ fontSize: "var(--text-base)" }}
                       >
                         {name}
                       </span>
                       {currentRounds.length > 0 ? (
                         <span
                           className="flex items-center gap-2 text-muted-foreground"
-                          style={{ fontSize: "var(--text-xs)", fontFamily: FONT }}
+                          style={{ fontSize: "var(--text-xs)" }}
                         >
                           <span className="flex items-center gap-0.5">
                             <Users className="w-3 h-3" />
@@ -316,7 +312,6 @@ export function RegistrationFlow({
                     disabled={saving}
                     className="w-full py-3.5 rounded-lg border border-success/30 transition-all cursor-pointer hover:bg-success/10 disabled:opacity-50 disabled:cursor-not-allowed active:scale-[0.98]"
                     style={{
-                      fontFamily: FONT,
                       fontSize: "var(--text-base)",
                       fontWeight: "var(--font-weight-semibold)",
                       color: "var(--success)",
@@ -347,7 +342,6 @@ export function RegistrationFlow({
                         background: rosterOpen ? "var(--surface-container-high)" : "var(--surface-container)",
                         borderColor: rosterOpen ? "var(--border-strong, var(--border))" : "var(--border)",
                         borderRadius: "var(--radius-card)",
-                        fontFamily: FONT,
                         fontSize: "var(--text-base)",
                       }}
                     >
@@ -368,7 +362,6 @@ export function RegistrationFlow({
                             style={{
                               background: "color-mix(in srgb, var(--warning, #f59e0b) 15%, transparent)",
                               color: "var(--warning, #f59e0b)",
-                              fontFamily: FONT,
                               fontSize: "var(--text-xs)",
                               fontWeight: "var(--font-weight-semibold)",
                             }}
@@ -405,7 +398,6 @@ export function RegistrationFlow({
                               <p
                                 className="text-muted-foreground"
                                 style={{
-                                  fontFamily: FONT,
                                   fontSize: "var(--text-xs)",
                                   fontWeight: "var(--font-weight-semibold)",
                                   textTransform: "uppercase",
@@ -428,7 +420,6 @@ export function RegistrationFlow({
                                       <span
                                         className="text-foreground truncate"
                                         style={{
-                                          fontFamily: FONT,
                                           fontSize: "var(--text-base)",
                                           fontWeight: "var(--font-weight-normal)",
                                         }}
@@ -439,7 +430,6 @@ export function RegistrationFlow({
                                         <span
                                           className="text-muted-foreground shrink-0"
                                           style={{
-                                            fontFamily: FONT,
                                             fontSize: "var(--text-xs)",
                                           }}
                                         >
@@ -472,7 +462,6 @@ export function RegistrationFlow({
                                   <p
                                     className="text-muted-foreground"
                                     style={{
-                                      fontFamily: FONT,
                                       fontSize: "var(--text-xs)",
                                       fontWeight: "var(--font-weight-semibold)",
                                       textTransform: "uppercase",
@@ -496,7 +485,6 @@ export function RegistrationFlow({
                                       <span
                                         className="text-muted-foreground line-through"
                                         style={{
-                                          fontFamily: FONT,
                                           fontSize: "var(--text-base)",
                                         }}
                                       >
@@ -506,7 +494,6 @@ export function RegistrationFlow({
                                         onClick={() => addPlayerToRoster(name)}
                                         className="shrink-0 flex items-center gap-2 px-3.5 py-2 rounded-lg border transition-all cursor-pointer active:scale-95"
                                         style={{
-                                          fontFamily: FONT,
                                           fontSize: "var(--text-label)",
                                           fontWeight: "var(--font-weight-semibold)",
                                           color: "var(--primary)",
@@ -532,7 +519,6 @@ export function RegistrationFlow({
                                   <p
                                     className="text-muted-foreground"
                                     style={{
-                                      fontFamily: FONT,
                                       fontSize: "var(--text-xs)",
                                       fontWeight: "var(--font-weight-semibold)",
                                       textTransform: "uppercase",
@@ -565,7 +551,6 @@ export function RegistrationFlow({
                                       <span
                                         className="text-foreground"
                                         style={{
-                                          fontFamily: FONT,
                                           fontSize: "var(--text-base)",
                                         }}
                                       >
@@ -594,7 +579,6 @@ export function RegistrationFlow({
               <h3
                 className="text-foreground mb-2 text-center"
                 style={{
-                  fontFamily: FONT,
                   fontSize: "var(--text-h4)",
                   fontWeight: "var(--font-weight-semibold)",
                 }}
@@ -602,11 +586,11 @@ export function RegistrationFlow({
                 Vem vann?
               </h3>
               <div className="flex items-center justify-center gap-3 mb-6">
-                <span className="text-muted-foreground" style={{ fontFamily: FONT, fontSize: "var(--text-label)" }}>
+                <span className="text-muted-foreground" style={{ fontSize: "var(--text-label)" }}>
                   {selectedFinalists[0]}
                 </span>
                 <span className="text-muted-foreground" style={{ fontSize: "var(--text-label)" }}>mot</span>
-                <span className="text-muted-foreground" style={{ fontFamily: FONT, fontSize: "var(--text-label)" }}>
+                <span className="text-muted-foreground" style={{ fontSize: "var(--text-label)" }}>
                   {selectedFinalists[1]}
                 </span>
               </div>
@@ -630,7 +614,7 @@ export function RegistrationFlow({
                 return (
                   <div
                     className="mb-5 px-3 py-2.5 rounded-lg border border-border/30"
-                    style={{ background: "var(--surface-container)", borderRadius: "var(--radius-card)", fontFamily: FONT }}
+                    style={{ background: "var(--surface-container)", borderRadius: "var(--radius-card)" }}
                   >
                     <div className="flex items-center justify-center gap-1.5 mb-2">
                       <TrendingUp className="w-3.5 h-3.5 text-muted-foreground" />
@@ -746,7 +730,6 @@ export function RegistrationFlow({
                       <span
                         className={isSelected ? "text-primary" : "text-foreground"}
                         style={{
-                          fontFamily: FONT,
                           fontSize: "var(--text-base)",
                           fontWeight: "var(--font-weight-semibold)",
                         }}
@@ -766,7 +749,6 @@ export function RegistrationFlow({
                 }}
                 className="w-full mt-4 py-3 rounded-lg border border-border text-muted-foreground hover:text-foreground hover:bg-muted/30 transition-all cursor-pointer"
                 style={{
-                  fontFamily: FONT,
                   fontSize: "var(--text-label)",
                   borderRadius: "var(--radius-card)",
                 }}

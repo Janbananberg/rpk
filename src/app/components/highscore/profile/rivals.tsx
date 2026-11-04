@@ -1,7 +1,6 @@
 import { Shield, Target, Skull } from "lucide-react";
 import type { PlayerStats } from "../../../lib/stats";
 import type { RevengeTarget } from "../../../lib/insights";
-import { FONT } from "../constants";
 
 interface ProfileRivalsProps {
   hasFormData: boolean;
@@ -64,7 +63,7 @@ export function ProfileRivals({
         <div>
           <span
             className="text-muted-foreground mb-2 block"
-            style={{ fontSize: "var(--text-xs)", textTransform: "uppercase", letterSpacing: "0.05em", fontFamily: FONT }}
+            style={{ fontSize: "var(--text-xs)", textTransform: "uppercase", letterSpacing: "0.05em" }}
           >
             <span className="inline-flex items-center gap-1.5">
               <Shield className="w-3 h-3" /> Ohämnade förluster
@@ -103,7 +102,6 @@ export function ProfileRivals({
                     <span
                       className="flex-1 truncate"
                       style={{
-                        fontFamily: FONT,
                         fontSize: "var(--text-label)",
                         fontWeight: "var(--font-weight-semibold)",
                         color: "var(--foreground)",
@@ -116,7 +114,6 @@ export function ProfileRivals({
                       style={{
                         fontSize: 10,
                         fontWeight: "var(--font-weight-bold)",
-                        fontFamily: FONT,
                         background: severity === "high"
                           ? "color-mix(in srgb, var(--destructive) 15%, transparent)"
                           : severity === "medium"
@@ -142,11 +139,11 @@ export function ProfileRivals({
                     </div>
                     <span
                       className="text-muted-foreground shrink-0"
-                      style={{ fontSize: "var(--text-xs)", fontFamily: FONT }}
+                      style={{ fontSize: "var(--text-xs)" }}
                     >
                       {rv.totalWins}V–{rv.totalLosses}F
                     </span>
-                    <span className="text-muted-foreground shrink-0" style={{ fontSize: "var(--text-xs)", fontFamily: FONT }}>
+                    <span className="text-muted-foreground shrink-0" style={{ fontSize: "var(--text-xs)" }}>
                       · {dateStr}
                     </span>
                   </div>
@@ -154,7 +151,7 @@ export function ProfileRivals({
               );
             })}
             {revengeData.length > 5 && (
-              <span className="text-muted-foreground block text-center" style={{ fontSize: "var(--text-xs)", fontFamily: FONT }}>
+              <span className="text-muted-foreground block text-center" style={{ fontSize: "var(--text-xs)" }}>
                 +{revengeData.length - 5} till
               </span>
             )}
@@ -167,7 +164,7 @@ export function ProfileRivals({
         <div>
           <span
             className="text-muted-foreground mb-2 block"
-            style={{ fontSize: "var(--text-xs)", textTransform: "uppercase", letterSpacing: "0.05em", fontFamily: FONT }}
+            style={{ fontSize: "var(--text-xs)", textTransform: "uppercase", letterSpacing: "0.05em" }}
           >
             Alla finalmöten
           </span>
@@ -182,14 +179,13 @@ export function ProfileRivals({
                 >
                   <span
                     className="text-foreground"
-                    style={{ fontFamily: FONT, fontSize: "var(--text-label)" }}
+                    style={{ fontSize: "var(--text-label)" }}
                   >
                     mot {opp}
                   </span>
                   <div className="flex items-center gap-2">
                     <span
                       style={{
-                        fontFamily: FONT,
                         fontSize: "var(--text-label)",
                         fontWeight: "var(--font-weight-semibold)",
                         color: record.wins >= record.losses ? "var(--success)" : "var(--destructive)",
@@ -201,7 +197,6 @@ export function ProfileRivals({
                       <span
                         title="Netto Elo vunnet/förlorat mot denna spelare"
                         style={{
-                          fontFamily: FONT,
                           fontSize: "var(--text-xs)",
                           fontWeight: "var(--font-weight-semibold)",
                           color: h2hElo[selectedPlayer.name][opp] > 0 ? "var(--success)" : "var(--destructive)",

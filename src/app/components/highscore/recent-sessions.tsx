@@ -2,7 +2,6 @@ import { Clock, Trash2, ChevronDown, ChevronUp, Trophy } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { formatMonthLabel, formatRelativeDate, formatSessionDate } from "../../lib/dates";
 import type { GameSession } from "../api";
-import { FONT } from "./constants";
 
 interface RecentSessionsProps {
   hasSessions: boolean;
@@ -41,7 +40,6 @@ export function RecentSessions({
             <span
               className="text-foreground"
               style={{
-                fontFamily: FONT,
                 fontSize: "var(--text-base)",
                 fontWeight: "var(--font-weight-semibold)",
               }}
@@ -58,7 +56,7 @@ export function RecentSessions({
         {visibleSessions.length === 0 ? (
           <div
             className="px-4 py-6 text-center text-muted-foreground"
-            style={{ fontFamily: FONT, fontSize: "var(--text-base)" }}
+            style={{ fontSize: "var(--text-base)" }}
           >
             Inga speltillfällen registrerade
           </div>
@@ -78,7 +76,6 @@ export function RecentSessions({
                           <span
                             className="text-foreground"
                             style={{
-                              fontFamily: FONT,
                               fontSize: "var(--text-base)",
                               fontWeight: "var(--font-weight-semibold)",
                             }}
@@ -170,7 +167,7 @@ export function RecentSessions({
                             >
                               <span
                                 className="text-muted-foreground w-8 flex flex-col items-center"
-                                style={{ fontSize: "var(--text-xs)", fontFamily: FONT }}
+                                style={{ fontSize: "var(--text-xs)" }}
                               >
                                 <span>R{ri + 1}</span>
                                 {round.players && round.players.length !== session.players.length && (
@@ -185,7 +182,6 @@ export function RecentSessions({
                                     key={f}
                                     className={f === round.winner ? "text-success" : "text-muted-foreground"}
                                     style={{
-                                      fontFamily: FONT,
                                       fontSize: "var(--text-label)",
                                       fontWeight:
                                         f === round.winner
@@ -204,7 +200,7 @@ export function RecentSessions({
                           <div className="pt-2">
                             <span
                               className="text-muted-foreground block mb-1.5"
-                              style={{ fontSize: "var(--text-xs)", textTransform: "uppercase", letterSpacing: "0.05em", fontFamily: FONT }}
+                              style={{ fontSize: "var(--text-xs)", textTransform: "uppercase", letterSpacing: "0.05em" }}
                             >
                               Spelardeltagande
                             </span>
@@ -228,7 +224,6 @@ export function RecentSessions({
                                         key={name}
                                         className="inline-flex items-center gap-1 px-2 py-1 rounded-full border"
                                         style={{
-                                          fontFamily: FONT,
                                           fontSize: "var(--text-xs)",
                                           borderColor: allRounds ? "color-mix(in srgb, var(--primary) 30%, var(--border))" : "var(--border)",
                                           background: allRounds ? "color-mix(in srgb, var(--primary) 8%, transparent)" : "var(--surface-container)",
@@ -262,7 +257,7 @@ export function RecentSessions({
               <button
                 onClick={() => setShowAllSessions(!showAllSessions)}
                 className="w-full px-4 py-3 text-center text-muted-foreground hover:text-foreground hover:bg-muted/20 transition-all cursor-pointer flex items-center justify-center gap-2"
-                style={{ fontFamily: FONT, fontSize: "var(--text-label)" }}
+                style={{ fontSize: "var(--text-label)" }}
               >
                 {showAllSessions ? (
                   <>

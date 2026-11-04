@@ -8,7 +8,6 @@ import type { PlayerStats } from "../../lib/stats";
 import type { PlayerInsights, RevengeTarget } from "../../lib/insights";
 import { AchievementDisplay } from "../achievement-display";
 import type { GameSession, SavedPlayerAchievements } from "../api";
-import { FONT } from "./constants";
 import { FormDots } from "./form-dots";
 import { ProfileStatsGrid } from "./profile/stats-grid";
 import { ProfileMonthTrend } from "./profile/month-trend";
@@ -168,7 +167,6 @@ export function PlayerProfileModal({
                           }}
                           className="flex-1 min-w-0 px-3 py-1.5 rounded-lg border border-border bg-surface-container-lowest text-foreground outline-none focus:border-primary"
                           style={{
-                            fontFamily: FONT,
                             fontSize: "var(--text-base)",
                             background: "var(--surface-container-lowest)",
                             borderRadius: "var(--radius-card)",
@@ -194,7 +192,6 @@ export function PlayerProfileModal({
                         <h3
                           className="text-foreground truncate"
                           style={{
-                            fontFamily: FONT,
                             fontSize: "var(--text-h4)",
                             fontWeight: "var(--font-weight-semibold)",
                           }}
@@ -222,7 +219,6 @@ export function PlayerProfileModal({
                         <span
                           className="flex items-center gap-1 px-2 py-0.5 rounded-full"
                           style={{
-                            fontFamily: FONT,
                             fontSize: "var(--text-xs)",
                             fontWeight: "var(--font-weight-bold)",
                             background: "color-mix(in srgb, var(--primary) 15%, transparent)",
@@ -238,7 +234,6 @@ export function PlayerProfileModal({
                             <span
                               className="flex items-center gap-0.5 px-2 py-0.5 rounded-full"
                               style={{
-                                fontFamily: FONT,
                                 fontSize: "var(--text-xs)",
                                 fontWeight: "var(--font-weight-bold)",
                                 background: d > 0

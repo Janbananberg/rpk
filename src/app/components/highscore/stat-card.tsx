@@ -1,5 +1,4 @@
 import { motion } from "motion/react";
-import { FONT } from "./constants";
 
 // ── Stat card ──
 export function StatCard({
@@ -24,7 +23,7 @@ export function StatCard({
     >
       <div className="flex items-center gap-2 text-muted-foreground">
         {icon}
-        <span style={{ fontSize: "var(--text-label)", fontFamily: FONT }}>{label}</span>
+        <span style={{ fontSize: "var(--text-label)" }}>{label}</span>
       </div>
       <span
         className="truncate"
@@ -32,7 +31,6 @@ export function StatCard({
           fontSize: "var(--text-h4)",
           fontWeight: "var(--font-weight-semibold)",
           color: color || "var(--foreground)",
-          fontFamily: FONT,
         }}
       >
         {value}

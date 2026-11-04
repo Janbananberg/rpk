@@ -684,7 +684,7 @@ export function TournamentBracket({ onTournamentSaved }: { onTournamentSaved?: (
             </span>
             <span
               className="relative text-primary"
-              style={{ fontSize: "clamp(var(--text-h3), 8vw, var(--text-h1))", fontWeight: "var(--font-weight-bold)", fontFamily: "'Titillium Web', sans-serif" }}
+              style={{ fontSize: "clamp(var(--text-h3), 8vw, var(--text-h1))", fontWeight: "var(--font-weight-bold)" }}
             >
               {champion}
             </span>
@@ -1044,7 +1044,6 @@ export function TournamentBracket({ onTournamentSaved }: { onTournamentSaved?: (
                     <h3
                       className="text-foreground"
                       style={{
-                        fontFamily: "'Titillium Web', sans-serif",
                         fontSize: "var(--text-lg)",
                         fontWeight: "var(--font-weight-semibold)",
                       }}
@@ -1054,7 +1053,6 @@ export function TournamentBracket({ onTournamentSaved }: { onTournamentSaved?: (
                     <p
                       className="text-muted-foreground"
                       style={{
-                        fontFamily: "'Titillium Web', sans-serif",
                         fontSize: "var(--text-label)",
                         fontWeight: "var(--font-weight-normal)",
                         lineHeight: 1.5,
@@ -1071,7 +1069,6 @@ export function TournamentBracket({ onTournamentSaved }: { onTournamentSaved?: (
                     onClick={() => setShowResetConfirm(false)}
                     className="px-5 py-2.5 rounded-[var(--radius-button)] border border-border/40 text-foreground hover:bg-muted/40 transition-all duration-200 cursor-pointer"
                     style={{
-                      fontFamily: "'Titillium Web', sans-serif",
                       fontSize: "var(--text-label)",
                       fontWeight: "var(--font-weight-semibold)",
                     }}
@@ -1082,7 +1079,6 @@ export function TournamentBracket({ onTournamentSaved }: { onTournamentSaved?: (
                     onClick={resetAll}
                     className="px-5 py-2.5 rounded-[var(--radius-button)] bg-destructive text-destructive-foreground hover:opacity-90 transition-all duration-200 cursor-pointer"
                     style={{
-                      fontFamily: "'Titillium Web', sans-serif",
                       fontSize: "var(--text-label)",
                       fontWeight: "var(--font-weight-semibold)",
                     }}

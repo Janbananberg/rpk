@@ -1,7 +1,6 @@
 import { ChevronDown, Award, Crown, TrendingUp, Zap, TrendingDown, Flame, Swords } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import type { SeasonSummary } from "../../lib/insights";
-import { FONT } from "./constants";
 
 interface SeasonSummaryCardProps {
   seasonSummary: SeasonSummary | null;
@@ -31,7 +30,6 @@ export function SeasonSummaryCard({
                 background: "color-mix(in srgb, var(--primary) 6%, var(--surface-container))",
                 borderRadius: "var(--radius-card)",
                 border: "1px dashed color-mix(in srgb, var(--primary) 30%, transparent)",
-                fontFamily: FONT,
               }}
             >
               <div className="flex items-center gap-2 flex-wrap">
@@ -87,7 +85,7 @@ export function SeasonSummaryCard({
             >
               <div className="flex items-center gap-2">
                 <Award className="w-4 h-4" style={{ color: "var(--primary)" }} />
-                <span style={{ fontFamily: FONT, fontSize: "var(--text-label)", fontWeight: "var(--font-weight-semibold)", color: "var(--foreground)" }}>
+                <span style={{ fontSize: "var(--text-label)", fontWeight: "var(--font-weight-semibold)", color: "var(--foreground)" }}>
                   Sammanfattning — {seasonSummary.monthLabel}
                 </span>
               </div>
@@ -121,18 +119,18 @@ export function SeasonSummaryCard({
                   >
                     <div className="grid grid-cols-2 gap-3 text-center">
                       <div>
-                        <div style={{ fontFamily: FONT, fontSize: "var(--text-h3)", fontWeight: "var(--font-weight-bold)", color: "var(--primary)", lineHeight: 1.1 }}>
+                        <div style={{ fontSize: "var(--text-h3)", fontWeight: "var(--font-weight-bold)", color: "var(--primary)", lineHeight: 1.1 }}>
                           {seasonSummary.totalSessions}
                         </div>
-                        <div className="text-muted-foreground" style={{ fontFamily: FONT, fontSize: "var(--text-xs)", textTransform: "uppercase", letterSpacing: "0.05em" }}>
+                        <div className="text-muted-foreground" style={{ fontSize: "var(--text-xs)", textTransform: "uppercase", letterSpacing: "0.05em" }}>
                           Omgångar
                         </div>
                       </div>
                       <div>
-                        <div style={{ fontFamily: FONT, fontSize: "var(--text-h3)", fontWeight: "var(--font-weight-bold)", color: "var(--foreground)", lineHeight: 1.1 }}>
+                        <div style={{ fontSize: "var(--text-h3)", fontWeight: "var(--font-weight-bold)", color: "var(--foreground)", lineHeight: 1.1 }}>
                           {seasonSummary.totalGames}
                         </div>
-                        <div className="text-muted-foreground" style={{ fontFamily: FONT, fontSize: "var(--text-xs)", textTransform: "uppercase", letterSpacing: "0.05em" }}>
+                        <div className="text-muted-foreground" style={{ fontSize: "var(--text-xs)", textTransform: "uppercase", letterSpacing: "0.05em" }}>
                           Rundor
                         </div>
                       </div>
@@ -154,18 +152,18 @@ export function SeasonSummaryCard({
                           <Crown className="w-5 h-5" style={{ color: "var(--primary)" }} />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <div className="text-muted-foreground" style={{ fontFamily: FONT, fontSize: "var(--text-xs)", textTransform: "uppercase", letterSpacing: "0.05em" }}>
+                          <div className="text-muted-foreground" style={{ fontSize: "var(--text-xs)", textTransform: "uppercase", letterSpacing: "0.05em" }}>
                             Månadens spelare
                           </div>
-                          <div className="truncate" style={{ fontFamily: FONT, fontSize: "var(--text-base)", fontWeight: "var(--font-weight-semibold)", color: "var(--primary)" }}>
+                          <div className="truncate" style={{ fontSize: "var(--text-base)", fontWeight: "var(--font-weight-semibold)", color: "var(--primary)" }}>
                             {seasonSummary.mvp.name}
                           </div>
                         </div>
                         <div className="text-right shrink-0">
-                          <div style={{ fontFamily: FONT, fontSize: "var(--text-base)", fontWeight: "var(--font-weight-bold)", color: "var(--foreground)" }}>
+                          <div style={{ fontSize: "var(--text-base)", fontWeight: "var(--font-weight-bold)", color: "var(--foreground)" }}>
                             {seasonSummary.mvp.wins}
                           </div>
-                          <div className="text-muted-foreground" style={{ fontFamily: FONT, fontSize: "var(--text-xs)" }}>vinster</div>
+                          <div className="text-muted-foreground" style={{ fontSize: "var(--text-xs)" }}>vinster</div>
                         </div>
                       </div>
                     )}
@@ -183,21 +181,21 @@ export function SeasonSummaryCard({
                           <TrendingUp className="w-5 h-5" style={{ color: "var(--success)" }} />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <div className="text-muted-foreground" style={{ fontFamily: FONT, fontSize: "var(--text-xs)", textTransform: "uppercase", letterSpacing: "0.05em" }}>
+                          <div className="text-muted-foreground" style={{ fontSize: "var(--text-xs)", textTransform: "uppercase", letterSpacing: "0.05em" }}>
                             Mest förbättrad
                           </div>
-                          <div className="truncate" style={{ fontFamily: FONT, fontSize: "var(--text-base)", fontWeight: "var(--font-weight-semibold)", color: "var(--success)" }}>
+                          <div className="truncate" style={{ fontSize: "var(--text-base)", fontWeight: "var(--font-weight-semibold)", color: "var(--success)" }}>
                             {seasonSummary.mostImproved.name}
                           </div>
                         </div>
                         <div className="text-right shrink-0">
                           <div style={{
-                            fontFamily: FONT, fontSize: "var(--text-base)", fontWeight: "var(--font-weight-bold)",
+                            fontSize: "var(--text-base)", fontWeight: "var(--font-weight-bold)",
                             color: seasonSummary.mostImproved.eloDelta > 0 ? "var(--success)" : "var(--destructive)",
                           }}>
                             {seasonSummary.mostImproved.eloDelta > 0 ? "+" : ""}{seasonSummary.mostImproved.eloDelta}
                           </div>
-                          <div className="text-muted-foreground" style={{ fontFamily: FONT, fontSize: "var(--text-xs)" }}>Elo</div>
+                          <div className="text-muted-foreground" style={{ fontSize: "var(--text-xs)" }}>Elo</div>
                         </div>
                       </div>
                     )}
@@ -215,20 +213,20 @@ export function SeasonSummaryCard({
                           <Zap className="w-5 h-5" style={{ color: "var(--warning)" }} />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <div className="text-muted-foreground" style={{ fontFamily: FONT, fontSize: "var(--text-xs)", textTransform: "uppercase", letterSpacing: "0.05em" }}>
+                          <div className="text-muted-foreground" style={{ fontSize: "var(--text-xs)", textTransform: "uppercase", letterSpacing: "0.05em" }}>
                             Störst skräll
                           </div>
-                          <div className="truncate" style={{ fontFamily: FONT, fontSize: "var(--text-label)", fontWeight: "var(--font-weight-semibold)", color: "var(--warning)" }}>
+                          <div className="truncate" style={{ fontSize: "var(--text-label)", fontWeight: "var(--font-weight-semibold)", color: "var(--warning)" }}>
                             {seasonSummary.biggestUpset.winner}{" "}
                             <span className="text-muted-foreground" style={{ fontWeight: "var(--font-weight-normal)", fontSize: "var(--text-xs)" }}>slog</span>{" "}
                             {seasonSummary.biggestUpset.loser}
                           </div>
                         </div>
                         <div className="text-right shrink-0">
-                          <div style={{ fontFamily: FONT, fontSize: "var(--text-base)", fontWeight: "var(--font-weight-bold)", color: "var(--warning)" }}>
+                          <div style={{ fontSize: "var(--text-base)", fontWeight: "var(--font-weight-bold)", color: "var(--warning)" }}>
                             {seasonSummary.biggestUpset.eloDiff}
                           </div>
-                          <div className="text-muted-foreground" style={{ fontFamily: FONT, fontSize: "var(--text-xs)" }}>Elo-diff</div>
+                          <div className="text-muted-foreground" style={{ fontSize: "var(--text-xs)" }}>Elo-diff</div>
                         </div>
                       </div>
                     )}
@@ -246,18 +244,18 @@ export function SeasonSummaryCard({
                           <Flame className="w-5 h-5" style={{ color: "var(--primary)" }} />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <div className="text-muted-foreground" style={{ fontFamily: FONT, fontSize: "var(--text-xs)", textTransform: "uppercase", letterSpacing: "0.05em" }}>
+                          <div className="text-muted-foreground" style={{ fontSize: "var(--text-xs)", textTransform: "uppercase", letterSpacing: "0.05em" }}>
                             Längsta vinstraden
                           </div>
-                          <div className="truncate" style={{ fontFamily: FONT, fontSize: "var(--text-base)", fontWeight: "var(--font-weight-semibold)", color: "var(--foreground)" }}>
+                          <div className="truncate" style={{ fontSize: "var(--text-base)", fontWeight: "var(--font-weight-semibold)", color: "var(--foreground)" }}>
                             {seasonSummary.longestWinStreak.name}
                           </div>
                         </div>
                         <div className="text-right shrink-0">
-                          <div style={{ fontFamily: FONT, fontSize: "var(--text-base)", fontWeight: "var(--font-weight-bold)", color: "var(--primary)" }}>
+                          <div style={{ fontSize: "var(--text-base)", fontWeight: "var(--font-weight-bold)", color: "var(--primary)" }}>
                             {seasonSummary.longestWinStreak.streak}
                           </div>
-                          <div className="text-muted-foreground" style={{ fontFamily: FONT, fontSize: "var(--text-xs)" }}>i rad</div>
+                          <div className="text-muted-foreground" style={{ fontSize: "var(--text-xs)" }}>i rad</div>
                         </div>
                       </div>
                     )}
@@ -275,20 +273,20 @@ export function SeasonSummaryCard({
                           <Swords className="w-5 h-5" style={{ color: "var(--destructive)" }} />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <div className="text-muted-foreground" style={{ fontFamily: FONT, fontSize: "var(--text-xs)", textTransform: "uppercase", letterSpacing: "0.05em" }}>
+                          <div className="text-muted-foreground" style={{ fontSize: "var(--text-xs)", textTransform: "uppercase", letterSpacing: "0.05em" }}>
                             Rivalitet
                           </div>
-                          <div className="truncate" style={{ fontFamily: FONT, fontSize: "var(--text-label)", fontWeight: "var(--font-weight-semibold)", color: "var(--foreground)" }}>
+                          <div className="truncate" style={{ fontSize: "var(--text-label)", fontWeight: "var(--font-weight-semibold)", color: "var(--foreground)" }}>
                             {seasonSummary.rivalry.player1}{" "}
                             <span className="text-muted-foreground" style={{ fontWeight: "var(--font-weight-normal)", fontSize: "var(--text-xs)" }}>mot</span>{" "}
                             {seasonSummary.rivalry.player2}
                           </div>
                         </div>
                         <div className="text-right shrink-0">
-                          <div style={{ fontFamily: FONT, fontSize: "var(--text-base)", fontWeight: "var(--font-weight-bold)", color: "var(--foreground)" }}>
+                          <div style={{ fontSize: "var(--text-base)", fontWeight: "var(--font-weight-bold)", color: "var(--foreground)" }}>
                             {seasonSummary.rivalry.record}
                           </div>
-                          <div className="text-muted-foreground" style={{ fontFamily: FONT, fontSize: "var(--text-xs)" }}>{seasonSummary.rivalry.meetings} möten</div>
+                          <div className="text-muted-foreground" style={{ fontSize: "var(--text-xs)" }}>{seasonSummary.rivalry.meetings} möten</div>
                         </div>
                       </div>
                     )}
@@ -306,18 +304,18 @@ export function SeasonSummaryCard({
                           <TrendingDown className="w-5 h-5" style={{ color: "var(--destructive)" }} />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <div className="text-muted-foreground" style={{ fontFamily: FONT, fontSize: "var(--text-xs)", textTransform: "uppercase", letterSpacing: "0.05em" }}>
+                          <div className="text-muted-foreground" style={{ fontSize: "var(--text-xs)", textTransform: "uppercase", letterSpacing: "0.05em" }}>
                             Störst Elo-tapp
                           </div>
-                          <div className="truncate" style={{ fontFamily: FONT, fontSize: "var(--text-base)", fontWeight: "var(--font-weight-semibold)", color: "var(--destructive)" }}>
+                          <div className="truncate" style={{ fontSize: "var(--text-base)", fontWeight: "var(--font-weight-semibold)", color: "var(--destructive)" }}>
                             {seasonSummary.biggestDrop.name}
                           </div>
                         </div>
                         <div className="text-right shrink-0">
-                          <div style={{ fontFamily: FONT, fontSize: "var(--text-base)", fontWeight: "var(--font-weight-bold)", color: "var(--destructive)" }}>
+                          <div style={{ fontSize: "var(--text-base)", fontWeight: "var(--font-weight-bold)", color: "var(--destructive)" }}>
                             {seasonSummary.biggestDrop.eloDelta}
                           </div>
-                          <div className="text-muted-foreground" style={{ fontFamily: FONT, fontSize: "var(--text-xs)" }}>Elo</div>
+                          <div className="text-muted-foreground" style={{ fontSize: "var(--text-xs)" }}>Elo</div>
                         </div>
                       </div>
                     )}
@@ -326,22 +324,22 @@ export function SeasonSummaryCard({
                     <div className="grid grid-cols-2 gap-2">
                       {seasonSummary.busiestDay && (
                         <div className="p-3 rounded-lg" style={{ background: "var(--surface-container-lowest)", borderRadius: "var(--radius-sm)" }}>
-                          <div className="text-muted-foreground" style={{ fontFamily: FONT, fontSize: "var(--text-xs)", textTransform: "uppercase", letterSpacing: "0.05em" }}>
+                          <div className="text-muted-foreground" style={{ fontSize: "var(--text-xs)", textTransform: "uppercase", letterSpacing: "0.05em" }}>
                             Populäraste dagen
                           </div>
-                          <div style={{ fontFamily: FONT, fontSize: "var(--text-label)", fontWeight: "var(--font-weight-semibold)", color: "var(--foreground)" }}>
+                          <div style={{ fontSize: "var(--text-label)", fontWeight: "var(--font-weight-semibold)", color: "var(--foreground)" }}>
                             {seasonSummary.busiestDay.day}
                           </div>
-                          <div className="text-muted-foreground" style={{ fontFamily: FONT, fontSize: "var(--text-xs)" }}>
+                          <div className="text-muted-foreground" style={{ fontSize: "var(--text-xs)" }}>
                             {seasonSummary.busiestDay.count} omgångar
                           </div>
                         </div>
                       )}
                       <div className="p-3 rounded-lg" style={{ background: "var(--surface-container-lowest)", borderRadius: "var(--radius-sm)" }}>
-                        <div className="text-muted-foreground" style={{ fontFamily: FONT, fontSize: "var(--text-xs)", textTransform: "uppercase", letterSpacing: "0.05em" }}>
+                        <div className="text-muted-foreground" style={{ fontSize: "var(--text-xs)", textTransform: "uppercase", letterSpacing: "0.05em" }}>
                           Snitt finaler/omgång
                         </div>
-                        <div style={{ fontFamily: FONT, fontSize: "var(--text-label)", fontWeight: "var(--font-weight-semibold)", color: "var(--foreground)" }}>
+                        <div style={{ fontSize: "var(--text-label)", fontWeight: "var(--font-weight-semibold)", color: "var(--foreground)" }}>
                           {seasonSummary.avgFinalsPerSession}
                         </div>
                       </div>
@@ -352,7 +350,7 @@ export function SeasonSummaryCard({
                       <div>
                         <span
                           className="text-muted-foreground mb-2 block"
-                          style={{ fontFamily: FONT, fontSize: "var(--text-xs)", textTransform: "uppercase", letterSpacing: "0.05em" }}
+                          style={{ fontSize: "var(--text-xs)", textTransform: "uppercase", letterSpacing: "0.05em" }}
                         >
                           Utmärkelser
                         </span>
@@ -367,14 +365,14 @@ export function SeasonSummaryCard({
                                 <span style={{ fontSize: "var(--text-base)", lineHeight: 1 }}>{s.emoji}</span>
                                 <span
                                   className="truncate"
-                                  style={{ fontFamily: FONT, fontSize: "var(--text-xs)", fontWeight: "var(--font-weight-semibold)", color: "var(--foreground)" }}
+                                  style={{ fontSize: "var(--text-xs)", fontWeight: "var(--font-weight-semibold)", color: "var(--foreground)" }}
                                 >
                                   {s.name}
                                 </span>
                               </div>
                               <div
                                 className="text-muted-foreground mt-0.5"
-                                style={{ fontFamily: FONT, fontSize: 10, lineHeight: 1.3 }}
+                                style={{ fontSize: 10, lineHeight: 1.3 }}
                               >
                                 <span style={{ color: "var(--primary)", fontWeight: "var(--font-weight-semibold)" }}>{s.title}</span>{" "}
                                 · {s.detail}
@@ -387,7 +385,7 @@ export function SeasonSummaryCard({
                   </div>
                   {isViewingCurrentMonth && (
                     <div className="px-4 py-2 border-t" style={{ borderColor: "color-mix(in srgb, var(--border) 50%, transparent)" }}>
-                      <span style={{ fontFamily: FONT, fontSize: "var(--text-xs)", color: "var(--muted-foreground)", fontStyle: "italic" }}>
+                      <span style={{ fontSize: "var(--text-xs)", color: "var(--muted-foreground)", fontStyle: "italic" }}>
                         Baserat på data hittills — uppdateras löpande
                       </span>
                     </div>

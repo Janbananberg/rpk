@@ -1,8 +1,6 @@
 import { AnimatePresence, motion } from "motion/react";
 import { AlertTriangle } from "lucide-react";
 
-const FONT = "'Titillium Web', sans-serif";
-
 interface ConfirmDialogProps {
   open: boolean;
   title: string;
@@ -71,7 +69,6 @@ export function ConfirmDialog({
               <div className="flex flex-col gap-1 min-w-0">
                 <span
                   style={{
-                    fontFamily: FONT,
                     fontSize: "var(--text-base)",
                     fontWeight: "var(--font-weight-bold)",
                     color: "var(--foreground)",
@@ -82,7 +79,6 @@ export function ConfirmDialog({
                 <span
                   className="text-muted-foreground"
                   style={{
-                    fontFamily: FONT,
                     fontSize: "var(--text-label)",
                     lineHeight: 1.5,
                   }}
@@ -98,7 +94,6 @@ export function ConfirmDialog({
                 onClick={onCancel}
                 className="px-4 py-2 rounded-[var(--radius-button)] border border-border/40 text-muted-foreground hover:text-foreground hover:border-border/60 transition-colors cursor-pointer"
                 style={{
-                  fontFamily: FONT,
                   fontSize: "var(--text-label)",
                   fontWeight: "var(--font-weight-semibold)",
                 }}
@@ -109,7 +104,6 @@ export function ConfirmDialog({
                 onClick={onConfirm}
                 className="px-4 py-2 rounded-[var(--radius-button)] border transition-all cursor-pointer"
                 style={{
-                  fontFamily: FONT,
                   fontSize: "var(--text-label)",
                   fontWeight: "var(--font-weight-semibold)",
                   color: `var(${accentVar})`,

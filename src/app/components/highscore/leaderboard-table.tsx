@@ -4,7 +4,7 @@ import { ChevronRight, Target, ClipboardList, Moon, Trophy, Flame, Snowflake, Tr
 import type { PlayerStats, SortTab } from "../../lib/stats";
 import { SEED_MIN_ROUNDS, ELO_START, weightedDelta } from "../../lib/elo";
 import type { EloEntry } from "../../lib/elo";
-import { FONT, INACTIVE_WEEKS } from "./constants";
+import { INACTIVE_WEEKS } from "./constants";
 import { getRankIcon } from "./rank-icon";
 import { EloSparkline } from "./elo-sparkline";
 import { FormDots } from "./form-dots";
@@ -179,7 +179,7 @@ export function LeaderboardTable({
           {sortedStats.length === 0 ? (
             <div
               className="px-4 py-8 text-center text-muted-foreground"
-              style={{ fontFamily: FONT, fontSize: "var(--text-base)" }}
+              style={{ fontSize: "var(--text-base)" }}
             >
               Inga spelare registrerade ännu
             </div>
@@ -221,7 +221,6 @@ export function LeaderboardTable({
                     background: "none",
                     border: "none",
                     padding: 0,
-                    fontFamily: FONT,
                   }}
                 >
                   {isMonthView ? "Elo Δ" : "Elo"}<SortArrow column="elo" />
@@ -382,7 +381,6 @@ export function LeaderboardTable({
                               fontWeight: "var(--font-weight-semibold)",
                               background: "color-mix(in srgb, var(--muted-foreground) 12%, transparent)",
                               color: "var(--muted-foreground)",
-                              fontFamily: FONT,
                             }}
                           >
                             {s.gamesPlayed}/{SEED_MIN_ROUNDS}
@@ -397,7 +395,6 @@ export function LeaderboardTable({
                               fontWeight: "var(--font-weight-bold)",
                               background: "color-mix(in srgb, var(--primary) 15%, transparent)",
                               color: "var(--primary)",
-                              fontFamily: FONT,
                             }}
                           >
                             <Trophy className="w-3 h-3" aria-hidden />{s.tournamentWins}
@@ -531,7 +528,6 @@ export function LeaderboardTable({
                           style={{
                             fontSize: "var(--text-base)",
                             fontWeight: isSeeded && rank <= 3 ? "var(--font-weight-semibold)" : "var(--font-weight-normal)",
-                            fontFamily: FONT,
                           }}
                         >
                           {s.name}
@@ -540,7 +536,7 @@ export function LeaderboardTable({
                         {!isSeeded && (
                           <span
                             className="px-1 py-0.5 rounded-full shrink-0"
-                            style={{ fontSize: 10, fontWeight: "var(--font-weight-semibold)", background: "color-mix(in srgb, var(--muted-foreground) 12%, transparent)", color: "var(--muted-foreground)", fontFamily: FONT }}
+                            style={{ fontSize: 10, fontWeight: "var(--font-weight-semibold)", background: "color-mix(in srgb, var(--muted-foreground) 12%, transparent)", color: "var(--muted-foreground)" }}
                           >
                             {s.gamesPlayed}/{SEED_MIN_ROUNDS}
                           </span>
@@ -552,7 +548,7 @@ export function LeaderboardTable({
                         {s.tournamentWins > 0 && (
                           <span
                             className="flex items-center gap-0.5 px-1 py-0.5 rounded-full shrink-0"
-                            style={{ fontSize: 10, fontWeight: "var(--font-weight-bold)", background: "color-mix(in srgb, var(--primary) 15%, transparent)", color: "var(--primary)", fontFamily: FONT }}
+                            style={{ fontSize: 10, fontWeight: "var(--font-weight-bold)", background: "color-mix(in srgb, var(--primary) 15%, transparent)", color: "var(--primary)" }}
                           >
                             <Trophy className="w-2.5 h-2.5" aria-hidden />{s.tournamentWins}
                           </span>
@@ -584,17 +580,17 @@ export function LeaderboardTable({
                           </span>
                         )}
                         {showAllStats ? (<>
-                        <span className="text-muted-foreground" style={{ fontSize: "var(--text-xs)", fontFamily: FONT }}>
+                        <span className="text-muted-foreground" style={{ fontSize: "var(--text-xs)" }}>
                           {s.wins}V {s.finals}F {s.gamesPlayed}S
                         </span>
                         <span className="text-border" style={{ fontSize: 10 }}>·</span>
-                        <span className="text-primary shrink-0" style={{ fontSize: "var(--text-xs)", fontFamily: FONT, fontWeight: "var(--font-weight-semibold)" }}>
+                        <span className="text-primary shrink-0" style={{ fontSize: "var(--text-xs)", fontWeight: "var(--font-weight-semibold)" }}>
                           {s.bwp.toFixed(0)}%
                         </span>
                         <span className="text-muted-foreground shrink-0" style={{ fontSize: "var(--text-xs)" }}>
                           F {s.finalPct.toFixed(0)}%
                         </span>
-                        <span className="text-muted-foreground shrink-0" style={{ fontSize: "var(--text-xs)", fontFamily: FONT }}>
+                        <span className="text-muted-foreground shrink-0" style={{ fontSize: "var(--text-xs)" }}>
                           FV {s.vfPct.toFixed(0)}%
                         </span>
                         <span className="shrink-0">{renderSparkline(s, 36, 14, 1)}</span>
@@ -621,7 +617,6 @@ export function LeaderboardTable({
                         className="flex items-center gap-2 px-4 py-2 border-b border-border"
                         style={{
                           background: "color-mix(in srgb, var(--success) 6%, var(--surface-container))",
-                          fontFamily: FONT,
                         }}
                       >
                         <Target className="w-3.5 h-3.5" style={{ color: "var(--success)" }} aria-hidden />
@@ -647,7 +642,6 @@ export function LeaderboardTable({
                         className="flex items-center gap-2 px-4 py-2 border-b border-border"
                         style={{
                           background: "color-mix(in srgb, var(--muted-foreground) 6%, var(--surface-container))",
-                          fontFamily: FONT,
                           marginTop: seeded.length > 0 ? 2 : 0,
                         }}
                       >
@@ -674,7 +668,6 @@ export function LeaderboardTable({
                         className="flex items-center gap-2 px-4 py-2 border-b border-border"
                         style={{
                           background: "color-mix(in srgb, var(--muted-foreground) 4%, var(--surface-container))",
-                          fontFamily: FONT,
                           marginTop: (seeded.length > 0 || unseeded.length > 0) ? 2 : 0,
                         }}
                       >
@@ -726,7 +719,6 @@ export function LeaderboardTable({
                                   fontWeight: "var(--font-weight-semibold)",
                                   background: "color-mix(in srgb, var(--muted-foreground) 12%, transparent)",
                                   color: "var(--muted-foreground)",
-                                  fontFamily: FONT,
                                 }}
                               >
                                 <Moon className="w-3 h-3" aria-hidden />{weeksAgo != null ? `${weeksAgo}v sedan` : "aldrig"}
@@ -764,14 +756,13 @@ export function LeaderboardTable({
                                 style={{
                                   fontSize: "var(--text-base)",
                                   fontWeight: "var(--font-weight-normal)",
-                                  fontFamily: FONT,
                                 }}
                               >
                                 {s.name}
                               </span>
                               <span
                                 className="px-1 py-0.5 rounded-full shrink-0"
-                                style={{ fontSize: 10, fontWeight: "var(--font-weight-semibold)", background: "color-mix(in srgb, var(--muted-foreground) 12%, transparent)", color: "var(--muted-foreground)", fontFamily: FONT }}
+                                style={{ fontSize: 10, fontWeight: "var(--font-weight-semibold)", background: "color-mix(in srgb, var(--muted-foreground) 12%, transparent)", color: "var(--muted-foreground)" }}
                               >
                                 <Moon className="w-2.5 h-2.5 inline align-[-1px] mr-0.5" aria-hidden />{weeksAgo != null ? `${weeksAgo}v` : "—"}
                               </span>
@@ -779,11 +770,11 @@ export function LeaderboardTable({
                             </div>
                             <div className="flex items-center flex-wrap gap-x-1.5 gap-y-1 mt-1 ml-8">
                               {showAllStats ? (<>
-                              <span className="text-muted-foreground" style={{ fontSize: "var(--text-xs)", fontFamily: FONT }}>
+                              <span className="text-muted-foreground" style={{ fontSize: "var(--text-xs)" }}>
                                 {s.wins}V {s.finals}F {s.gamesPlayed}S
                               </span>
                               <span className="text-border" style={{ fontSize: 10 }}>·</span>
-                              <span className="text-muted-foreground shrink-0" style={{ fontSize: "var(--text-xs)", fontFamily: FONT }}>
+                              <span className="text-muted-foreground shrink-0" style={{ fontSize: "var(--text-xs)" }}>
                                 {s.bwp.toFixed(0)}%
                               </span>
                               </>) : (
@@ -792,7 +783,7 @@ export function LeaderboardTable({
                               </span>
                               )}
                               <span className="text-border" style={{ fontSize: 10 }}>·</span>
-                              <span className="shrink-0" style={{ fontSize: "var(--text-xs)", fontFamily: FONT, color: "var(--destructive)" }}>
+                              <span className="shrink-0" style={{ fontSize: "var(--text-xs)", color: "var(--destructive)" }}>
                                 <TrendingDown className="w-3 h-3 inline align-[-2px] mr-0.5" aria-hidden />{eloRatings[s.name]?.elo ?? ELO_START}
                               </span>
                             </div>

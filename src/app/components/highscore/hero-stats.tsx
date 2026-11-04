@@ -2,7 +2,6 @@ import { Crown, Flame, Snowflake, Sparkles } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import type { PlayerStats } from "../../lib/stats";
 import { StatCard } from "./stat-card";
-import { FONT } from "./constants";
 
 interface HeroStatsProps {
   topPlayer: PlayerStats;
@@ -65,14 +64,13 @@ export function HeroStats({
                   fontSize: "var(--text-base)",
                   fontWeight: "var(--font-weight-semibold)",
                   color: hasStreakData && hotPlayer && hotPlayer.currentStreak >= 2 ? "var(--warning)" : "var(--muted-foreground)",
-                  fontFamily: FONT,
                 }}
               >
                 {hasStreakData && hotPlayer && hotPlayer.currentStreak >= 2
                   ? hotPlayer.name.split(" ").slice(0, 2).join(" ")
                   : "—"}
               </span>
-              <span className="text-muted-foreground" style={{ fontSize: "var(--text-xs)", fontFamily: FONT }}>
+              <span className="text-muted-foreground" style={{ fontSize: "var(--text-xs)" }}>
                 {hasStreakData && hotPlayer && hotPlayer.currentStreak >= 2
                   ? `${hotPlayer.currentStreak} raka vinster`
                   : "Ingen aktiv vinstsvit"}
@@ -96,14 +94,13 @@ export function HeroStats({
                   fontSize: "var(--text-base)",
                   fontWeight: "var(--font-weight-semibold)",
                   color: hasStreakData && coldPlayer && coldPlayer.coldStreak >= 2 ? "var(--info)" : "var(--muted-foreground)",
-                  fontFamily: FONT,
                 }}
               >
                 {hasStreakData && coldPlayer && coldPlayer.coldStreak >= 2
                   ? coldPlayer.name.split(" ").slice(0, 2).join(" ")
                   : "—"}
               </span>
-              <span className="text-muted-foreground" style={{ fontSize: "var(--text-xs)", fontFamily: FONT }}>
+              <span className="text-muted-foreground" style={{ fontSize: "var(--text-xs)" }}>
                 {hasStreakData && coldPlayer && coldPlayer.coldStreak >= 2
                   ? `${coldPlayer.coldStreak} raka förluster`
                   : "Ingen aktiv förlustsvit"}
@@ -141,7 +138,6 @@ export function HeroStats({
               <span
                 style={{
                   fontSize: "var(--text-sm)",
-                  fontFamily: FONT,
                   letterSpacing: "0.04em",
                   textTransform: "uppercase" as const,
                   color: "var(--muted-foreground)",
@@ -153,7 +149,7 @@ export function HeroStats({
             {funFacts.length > 1 && (
               <span
                 className="text-muted-foreground tabular-nums select-none"
-                style={{ fontSize: "var(--text-xs)", fontFamily: FONT }}
+                style={{ fontSize: "var(--text-xs)" }}
               >
                 {(factIndex % funFacts.length) + 1}/{funFacts.length}
               </span>
@@ -175,7 +171,6 @@ export function HeroStats({
                 style={{
                   fontSize: "var(--text-label)",
                   fontWeight: "var(--font-weight-semibold)",
-                  fontFamily: FONT,
                 }}
               >
                 {funFacts.length > 0

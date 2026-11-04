@@ -101,7 +101,7 @@ export function MiniMatchCard({
     <button
       onClick={onClick}
       disabled={disabled}
-      className={`group w-full text-left rounded-[var(--radius-card)] border transition-all duration-300 cursor-pointer disabled:cursor-not-allowed disabled:opacity-30 overflow-hidden ${
+      className={`group w-full text-left rounded-[var(--radius-card)] border transition-all duration-300 cursor-pointer disabled:cursor-not-allowed disabled:opacity-50 overflow-hidden ${
         isFinal
           ? match.winner
             ? "bg-primary/[0.06] border-primary/20"
@@ -155,14 +155,14 @@ export function MiniMatchCard({
               >
                 <span
                   className={`tabular-nums ${won1 ? "text-primary" : "text-muted-foreground/60"}`}
-                  style={{ fontFamily: "'Titillium Web', sans-serif", fontSize: "10px", fontWeight: won1 ? "var(--font-weight-bold)" : "var(--font-weight-normal)" }}
+                  style={{ fontSize: "10px", fontWeight: won1 ? "var(--font-weight-bold)" : "var(--font-weight-normal)" }}
                 >
                   {s1}
                 </span>
-                <span className="text-muted-foreground/30" style={{ fontSize: "9px" }}>–</span>
+                <span className="text-muted-foreground/60" style={{ fontSize: "9px" }}>–</span>
                 <span
                   className={`tabular-nums ${won2 ? "text-primary" : "text-muted-foreground/60"}`}
-                  style={{ fontFamily: "'Titillium Web', sans-serif", fontSize: "10px", fontWeight: won2 ? "var(--font-weight-bold)" : "var(--font-weight-normal)" }}
+                  style={{ fontSize: "10px", fontWeight: won2 ? "var(--font-weight-bold)" : "var(--font-weight-normal)" }}
                 >
                   {s2}
                 </span>
@@ -214,7 +214,6 @@ function PlayerRow({
             isWinner ? "text-primary" : isLoser ? "text-muted-foreground/60" : hasCustomName ? "text-foreground" : "text-muted-foreground"
           }`}
           style={{
-            fontFamily: "'Titillium Web', sans-serif",
             fontSize: "var(--text-base)",
             fontWeight: isWinner ? "var(--font-weight-semibold)" : "var(--font-weight-normal)",
           }}
@@ -259,9 +258,9 @@ function PlayerRow({
       </div>
       <span
         className={`tabular-nums ml-3 transition-colors duration-300 ${
-          isWinner ? "text-primary" : isLoser ? "text-muted-foreground/40" : "text-muted-foreground"
+          isWinner ? "text-primary" : isLoser ? "text-muted-foreground/60" : "text-muted-foreground"
         }`}
-        style={{ fontFamily: "'Titillium Web', sans-serif", fontSize: "var(--text-base)", fontWeight: "var(--font-weight-bold)" }}
+        style={{ fontSize: "var(--text-base)", fontWeight: "var(--font-weight-bold)" }}
       >
         {setWins}
       </span>

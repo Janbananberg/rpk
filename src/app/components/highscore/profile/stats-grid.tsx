@@ -1,6 +1,5 @@
 import { motion } from "motion/react";
 import type { PlayerStats } from "../../../lib/stats";
-import { FONT } from "../constants";
 
 interface ProfileStatsGridProps {
   selectedPlayer: PlayerStats;
@@ -65,7 +64,6 @@ export function ProfileStatsGrid({
                 <div className="flex items-center justify-center gap-1">
                   <div
                     style={{
-                      fontFamily: FONT,
                       fontSize: "var(--text-h4)",
                       fontWeight: "var(--font-weight-semibold)",
                       color,
@@ -77,7 +75,6 @@ export function ProfileStatsGrid({
                   {delta !== null && delta !== 0 && (
                     <span
                       style={{
-                        fontFamily: FONT,
                         fontSize: "var(--text-xs)",
                         fontWeight: "var(--font-weight-semibold)",
                         color: delta > 0 ? "var(--success)" : "var(--destructive)",
@@ -91,7 +88,7 @@ export function ProfileStatsGrid({
                 </div>
                 <div
                   className="text-center text-muted-foreground"
-                  style={{ fontFamily: FONT, fontSize: "var(--text-xs)", marginBottom: hasData ? "8px" : 0 }}
+                  style={{ fontSize: "var(--text-xs)", marginBottom: hasData ? "8px" : 0 }}
                 >
                   {label}
                 </div>
@@ -117,7 +114,6 @@ export function ProfileStatsGrid({
                       <span className="flex items-baseline gap-0.5">
                         <span
                           style={{
-                            fontFamily: FONT,
                             fontSize: "var(--text-sm)",
                             fontWeight: "var(--font-weight-bold)",
                             color,
@@ -129,7 +125,6 @@ export function ProfileStatsGrid({
                         {pctDelta !== null && Math.abs(pctDelta) >= 0.1 && (
                           <span
                             style={{
-                              fontFamily: FONT,
                               fontSize: 9,
                               fontWeight: "var(--font-weight-semibold)",
                               color: pctDelta > 0 ? "var(--success)" : "var(--destructive)",
@@ -142,7 +137,7 @@ export function ProfileStatsGrid({
                       </span>
                       <span
                         className="text-muted-foreground"
-                        style={{ fontFamily: FONT, fontSize: "var(--text-xs)", lineHeight: 1 }}
+                        style={{ fontSize: "var(--text-xs)", lineHeight: 1 }}
                       >
                         {fraction}
                       </span>
@@ -151,7 +146,6 @@ export function ProfileStatsGrid({
                     <div
                       className="text-muted-foreground text-center"
                       style={{
-                        fontFamily: FONT,
                         fontSize: "var(--text-xs)",
                         letterSpacing: "0.06em",
                         textTransform: "uppercase" as const,
