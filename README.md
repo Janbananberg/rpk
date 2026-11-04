@@ -1,6 +1,6 @@
 # RPK
 
-Pingisturneringsappen: turneringsträd, highscore med Elo, odds och vadslagning, förslag och
+Pingisturneringsappen: turneringsträd, highscore med Elo, odds och vadslagning och
 adminsida. React 18 + Vite + Tailwind, med LKAB:s färgteman.
 
 ## Kom igång
@@ -17,6 +17,10 @@ Appen körs på <http://localhost:5173>.
 Appen har ingen backend just nu. All data hämtas och sparas via `src/app/components/api.tsx`,
 som anropar adressen i `VITE_API_URL`. Kopiera `.env.example` till `.env` och fyll i
 adressen när det finns en backend. Utan den misslyckas alla anrop som läser eller sparar data.
+
+Adminlösenordet kontrolleras av backend och finns aldrig i frontendkoden. Backend ska ta
+startlösenordet från en miljövariabel (`ADMIN_PASSWORD`), inte från koden. Därefter byts det
+under Admin → Inställningar.
 
 ## Skript
 

@@ -1,5 +1,5 @@
 import { Outlet, useLocation, useNavigate } from "react-router";
-import { Trophy, Ticket, Shield, Gamepad2, Lightbulb } from "lucide-react";
+import { Trophy, Ticket, Shield, Gamepad2 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { getAdminToken } from "./api";
 import { RpkLogo } from "./rpk-logo";
@@ -8,13 +8,12 @@ import { ConfirmDialog } from "./confirm-dialog";
 
 const FONT = "'Titillium Web', sans-serif";
 
-type TabKey = "turnering" | "bet" | "highscore" | "admin" | "forslag";
+type TabKey = "turnering" | "bet" | "highscore" | "admin";
 
 const ALL_TABS: { key: TabKey; path: string; label: string; icon: typeof Trophy; adminOnly?: boolean; mobileVisible?: boolean }[] = [
   { key: "highscore", path: "/", label: "Spela", icon: Gamepad2, mobileVisible: true },
   { key: "turnering", path: "/turnering", label: "Turnering", icon: Trophy },
   { key: "bet", path: "/bet", label: "Betting", icon: Ticket, adminOnly: true },
-  { key: "forslag", path: "/forslag", label: "Förslag", icon: Lightbulb, mobileVisible: true },
   { key: "admin", path: "/admin", label: "Admin", icon: Shield },
 ];
 
@@ -22,7 +21,6 @@ function getActiveTab(pathname: string): TabKey {
   if (pathname.startsWith("/turnering")) return "turnering";
   if (pathname.startsWith("/bet")) return "bet";
   if (pathname.startsWith("/admin")) return "admin";
-  if (pathname.startsWith("/forslag")) return "forslag";
   return "highscore";
 }
 

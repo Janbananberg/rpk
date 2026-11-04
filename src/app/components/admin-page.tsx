@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from "motion/react";
 import {
   Shield, Lock, Eye, EyeOff, Users, Ticket, TrendingUp, Trophy,
   Trash2, RotateCcw, AlertTriangle, Check, Play, Pause, Database, Settings, ChevronDown, ChevronUp, Clock, LogOut,
-  Swords, CheckCircle2, Loader2, Zap, Lightbulb,
+  Swords, CheckCircle2, Loader2, Zap,
 } from "lucide-react";
 import type { BettorProfile, TournamentWinnerOdds } from "./betting-store";
 import type { PlacedBet, TournamentState, TournamentHistoryEntry, ActiveTournament } from "./api";
@@ -27,17 +27,13 @@ import {
   fetchActiveTournament,
   getAdminToken,
   fetchHighscorePlayers,
-  fetchSuggestions,
-  adminDeleteSuggestion,
-  adminUpdateSuggestionStatus,
   resetEloRatings,
   fetchEloResetTimestamp,
 } from "./api";
-import type { Suggestion } from "./api";
 
 const FONT = "'Titillium Web', sans-serif";
 
-type AdminTab = "overview" | "tournaments" | "bettors" | "odds" | "history" | "suggestions" | "settings";
+type AdminTab = "overview" | "tournaments" | "bettors" | "odds" | "history" | "settings";
 
 export function AdminPage() {
   const [password, setPassword] = useState("");
@@ -57,7 +53,6 @@ export function AdminPage() {
   const [activeTournament, setActiveTournament] = useState<ActiveTournament | null>(null);
 
   const [, setHighscorePlayers] = useState<string[]>([]);
-  const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
 
   // UI
   const [confirmReset, setConfirmReset] = useState(false);
@@ -99,7 +94,7 @@ export function AdminPage() {
 
   const loadData = useCallback(async () => {
     if (!authenticated) return;
-    const [b, tOdds, ab, ts, th, at, hp, sug, eloTs] = await Promise.all([
+    const [b, tOdds, ab, ts, th, at, hp, eloTs] = await Promise.all([
       fetchAllBettors(),
       fetchTournamentWinnerOdds(),
       adminFetchAllBets(),
@@ -107,7 +102,6 @@ export function AdminPage() {
       fetchTournamentHistory(),
       fetchActiveTournament(),
       fetchHighscorePlayers(),
-      fetchSuggestions(),
       fetchEloResetTimestamp(),
     ]);
     setBettors(b);
@@ -122,7 +116,6 @@ export function AdminPage() {
     setTournamentHistory(th);
     setActiveTournament(at);
     setHighscorePlayers(hp);
-    setSuggestions(sug);
     setEloResetTs(eloTs);
   }, [authenticated]);
 
@@ -233,7 +226,6 @@ export function AdminPage() {
     { key: "bettors", label: "Bettare", icon: Users },
     { key: "odds", label: "Odds", icon: TrendingUp },
     { key: "history", label: "Historik", icon: Clock },
-    { key: "suggestions", label: "Förslag", icon: Lightbulb },
     { key: "settings", label: "Inst.", icon: Settings },
   ];
 
@@ -680,147 +672,6 @@ export function AdminPage() {
               <div className="flex flex-col items-center gap-2 py-12 text-muted-foreground">
                 <Trophy className="w-8 h-8 opacity-30" />
                 <span style={{ fontFamily: FONT, fontSize: "var(--text-label)" }}>Inga avslutade turneringar</span>
-              </div>
-            )}
-          </motion.div>
-        )}
-
-        {/* ── Suggestions ── */}
-        {activeTab === "suggestions" && (
-          <motion.div key="suggestions" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col gap-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Lightbulb className="w-4 h-4 text-primary" />
-                <span style={{ fontFamily: FONT, fontSize: "var(--text-base)", fontWeight: "var(--font-weight-semibold)" }} className="text-foreground">
-                  Inskickade förslag ({suggestions.length})
-                </span>
-              </div>
-            </div>
-
-            {suggestions.length === 0 ? (
-              <div className="rounded-[var(--radius-card)] border border-border/50 p-8 text-center" style={{ background: "var(--surface-container-low)" }}>
-                <p className="text-muted-foreground" style={{ fontFamily: FONT, fontSize: "var(--text-base)" }}>Inga förslag inskickade ännu</p>
-              </div>
-            ) : (
-              <div className="rounded-[var(--radius-card)] border border-border/50 overflow-hidden" style={{ background: "var(--surface-container-low)" }}>
-                {/* Table header */}
-                <div
-                  className="hidden md:grid px-4 py-3 border-b border-border items-center"
-                  style={{
-                    gridTemplateColumns: "1fr 120px 120px 100px 80px 40px",
-                    columnGap: 8,
-                    background: "var(--surface-container-high)",
-                  }}
-                >
-                  {["Förslag", "Från", "Kategori", "Datum", "Status", ""].map((h) => (
-                    <span
-                      key={h}
-                      className="text-muted-foreground"
-                      style={{
-                        fontFamily: FONT,
-                        fontSize: "var(--text-xs)",
-                        fontWeight: "var(--font-weight-semibold)",
-                        letterSpacing: "0.05em",
-                        textTransform: "uppercase" as const,
-                      }}
-                    >
-                      {h}
-                    </span>
-                  ))}
-                </div>
-
-                {/* Rows */}
-                {suggestions.map((s) => (
-                  <div key={s.id}>
-                    {/* Desktop row */}
-                    <div
-                      className="hidden md:grid px-4 py-3 border-b border-border last:border-b-0 items-center hover:bg-muted/20 transition-colors"
-                      style={{ gridTemplateColumns: "1fr 120px 120px 100px 80px 40px", columnGap: 8 }}
-                    >
-                      <p
-                        className="text-foreground truncate"
-                        title={s.text}
-                        style={{ fontFamily: FONT, fontSize: "var(--text-label)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}
-                      >
-                        {s.text}
-                      </p>
-                      <span className="text-muted-foreground truncate" style={{ fontFamily: FONT, fontSize: "var(--text-label)" }}>{s.name}</span>
-                      <span
-                        className="px-2 py-0.5 rounded-[var(--radius-button)] text-center truncate"
-                        style={{ fontFamily: FONT, fontSize: "var(--text-xs)", fontWeight: "var(--font-weight-semibold)", background: "var(--muted)", color: "var(--muted-foreground)" }}
-                      >
-                        {s.category}
-                      </span>
-                      <span className="text-muted-foreground" style={{ fontFamily: FONT, fontSize: "var(--text-xs)" }}>
-                        {new Date(s.timestamp).toLocaleDateString("sv-SE")}
-                      </span>
-                      <select
-                        value={s.status}
-                        onChange={async (e) => {
-                          const ok = await adminUpdateSuggestionStatus(s.id, e.target.value);
-                          if (ok) loadData();
-                        }}
-                        className="px-1 py-0.5 rounded-[var(--radius-card)] border border-border bg-surface-container text-foreground cursor-pointer outline-none"
-                        style={{ fontFamily: FONT, fontSize: "var(--text-xs)" }}
-                      >
-                        <option value="new">Ny</option>
-                        <option value="read">Läst</option>
-                        <option value="planned">Planerad</option>
-                        <option value="done">Klar</option>
-                        <option value="rejected">Avvisad</option>
-                      </select>
-                      <button
-                        onClick={async () => {
-                          const ok = await adminDeleteSuggestion(s.id);
-                          if (ok) { showToast("Förslag raderat"); loadData(); }
-                        }}
-                        className="text-destructive hover:opacity-70 transition-opacity cursor-pointer"
-                        title="Radera"
-                      >
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </button>
-                    </div>
-
-                    {/* Mobile card */}
-                    <div className="md:hidden px-4 py-3 border-b border-border last:border-b-0 flex flex-col gap-2">
-                      <div className="flex items-center justify-between gap-2">
-                        <span className="text-foreground" style={{ fontFamily: FONT, fontSize: "var(--text-label)", fontWeight: "var(--font-weight-semibold)" }}>{s.name}</span>
-                        <div className="flex items-center gap-2">
-                          <span className="px-2 py-0.5 rounded-[var(--radius-button)]" style={{ fontFamily: FONT, fontSize: "var(--text-xs)", background: "var(--muted)", color: "var(--muted-foreground)" }}>{s.category}</span>
-                          <span className="text-muted-foreground" style={{ fontFamily: FONT, fontSize: "var(--text-xs)" }}>{new Date(s.timestamp).toLocaleDateString("sv-SE")}</span>
-                        </div>
-                      </div>
-                      <p className="text-foreground" style={{ fontFamily: FONT, fontSize: "var(--text-base)", whiteSpace: "pre-wrap", wordBreak: "break-word" }}>{s.text}</p>
-                      <div className="flex items-center justify-between gap-2">
-                        <select
-                          value={s.status}
-                          onChange={async (e) => {
-                            const ok = await adminUpdateSuggestionStatus(s.id, e.target.value);
-                            if (ok) loadData();
-                          }}
-                          className="px-2 py-1 rounded-[var(--radius-card)] border border-border bg-surface-container text-foreground cursor-pointer outline-none"
-                          style={{ fontFamily: FONT, fontSize: "var(--text-xs)" }}
-                        >
-                          <option value="new">Ny</option>
-                          <option value="read">Läst</option>
-                          <option value="planned">Planerad</option>
-                          <option value="done">Klar</option>
-                          <option value="rejected">Avvisad</option>
-                        </select>
-                        <button
-                          onClick={async () => {
-                            const ok = await adminDeleteSuggestion(s.id);
-                            if (ok) { showToast("Förslag raderat"); loadData(); }
-                          }}
-                          className="text-destructive hover:opacity-70 transition-opacity cursor-pointer flex items-center gap-1"
-                          style={{ fontFamily: FONT, fontSize: "var(--text-xs)" }}
-                        >
-                          <Trash2 className="w-3.5 h-3.5" /> Radera
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                ))}
               </div>
             )}
           </motion.div>
