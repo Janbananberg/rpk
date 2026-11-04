@@ -1,4 +1,5 @@
-import { Users, Code2, Download } from "lucide-react";
+import { Users, Code2, Download, Tv } from "lucide-react";
+import { Link } from "react-router";
 import type { PlayerStats } from "../../lib/stats";
 import { FONT } from "./constants";
 
@@ -72,6 +73,21 @@ export function ActionRow({
                 <Download className="w-4 h-4" />
                 Exportera CSV{selectedMonth === "total" ? " (Total)" : ` (${selectedMonth})`}
               </button>
+              <Link
+                to="/storbild"
+                title="Helskärmsvy för kontorets TV"
+                className="flex items-center gap-2 px-4 py-2 rounded-lg border border-border transition-all cursor-pointer hover:opacity-80"
+                style={{
+                  fontSize: "var(--text-sm)",
+                  fontWeight: "var(--font-weight-semibold)" as any,
+                  color: "var(--foreground)",
+                  background: "var(--surface-container-high)",
+                  borderRadius: "var(--radius-button)",
+                }}
+              >
+                <Tv className="w-4 h-4" />
+                Storbild
+              </Link>
             </div>
           )}
         </div>
