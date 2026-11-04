@@ -307,6 +307,13 @@ export function HighscorePage() {
     [selectedMonth, historicalStats],
   );
 
+  // Historik lists only past months that have sessions: a month that has just ended moves there
+  // once it has been played, and an empty month never shows up.
+  const playedMonths = useMemo(
+    () => monthList.filter((m) => m === currentMonth || (allMonthlySessions[m]?.length ?? 0) > 0),
+    [monthList, currentMonth, allMonthlySessions],
+  );
+
   const isViewingCurrentMonth = selectedMonth === currentMonth;
 
   const stats = useMemo(
@@ -987,7 +994,7 @@ export function HighscorePage() {
 
       {/* ── Month Picker ── */}
       <MonthPicker
-        monthList={monthList}
+        monthList={playedMonths}
         currentMonth={currentMonth}
         selectedMonth={selectedMonth}
         setSelectedMonth={setSelectedMonth}
