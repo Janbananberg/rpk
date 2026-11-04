@@ -65,7 +65,6 @@ import { DeepDiveView } from "./highscore/deep-dive-view";
 import { PlayerProfileModal } from "./highscore/player-profile-modal";
 import { AddPlayerModal } from "./highscore/add-player-modal";
 import { RecentSessions } from "./highscore/recent-sessions";
-import { ShareResultPrompt } from "./highscore/share-result";
 
 interface SaveCelebration {
   phase: "before" | "after";
@@ -881,7 +880,6 @@ export function HighscorePage() {
 
   const [saving, setSaving] = useState(false);
   const [confirmSave, setConfirmSave] = useState(false);
-  const [sharedSession, setSharedSession] = useState<GameSession | null>(null);
 
   async function saveSession() {
     if (currentRounds.length === 0 || saving) return;
@@ -923,7 +921,6 @@ export function HighscorePage() {
     setSelectedPlayers([]);
     setCurrentRounds([]);
     setSaving(false);
-    setSharedSession(session);
   }
 
   // ── Delete session ──
@@ -1436,14 +1433,6 @@ export function HighscorePage() {
         recentSessions={recentSessions}
         setShowAllSessions={setShowAllSessions}
         showAllSessions={showAllSessions}
-      />
-      {/* ── Dela resultat: offered after a session is saved ── */}
-      <ShareResultPrompt
-        session={sharedSession}
-        allSessions={allSessions}
-        players={players}
-        eloResetTimestamp={eloResetTimestamp}
-        onDismiss={() => setSharedSession(null)}
       />
       {/* ── Mobile FAB: Ny omgång, or Lägg till spelare until there are enough players ── */}
       {isViewingCurrentMonth && hasPlayers && (
