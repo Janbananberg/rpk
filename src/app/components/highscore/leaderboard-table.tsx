@@ -591,7 +591,7 @@ export function LeaderboardTable({
                         <span className="text-primary shrink-0" style={{ fontSize: "var(--text-xs)", fontFamily: FONT, fontWeight: "var(--font-weight-semibold)" }}>
                           {s.bwp.toFixed(0)}%
                         </span>
-                        <span className="text-muted-foreground shrink-0" style={{ fontSize: "var(--text-xs)", fontFamily: FONT }}>
+                        <span className="text-muted-foreground shrink-0" style={{ fontSize: "var(--text-xs)" }}>
                           F {s.finalPct.toFixed(0)}%
                         </span>
                         <span className="text-muted-foreground shrink-0" style={{ fontSize: "var(--text-xs)", fontFamily: FONT }}>
