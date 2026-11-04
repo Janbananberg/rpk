@@ -1,12 +1,13 @@
 /**
  * API client for the tournament and highscore data.
  *
- * Backend URL is read from VITE_API_URL (see .env.example). No backend is
- * configured yet, so requests fail until one is provided.
+ * Backend URL is read from VITE_API_URL: `/api` in production (.env.production), where the
+ * Cloudflare Worker in worker/ answers. `npm run dev` has no backend, so requests fail and
+ * fall back to empty data.
  *
- * - Admin login is checked in the browser (config.ts); admin actions send X-Admin-Token.
+ * - Admin login is checked by the backend; admin actions send the token it returns as X-Admin-Token.
  */
-import { ADMIN_PASSWORD } from "../config";
+import { DEV_ADMIN_PASSWORD } from "../config";
 
 export const API_BASE: string = import.meta.env.VITE_API_URL ?? "";
 const BASE = API_BASE;
@@ -65,21 +66,52 @@ export async function fetchTournamentHistory(): Promise<TournamentHistoryEntry[]
 
 // ════════════════════════════════════════════════════════════════════════
 //  ADMIN AUTHENTICATION
-//  The password is checked in the browser (see config.ts) — it only keeps
-//  casual visitors out of the admin view. The session marker is kept in
-//  sessionStorage and sent as X-Admin-Token on admin writes.
+//  The backend checks the password against its ADMIN_PASSWORD secret and
+//  returns a token, kept in sessionStorage and sent as X-Admin-Token on
+//  admin writes. Without a backend (npm run dev) the check is local.
 // ════════════════════════════════════════════════════════════════════════
 
-const LOCAL_ADMIN_TOKEN = "local-admin";
-
 export async function adminLogin(password: string): Promise<{ ok: boolean; error?: string }> {
-  if (password !== ADMIN_PASSWORD) return { ok: false, error: "Felaktigt lösenord" };
-  setAdminToken(LOCAL_ADMIN_TOKEN);
-  return { ok: true };
+  if (!BASE) {
+    if (!import.meta.env.DEV || password !== DEV_ADMIN_PASSWORD) return { ok: false, error: "Felaktigt lösenord" };
+    setAdminToken("local-admin");
+    return { ok: true };
+  }
+  try {
+    const res = await fetch(`${BASE}/admin/login`, {
+      method: "POST",
+      headers: baseHeaders(),
+      body: JSON.stringify({ password }),
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok || typeof data.token !== "string") return { ok: false, error: data.error || "Felaktigt lösenord" };
+    setAdminToken(data.token);
+    return { ok: true };
+  } catch (e) {
+    console.log("API adminLogin error:", e);
+    return { ok: false, error: "Kunde inte nå servern" };
+  }
 }
 
 export async function adminLogout(): Promise<void> {
   setAdminToken(null);
+}
+
+// ════════════════════════════════════════════════════════════════════════
+//  DATA VERSION
+//  A counter the backend bumps on every write. Polling compares it and only
+//  fetches the data again when it has changed.
+// ════════════════════════════════════════════════════════════════════════
+
+export async function fetchDataVersion(): Promise<number | null> {
+  try {
+    const res = await fetch(`${BASE}/version`, { headers: baseHeaders(), cache: "no-store" });
+    if (!res.ok) return null;
+    const data = await res.json();
+    return typeof data.version === "number" ? data.version : null;
+  } catch {
+    return null;
+  }
 }
 
 // ════════════════════════════════════════════════════════════════════════

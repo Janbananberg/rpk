@@ -20,8 +20,9 @@ export default defineConfig({
   assetsInclude: ['**/*.svg', '**/*.csv'],
 
   server: {
-    // Agent worktrees live under .claude/ — their edits must not reload the app.
-    watch: { ignored: ['**/.claude/**'] },
+    // Agent worktrees live under .claude/ and Wrangler's local state under .wrangler/ —
+    // changes there must not reload the app.
+    watch: { ignored: ['**/.claude/**', '**/.wrangler/**'] },
   },
 
   test: {

@@ -27,7 +27,7 @@ export function ApiInfoModal({
     <>
             <AnimatePresence>
               {showApiModal && (() => {
-                const baseUrl = `${API_BASE}/api/stats`;
+                const baseUrl = new URL(`${API_BASE}/stats`, window.location.origin).href;
                 const exampleTotal = `${baseUrl}?month=total`;
                 // Browser test uses fetch with auth header + blob URL (apikey query param not supported by Edge Functions)
                 const curlExample = `curl "${exampleTotal}"`;

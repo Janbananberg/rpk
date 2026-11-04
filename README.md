@@ -14,19 +14,28 @@ Appen körs på <http://localhost:5173>.
 
 ## Backend
 
-Appen har ingen backend just nu. All data hämtas och sparas via `src/app/components/api.tsx`,
-som anropar adressen i `VITE_API_URL`. Kopiera `.env.example` till `.env` och fyll i
-adressen när det finns en backend. Utan den misslyckas alla anrop som läser eller sparar data.
+Appen körs som en Cloudflare Worker (`wrangler.jsonc`). Den byggda appen i `dist/` serveras
+som statiska filer, och allt under `/api/*` går till backenden i `worker/`, som sparar i
+databasen D1. Tabellen skapas av sig själv vid första anropet.
 
-Adminlösenordet kontrolleras av backend och finns aldrig i frontendkoden. Backend ska ta
-startlösenordet från en miljövariabel (`ADMIN_PASSWORD`), inte från koden. Därefter byts det
-under Admin → Inställningar.
+- `src/app/components/api.tsx` anropar adressen i `VITE_API_URL`, som är `/api` i
+  produktionsbygget (`.env.production`).
+- Varje push till `main` byggs och publiceras av Cloudflare.
+- Adminlösenordet är hemligheten `ADMIN_PASSWORD` i Cloudflare (Worker `rpk` → Settings →
+  Variables and Secrets). Saknas den gäller `plingplong`. Lösenordet kontrolleras av servern och
+  finns inte i det publicerade JavaScriptet.
+- Klienterna frågar `/api/version` var 30:e sekund och hämtar bara data när något har ändrats.
+- `GET /api/stats?month=total` (eller `YYYY-MM`) är ett öppet statistik-API.
+
+`npm run dev` har ingen backend, så ingenting sparas där. Hela kedjan med en lokal databas körs
+med `npm run dev:full` på <http://127.0.0.1:8787>.
 
 ## Skript
 
 | Skript | Gör |
 |---|---|
-| `npm run dev` | Startar utvecklingsservern |
+| `npm run dev` | Startar utvecklingsservern (utan backend) |
+| `npm run dev:full` | Bygger och kör appen med backend och lokal databas |
 | `npm run build` | Bygger till `dist/` |
 | `npm run preview` | Serverar det byggda resultatet |
 | `npm run typecheck` | Kör TypeScript utan att bygga |

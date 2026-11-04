@@ -1,4 +1,4 @@
-// Admin password, checked in the browser. Anyone can read it in the built JavaScript, so it only
-// keeps casual visitors out of the admin view — it is not a security boundary. Admin writes are
-// meant to be authorized by the backend once there is one.
-export const ADMIN_PASSWORD = "plingplong";
+// Admin password for `npm run dev`, which has no backend. Only used in development builds, so it
+// never ends up in the deployed JavaScript. The real password is the backend's ADMIN_PASSWORD
+// secret (see README).
+export const DEV_ADMIN_PASSWORD = "plingplong";
