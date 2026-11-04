@@ -3,7 +3,7 @@ import { ChevronRight, Target, ClipboardList, Moon, Trophy, Flame, Snowflake, Tr
 import type { PlayerStats, SortTab } from "../../lib/stats";
 import { SEED_MIN_ROUNDS, ELO_START, weightedDelta } from "../../lib/elo";
 import type { EloEntry } from "../../lib/elo";
-import { FONT } from "./constants";
+import { FONT, INACTIVE_WEEKS } from "./constants";
 import { getRankIcon } from "./rank-icon";
 import { EloSparkline } from "./elo-sparkline";
 import { FormDots } from "./form-dots";
@@ -315,7 +315,6 @@ export function LeaderboardTable({
 
               {/* Rows — split into seeded, unseeded, and inactive (no play in 4 weeks) */}
               {(() => {
-                const INACTIVE_WEEKS = 4;
                 const inactiveCutoff = Date.now() - INACTIVE_WEEKS * 7 * 24 * 60 * 60 * 1000;
 
                 const isInactive = (s: PlayerStats) => {

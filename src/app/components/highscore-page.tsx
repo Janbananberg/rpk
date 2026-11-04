@@ -41,13 +41,14 @@ import { getCurrentMonth } from "../lib/dates";
 import type { MonthView } from "../lib/dates";
 import { computeStats, sortStats } from "../lib/stats";
 import type { SortTab, PlayerStats } from "../lib/stats";
-import { ELO_START, computeLastPlayed, applyEloDecay, computeElo, computeEloHistory, computeH2HElo } from "../lib/elo";
+import { ELO_START, SEED_MIN_ROUNDS, computeLastPlayed, applyEloDecay, computeElo, computeEloHistory, computeH2HElo } from "../lib/elo";
 import { computeRevengeData, computeSeasonSummary, generateFunFacts, computePlayerInsights, computeH2HInsights } from "../lib/insights";
 import { buildStatsCsv } from "../lib/stats-csv";
 import { ALL_ACHIEVEMENTS, MYTHIC_COMPLETIONIST, computePlayerAchievements, syncAchievements } from "../lib/achievements";
-import { FONT, MIN_PLAYERS_FOR_ROUND } from "./highscore/constants";
+import { FONT, MIN_PLAYERS_FOR_ROUND, INACTIVE_WEEKS } from "./highscore/constants";
 import type { RegStep } from "./highscore/constants";
 import { HighscoreEmptyState } from "./highscore/empty-state";
+import { Podium } from "./highscore/podium";
 import { RegistrationFlow } from "./highscore/registration-flow";
 import { MonthPicker } from "./highscore/month-picker";
 import { HeroStats } from "./highscore/hero-stats";
@@ -570,6 +571,21 @@ export function HighscorePage() {
   const isMonthView = selectedMonth !== "total";
 
   const sortedStats = useMemo(() => sortStats(stats, sortTab, sortDir, eloRatings, monthlyEloDelta, monthlyRoundsPlayed), [stats, sortTab, sortDir, eloRatings, monthlyEloDelta, monthlyRoundsPlayed]);
+
+  // Podium: the view's top three by ranking (not by the chosen sort column), grouped like the
+  // table — seeded first, then unseeded, inactive last — among players who played in the view.
+  const podiumPlayers = useMemo(() => {
+    const ranked = sortStats(stats, "elo", "desc", eloRatings, monthlyEloDelta, monthlyRoundsPlayed)
+      .filter((s) => s.gamesPlayed > 0);
+    if (ranked.length < 3) return [];
+    const cutoff = Date.now() - INACTIVE_WEEKS * 7 * 24 * 60 * 60 * 1000;
+    const group = (s: PlayerStats) => {
+      const lp = lastPlayedMap[s.name];
+      if (!lp || lp < cutoff) return 2;
+      return s.gamesPlayed >= SEED_MIN_ROUNDS ? 0 : 1;
+    };
+    return [...ranked].sort((a, b) => group(a) - group(b)).slice(0, 3);
+  }, [stats, eloRatings, monthlyEloDelta, monthlyRoundsPlayed, lastPlayedMap]);
 
   function exportStatsCsv() {
     const csv = buildStatsCsv(sortedStats, eloRatings, activeSessions);
@@ -1205,6 +1221,18 @@ export function HighscorePage() {
         setShowSeasonSummary={setShowSeasonSummary}
         showSeasonSummary={showSeasonSummary}
       />
+
+      {/* ── Podium: top three of the view ── */}
+      {hasPlayers && (
+        <Podium
+          top={podiumPlayers}
+          eloRatings={eloRatings}
+          isMonthView={isMonthView}
+          monthlyEloDelta={monthlyEloDelta}
+          monthlyRoundsPlayed={monthlyRoundsPlayed}
+          onSelect={(p) => { setDevSectionOpen(false); setSelectedPlayer(p); }}
+        />
+      )}
 
       {/* ── Table (always visible when there are players, below deep dive when active) ── */}
       {hasPlayers && (
