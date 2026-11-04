@@ -340,15 +340,37 @@ export async function fetchHighscorePlayers(): Promise<string[]> {
   }
 }
 
-export async function saveHighscorePlayers(players: string[]): Promise<void> {
+// Players, sessions and renames are changed on the server, on what it has stored. Sending the
+// whole list or month from here could write away what another phone just saved.
+
+/** The player list after the change, or null when the server said no (or couldn't be reached). */
+export async function addPlayerToServer(name: string): Promise<{ players: string[] | null; error?: string }> {
   try {
-    await fetch(`${BASE}/highscore/players`, {
+    const res = await fetch(`${BASE}/highscore/add-player`, {
       method: "POST",
       headers: baseHeaders(),
-      body: JSON.stringify({ players }),
+      body: JSON.stringify({ name }),
     });
+    const data = await res.json();
+    return res.ok ? { players: data.players } : { players: null, error: data.error };
   } catch (e) {
-    console.log("API saveHighscorePlayers error:", e);
+    console.log("API addPlayerToServer error:", e);
+    return { players: null };
+  }
+}
+
+export async function renamePlayerOnServer(oldName: string, newName: string): Promise<boolean> {
+  try {
+    const res = await fetch(`${BASE}/highscore/rename-player`, {
+      method: "POST",
+      headers: baseHeaders(),
+      body: JSON.stringify({ oldName, newName }),
+    });
+    if (!res.ok) console.log("API renamePlayerOnServer error:", await res.json());
+    return res.ok;
+  } catch (e) {
+    console.log("API renamePlayerOnServer error:", e);
+    return false;
   }
 }
 
@@ -374,18 +396,6 @@ export async function fetchHistoricalStats(): Promise<HistoricalStats> {
   }
 }
 
-export async function saveHistoricalStats(stats: HistoricalStats): Promise<void> {
-  try {
-    await fetch(`${BASE}/highscore/historical-stats`, {
-      method: "POST",
-      headers: baseHeaders(),
-      body: JSON.stringify({ stats }),
-    });
-  } catch (e) {
-    console.log("API saveHistoricalStats error:", e);
-  }
-}
-
 // ── Monthly sessions (per calendar month) ──
 
 export async function fetchMonthlySessions(month: string): Promise<GameSession[]> {
@@ -400,15 +410,19 @@ export async function fetchMonthlySessions(month: string): Promise<GameSession[]
   }
 }
 
-export async function saveMonthlySessions(month: string, sessions: GameSession[]): Promise<void> {
+/** Adds the session to the month on the server, which also puts the month in the month list. */
+export async function addSessionToServer(month: string, session: GameSession): Promise<boolean> {
   try {
-    await fetch(`${BASE}/highscore/monthly-sessions/${month}`, {
+    const res = await fetch(`${BASE}/highscore/add-session`, {
       method: "POST",
       headers: baseHeaders(),
-      body: JSON.stringify({ sessions }),
+      body: JSON.stringify({ month, session }),
     });
+    if (!res.ok) console.log("API addSessionToServer error:", await res.json());
+    return res.ok;
   } catch (e) {
-    console.log("API saveMonthlySessions error:", e);
+    console.log("API addSessionToServer error:", e);
+    return false;
   }
 }
 

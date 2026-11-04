@@ -9,6 +9,7 @@ import { Hono } from "hono";
 import type { Context, Next } from "hono";
 import { bodyLimit } from "hono/body-limit";
 import type { ActiveTournament, GameSession, HistoricalStats, PlayerCards, SavedPlayerAchievements, TournamentHistoryEntry } from "../src/app/components/api";
+import { addSession, findSamePlayer, isGameSession, mergeSessions, renameInSessions, renameKey, sortPlayers } from "./sessions";
 import { computePublicStats } from "./stats";
 import { get, getByPrefix, set, VERSION_KEY, write } from "./store";
 
@@ -191,9 +192,30 @@ app.get("/highscore/monthly-sessions/:month", async (c) => {
 app.post("/highscore/monthly-sessions/:month", async (c) => {
   const month = c.req.param("month");
   if (!MONTH_RE.test(month)) return c.json({ error: "Invalid month format, use YYYY-MM" }, 400);
-  const { sessions } = await c.req.json<{ sessions?: GameSession[] }>();
-  if (!Array.isArray(sessions)) return c.json({ error: "sessions required" }, 400);
-  await set(c.env.DB, monthKey(month), sessions);
+  const { sessions } = await c.req.json<{ sessions?: unknown }>();
+  if (!Array.isArray(sessions) || !sessions.every(isGameSession)) return c.json({ error: "sessions required" }, 400);
+  // The app no longer sends whole months, but a tab still running an older build does: merge,
+  // so its copy can't remove rounds it never saw.
+  const stored = (await get<GameSession[]>(c.env.DB, monthKey(month))) ?? [];
+  await set(c.env.DB, monthKey(month), mergeSessions(stored, sessions));
+  return c.json({ ok: true });
+});
+
+// Adds one session to what is stored, and the month to the month list. The app saves rounds
+// this way, so a phone with an old copy of the month can't write other rounds away.
+app.post("/highscore/add-session", async (c) => {
+  const { session, month } = await c.req.json<{ session?: unknown; month?: string }>();
+  if (!month || !MONTH_RE.test(month) || !isGameSession(session)) return c.json({ error: "session and month required" }, 400);
+  const db = c.env.DB;
+  const [sessions, months] = await Promise.all([
+    get<GameSession[]>(db, monthKey(month)),
+    get<string[]>(db, "rpk:highscore-month-list"),
+  ]);
+  const changes: { key: string; value: unknown }[] = [{ key: monthKey(month), value: addSession(sessions ?? [], session) }];
+  if (!(months ?? []).includes(month)) {
+    changes.push({ key: "rpk:highscore-month-list", value: [...(months ?? []), month].sort() });
+  }
+  await write(db, changes);
   return c.json({ ok: true });
 });
 
@@ -214,6 +236,51 @@ app.get("/highscore/discover-months", async (c) => {
     .filter((month) => MONTH_RE.test(month))
     .sort();
   return c.json({ months });
+});
+
+app.post("/highscore/add-player", async (c) => {
+  const { name } = await c.req.json<{ name?: unknown }>();
+  if (typeof name !== "string" || !name.trim()) return c.json({ error: "Player name required" }, 400);
+  const players = (await get<string[]>(c.env.DB, "rpk:highscore-players")) ?? [];
+  const existing = findSamePlayer(players, name);
+  if (existing) return c.json({ ok: false, error: `"${existing}" finns redan i listan.`, players }, 409);
+  const updated = sortPlayers([...players, name.trim()]);
+  await set(c.env.DB, "rpk:highscore-players", updated);
+  return c.json({ ok: true, players: updated });
+});
+
+// Renames a player everywhere in one batch, like remove-player below.
+app.post("/highscore/rename-player", async (c) => {
+  const { oldName, newName: rawNewName } = await c.req.json<{ oldName?: unknown; newName?: unknown }>();
+  const newName = typeof rawNewName === "string" ? rawNewName.trim() : "";
+  if (typeof oldName !== "string" || !oldName || !newName) return c.json({ error: "oldName and newName required" }, 400);
+  const db = c.env.DB;
+
+  const [players, historicalStats, cards, achievements, monthSessions] = await Promise.all([
+    get<string[]>(db, "rpk:highscore-players"),
+    get<HistoricalStats>(db, "rpk:highscore-historical-stats"),
+    get<PlayerCards>(db, "rpk:player-cards"),
+    get<SavedPlayerAchievements>(db, "rpk:player-achievements"),
+    getByPrefix<GameSession[]>(db, MONTH_SESSIONS_PREFIX),
+  ]);
+  const roster = players ?? [];
+  if (!roster.includes(oldName)) return c.json({ ok: false, error: "Spelaren finns inte" }, 404);
+  const existing = findSamePlayer(roster.filter((p) => p !== oldName), newName);
+  if (existing) return c.json({ ok: false, error: `"${existing}" finns redan i listan.` }, 409);
+
+  const updatedPlayers = sortPlayers(roster.map((p) => (p === oldName ? newName : p)));
+  const updatedStats = renameKey(historicalStats ?? {}, oldName, newName);
+  const updatedCards = renameKey(cards ?? {}, oldName, newName);
+  const changes: { key: string; value: unknown }[] = [
+    { key: "rpk:highscore-players", value: updatedPlayers },
+    { key: "rpk:highscore-historical-stats", value: updatedStats },
+    { key: "rpk:player-cards", value: updatedCards },
+    { key: "rpk:player-achievements", value: renameKey(achievements ?? {}, oldName, newName) },
+    ...Object.entries(monthSessions).map(([key, sessions]) => ({ key, value: renameInSessions(sessions, oldName, newName) })),
+  ];
+
+  await write(db, changes);
+  return c.json({ ok: true, players: updatedPlayers, historicalStats: updatedStats, cards: updatedCards });
 });
 
 // Removes a player everywhere in one batch: the roster, stats, cards, achievements and sessions.

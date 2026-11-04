@@ -11,11 +11,11 @@ import { ConfirmDialog } from "./confirm-dialog";
 import type { GameSession, GameRound, HistoricalStats, PlayerCards } from "./api";
 import {
   fetchHighscorePlayers,
-  saveHighscorePlayers,
+  addPlayerToServer,
+  renamePlayerOnServer,
   fetchHistoricalStats,
-  saveHistoricalStats,
   fetchMonthlySessions,
-  saveMonthlySessions,
+  addSessionToServer,
   deleteMonthlySession,
   fetchMonthList,
   saveMonthList,
@@ -254,30 +254,18 @@ export function HighscorePage() {
       allMonthsSorted.map((m) => fetchMonthlySessions(m))
     );
     const sessionMap: Record<string, GameSession[]> = {};
-    let sessionDataRepaired = false;
     allMonthsSorted.forEach((m, i) => {
-      // Repair data: ensure session.players includes all finalists/winners
+      // Ensure session.players includes all finalists/winners. Only here, not saved back: a whole
+      // month written from this page could remove rounds another phone saved meanwhile.
       sessionMap[m] = monthSessions[i].map((session) => {
         const playerSet = new Set(session.players);
         for (const round of session.rounds) {
           for (const f of round.finalists) playerSet.add(f);
           if (round.winner) playerSet.add(round.winner);
         }
-        if (playerSet.size !== session.players.length) {
-          console.log(`[Highscore] Repaired session ${session.id}: added missing players from rounds`, Array.from(playerSet).filter((pp) => !session.players.includes(pp)));
-          sessionDataRepaired = true;
-          return { ...session, players: Array.from(playerSet) };
-        }
-        return session;
+        return playerSet.size === session.players.length ? session : { ...session, players: Array.from(playerSet) };
       });
     });
-    // Persist repaired sessions
-    if (sessionDataRepaired) {
-      console.log("[Highscore] Saving repaired session data");
-      await Promise.all(
-        allMonthsSorted.map((m) => saveMonthlySessions(m, sessionMap[m]))
-      );
-    }
     setAllMonthlySessions(sessionMap);
 
     // Set current view sessions
@@ -596,14 +584,21 @@ export function HighscorePage() {
     }
 
     const fullName = `${selectedEmoji} ${name}`;
-    const updated = [...players, fullName].sort((a, b) => a.localeCompare(b, "sv"));
+    let updated = [...players, fullName].sort((a, b) => a.localeCompare(b, "sv"));
+    if (API_BASE) {
+      const result = await addPlayerToServer(fullName);
+      if (!result.players) {
+        setDuplicateError(result.error ?? "Kunde inte spara spelaren. Försök igen.");
+        return;
+      }
+      updated = result.players;
+    }
     setPlayers(updated);
     setNewPlayerName("");
     setDuplicateError("");
     setSelectedEmoji(PLAYER_EMOJIS[Math.floor(Math.random() * PLAYER_EMOJIS.length)]);
     setShowAddPlayer(false);
     setShowEmojiGrid(false);
-    await saveHighscorePlayers(updated);
   }
 
   // ── Registration flow ──
@@ -701,18 +696,18 @@ export function HighscorePage() {
       rounds: currentRounds,
     };
     const month = currentMonth;
+    // The server adds the session to what it has, and the month to its list.
+    if (API_BASE && !(await addSessionToServer(month, session))) {
+      setCelebration(null);
+      setSaving(false);
+      window.alert("Speltillfället kunde inte sparas. Rundorna finns kvar – försök spara igen.");
+      return;
+    }
     const currentSessions = allMonthlySessions[month] || [];
     const updated = [session, ...currentSessions];
-    setAllMonthlySessions((prev) => ({ ...prev, [month]: updated }));
+    setAllMonthlySessions((prev) => ({ ...prev, [month]: [session, ...(prev[month] ?? [])] }));
     setSessions(updated);
-
-    // Ensure month is in the list
-    if (!monthList.includes(month)) {
-      const newMonths = [...monthList, month].sort();
-      setMonthList(newMonths);
-      await saveMonthList(newMonths);
-    }
-    await saveMonthlySessions(month, updated);
+    if (!monthList.includes(month)) setMonthList([...monthList, month].sort());
 
     setRegistering(false);
     setRegStep("select-players");
@@ -778,7 +773,6 @@ export function HighscorePage() {
       updatedHistorical[trimmed] = updatedHistorical[oldName];
       delete updatedHistorical[oldName];
       setHistoricalStats(updatedHistorical);
-      await saveHistoricalStats(updatedHistorical);
     }
 
     // Update selected player reference
@@ -788,11 +782,12 @@ export function HighscorePage() {
 
     setRenamingPlayer(false);
 
-    // Save all monthly sessions with renamed player
-    await Promise.all([
-      saveHighscorePlayers(updatedPlayers),
-      ...Object.entries(updatedAllMonthly).map(([m, s]) => saveMonthlySessions(m, s)),
-    ]);
+    // The server renames in everything it has stored, so rounds this page hasn't fetched yet are
+    // renamed too instead of written away. Either way, load what it ended up with.
+    if (API_BASE) {
+      await renamePlayerOnServer(oldName, trimmed);
+      await loadData();
+    }
   }
 
   // ── Remove player ──
