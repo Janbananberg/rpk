@@ -163,8 +163,6 @@ app.get("/elo-reset-timestamp", async (c) => c.json({ resetTimestamp: (await get
 // Each is read and replaced as a whole: GET returns { [field]: value }, POST takes the same shape.
 const DOCUMENTS: { path: string; key: string; field: string; empty: unknown }[] = [
   { path: "players", key: "rpk:highscore-players", field: "players", empty: [] },
-  { path: "sessions", key: "rpk:highscore-sessions", field: "sessions", empty: [] },
-  { path: "seasons", key: "rpk:highscore-archived-seasons", field: "seasons", empty: [] },
   { path: "historical-stats", key: "rpk:highscore-historical-stats", field: "stats", empty: {} },
   { path: "player-cards", key: "rpk:player-cards", field: "cards", empty: {} },
   { path: "player-achievements", key: "rpk:player-achievements", field: "achievements", empty: {} },
@@ -181,14 +179,6 @@ for (const doc of DOCUMENTS) {
     return c.json({ ok: true });
   });
 }
-
-app.post("/highscore/delete-session", async (c) => {
-  const { sessionId } = await c.req.json<{ sessionId?: string }>();
-  if (!sessionId) return c.json({ error: "sessionId required" }, 400);
-  const sessions = (await get<GameSession[]>(c.env.DB, "rpk:highscore-sessions")) ?? [];
-  await set(c.env.DB, "rpk:highscore-sessions", sessions.filter((s) => s.id !== sessionId));
-  return c.json({ ok: true });
-});
 
 // ── Highscore: monthly sessions ────────────────────────────────────────────
 
@@ -224,14 +214,6 @@ app.get("/highscore/discover-months", async (c) => {
     .filter((month) => MONTH_RE.test(month))
     .sort();
   return c.json({ months });
-});
-
-// Set once the starting roster has been written, so no other browser seeds it again.
-app.get("/highscore/seed-status", async (c) => c.json({ seeded: !!(await get(c.env.DB, "rpk:highscore-seeded")) }));
-
-app.post("/highscore/seed-status", async (c) => {
-  await set(c.env.DB, "rpk:highscore-seeded", { seeded: true, at: Date.now() });
-  return c.json({ ok: true });
 });
 
 // Removes a player everywhere in one batch: the roster, stats, cards, achievements and sessions.
@@ -289,13 +271,12 @@ app.get("/stats", async (c) => {
     return c.json({ error: "Ogiltigt månadsformat. Använd YYYY-MM eller 'total'." }, 400);
   }
   const db = c.env.DB;
-  const [players, historicalStats, playerCards, tournamentHistory, eloResetTimestamp, legacySessions, stored] = await Promise.all([
+  const [players, historicalStats, playerCards, tournamentHistory, eloResetTimestamp, stored] = await Promise.all([
     get<string[]>(db, "rpk:highscore-players"),
     get<HistoricalStats>(db, "rpk:highscore-historical-stats"),
     get<PlayerCards>(db, "rpk:player-cards"),
     get<TournamentHistoryEntry[]>(db, "rpk:tournament-history"),
     get<number>(db, "rpk:elo-reset-timestamp"),
-    get<GameSession[]>(db, "rpk:highscore-sessions"),
     getByPrefix<GameSession[]>(db, MONTH_SESSIONS_PREFIX),
   ]);
   const sessionsByMonth = Object.fromEntries(
@@ -304,7 +285,6 @@ app.get("/stats", async (c) => {
   const stats = computePublicStats(month, {
     players: players ?? [],
     sessionsByMonth,
-    legacySessions: legacySessions ?? [],
     historicalStats: historicalStats ?? {},
     playerCards: playerCards ?? {},
     tournamentHistory: tournamentHistory ?? [],

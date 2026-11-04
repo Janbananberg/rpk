@@ -1,5 +1,4 @@
-import type { GameSession, HistoricalStats } from "../components/api";
-import { ARCHIVED_MONTH_STATS, HISTORICAL_DATA_MONTH } from "./archived-stats";
+import type { GameSession } from "../components/api";
 import { ELO_START, applyEloDecay, computeElo, computeLastPlayed, replayElo } from "./elo";
 import { generateFunFacts } from "./insights";
 import { computePlayerPercentile, getCSGORank } from "./rank";
@@ -63,16 +62,9 @@ function previousMonth(month: string): string {
   return m === 1 ? `${y - 1}-12` : `${y}-${String(m - 1).padStart(2, "0")}`;
 }
 
-function historicalFor(month: string, historicalStats: HistoricalStats): HistoricalStats {
-  if (ARCHIVED_MONTH_STATS[month]) return ARCHIVED_MONTH_STATS[month];
-  if (month === HISTORICAL_DATA_MONTH) return historicalStats;
-  return {};
-}
-
 export function computeBigScreenData(
   sessionsByMonth: Record<string, GameSession[]>,
   players: string[],
-  historicalStats: HistoricalStats,
   eloResetTimestamp: number | null,
   month: string,
   leaderboardSize = 8,
@@ -112,7 +104,7 @@ export function computeBigScreenData(
     }
   }
 
-  const monthStats = computeStats(monthSessions, players, historicalFor(month, historicalStats));
+  const monthStats = computeStats(monthSessions, players);
   const leaderboardIsMonthly = monthlyDelta !== undefined;
   const leaderboard = (leaderboardIsMonthly
     ? sortStats(monthStats, "elo", "desc", eloRatings, monthlyDelta, monthlyRounds).filter((s) => s.gamesPlayed > 0)
@@ -157,10 +149,7 @@ export function computeBigScreenData(
 
   const prevKey = previousMonth(month);
   const prevSessions = sessionsByMonth[prevKey] ?? [];
-  const prevHistorical = historicalFor(prevKey, historicalStats);
-  const prevMonthStats = prevSessions.length > 0 || Object.keys(prevHistorical).length > 0
-    ? computeStats(prevSessions, players, prevHistorical)
-    : undefined;
+  const prevMonthStats = prevSessions.length > 0 ? computeStats(prevSessions, players) : undefined;
 
   const monthPlayers = new Set<string>();
   for (const s of monthSessions) for (const p of s.players) monthPlayers.add(p);

@@ -2,7 +2,6 @@ import { useState, useEffect, useMemo, useCallback, useRef } from "react";
 import { usePolling } from "../hooks/use-polling";
 import {
   Plus,
-  Archive,
   UserPlus,
 } from "lucide-react";
 import { motion, useReducedMotion } from "motion/react";
@@ -13,9 +12,6 @@ import type { GameSession, GameRound, HistoricalStats, PlayerCards } from "./api
 import {
   fetchHighscorePlayers,
   saveHighscorePlayers,
-  fetchHighscoreSessions,
-  saveHighscoreSessions,
-  saveArchivedSeasons,
   fetchHistoricalStats,
   saveHistoricalStats,
   fetchMonthlySessions,
@@ -26,8 +22,6 @@ import {
   discoverMonths,
   fetchPlayerCards,
   savePlayerCards,
-  fetchSeedStatus,
-  markSeeded,
   removePlayerFromServer,
   fetchTournamentHistory,
   fetchPlayerAchievements,
@@ -37,7 +31,6 @@ import {
 } from "./api";
 import type { TournamentHistoryEntry, SavedPlayerAchievements } from "./api";
 import { stripEmoji, PLAYER_EMOJIS } from "../lib/players";
-import { HISTORICAL_DATA_MONTH, ARCHIVED_MONTH_STATS, ARCHIVED_STAT_MONTHS } from "../lib/archived-stats";
 import { getCurrentMonth } from "../lib/dates";
 import type { MonthView } from "../lib/dates";
 import { computeStats, sortStats } from "../lib/stats";
@@ -134,7 +127,6 @@ export function HighscorePage() {
 
   // Loading
   const [loading, setLoading] = useState(true);
-  const seedCheckedRef = useRef(false);
   const [historicalStats, setHistoricalStats] = useState<HistoricalStats>({});
   const [playerCards, setPlayerCards] = useState<PlayerCards>({});
   const [tournamentHistory, setTournamentHistory] = useState<TournamentHistoryEntry[]>([]);
@@ -210,7 +202,7 @@ export function HighscorePage() {
 
   const loadData = useCallback(async () => {
     const thisMonth = getCurrentMonth();
-    let [p, h, ml, pc, th, sa, eloResetTs] = await Promise.all([
+    const [p, h, ml, pc, th, sa, eloResetTs] = await Promise.all([
       fetchHighscorePlayers(),
       fetchHistoricalStats(),
       fetchMonthList(),
@@ -226,163 +218,7 @@ export function HighscorePage() {
     setSavedAchievements(sa);
     setEloResetTimestamp(eloResetTs);
 
-    // One-time seed: clear fake sessions/archived seasons & import real historical data.
-    // IMPORTANT: Only check seed status on initial load (not on subsequent polls)
-    // to prevent a transient network error from triggering a re-seed that would
-    // overwrite any players added after the initial seed.
-    if (!seedCheckedRef.current) {
-      seedCheckedRef.current = true;
-    const alreadySeeded = await fetchSeedStatus();
-    if (!alreadySeeded) {
-      console.log("[Highscore] Seeding real data and clearing fake sessions");
-      const realPlayers = [
-        "Hertsö-Waddlner 💅", "Eetu", "Mr Nyberg 🚬", "Tarzan Ibrahimović",
-        "Robert", "Alexjander 🐣 (retired)", "dr drä och mr hyde - Provocateur👹",
-        "Lodnert", "Jawe", "🧨dirty dirty Linus", "Jonken", "OK Renen",
-        "Daniel K", "Björn", "Andreas S", "Jonte", "Patrik", "Mattias",
-        "Johan E", "Jerker", "Kesokungen 🏠", "JonteOH", "Susanne",
-        "TESTKINGEN", "KINGTESTEN",
-      ];
-      const realStats: HistoricalStats = {
-        "Hertsö-Waddlner 💅": { wins: 29, finals: 44, gamesPlayed: 67 },
-        "Eetu": { wins: 20, finals: 25, gamesPlayed: 55 },
-        "Mr Nyberg 🚬": { wins: 14, finals: 40, gamesPlayed: 81 },
-        "Tarzan Ibrahimović": { wins: 7, finals: 11, gamesPlayed: 21 },
-        "Robert": { wins: 3, finals: 13, gamesPlayed: 45 },
-        "Alexjander 🐣 (retired)": { wins: 3, finals: 10, gamesPlayed: 49 },
-        "dr drä och mr hyde - Provocateur👹": { wins: 2, finals: 6, gamesPlayed: 63 },
-        "Lodnert": { wins: 1, finals: 2, gamesPlayed: 7 },
-        "Jawe": { wins: 1, finals: 3, gamesPlayed: 20 },
-        "🧨dirty dirty Linus": { wins: 1, finals: 1, gamesPlayed: 20 },
-        "Jonken": { wins: 0, finals: 4, gamesPlayed: 73 },
-        "OK Renen": { wins: 0, finals: 0, gamesPlayed: 0 },
-        "Daniel K": { wins: 0, finals: 0, gamesPlayed: 0 },
-        "Björn": { wins: 0, finals: 0, gamesPlayed: 0 },
-        "Andreas S": { wins: 0, finals: 0, gamesPlayed: 0 },
-        "Jonte": { wins: 0, finals: 2, gamesPlayed: 11 },
-        "Patrik": { wins: 0, finals: 0, gamesPlayed: 0 },
-        "Mattias": { wins: 0, finals: 0, gamesPlayed: 0 },
-        "Johan E": { wins: 0, finals: 0, gamesPlayed: 0 },
-        "Jerker": { wins: 0, finals: 0, gamesPlayed: 0 },
-        "Kesokungen 🏠": { wins: 0, finals: 0, gamesPlayed: 0 },
-        "JonteOH": { wins: 0, finals: 1, gamesPlayed: 20 },
-        "Susanne": { wins: 0, finals: 0, gamesPlayed: 0 },
-        "TESTKINGEN": { wins: 0, finals: 0, gamesPlayed: 0 },
-        "KINGTESTEN": { wins: 0, finals: 0, gamesPlayed: 0 },
-      };
-      // NOTE: We intentionally do NOT clear monthList or monthly sessions here.
-      // If a re-seed ever fires (e.g. after a backend reset clears the seed
-      // flag), wiping monthList would orphan all historical months. The seed
-      // is meant to set baseline players/stats only, not destroy real history.
-      await Promise.all([
-        saveHighscoreSessions([]),
-        saveArchivedSeasons([]),
-        saveHighscorePlayers(realPlayers),
-        saveHistoricalStats(realStats),
-      ]);
-      setPlayers(realPlayers);
-      setHistoricalStats(realStats);
-      // Preserve any existing month/session state — do NOT reset to empty.
-      await markSeeded(); // Server-side flag — prevents re-seed from other browsers
-      setLoading(false);
-      return;
-    }
-    } // end seedCheckedRef guard
-
-    // One-time migration: reconcile emoji-prefixed player names in session data
-    // with the canonical player list. E.g. session has "🎩 TESTKINGEN" but
-    // canonical list has "TESTKINGEN" (seed overwrote the emoji variant).
-    const EMOJI_RECONCILE_KEY = "rpk-emoji-reconcile-v2";
-    if (!localStorage.getItem(EMOJI_RECONCILE_KEY)) {
-      // Collect ALL unique player names from session data
-      const sessionPlayerNames = new Set<string>();
-      const allMonthsForReconcile = ml.length > 0 ? ml : [thisMonth];
-      const reconcileSessions = await Promise.all(
-        allMonthsForReconcile.map((m) => fetchMonthlySessions(m))
-      );
-      for (const monthSess of reconcileSessions) {
-        for (const session of monthSess) {
-          for (const sp of session.players) sessionPlayerNames.add(sp);
-          for (const round of session.rounds) {
-            for (const f of round.finalists) sessionPlayerNames.add(f);
-            if (round.winner) sessionPlayerNames.add(round.winner);
-          }
-        }
-      }
-
-      // Build a map: stripped name → emoji-prefixed name from sessions
-      const strippedToSessionName: Record<string, string> = {};
-      for (const sn of sessionPlayerNames) {
-        const stripped = stripEmoji(sn).trim();
-        // Only record if session name differs from stripped (i.e. has emoji prefix)
-        if (sn !== stripped) {
-          strippedToSessionName[stripped] = sn;
-        }
-      }
-
-      // Find canonical players whose stripped name matches a session emoji name
-      let needsUpdate = false;
-      const updatedPlayers = p.map((canonical) => {
-        const emojiVersion = strippedToSessionName[canonical];
-        if (emojiVersion && !p.includes(emojiVersion)) {
-          console.log(`[Highscore] Reconciling player name: "${canonical}" → "${emojiVersion}" (matches session data)`);
-          needsUpdate = true;
-          return emojiVersion;
-        }
-        return canonical;
-      });
-
-      if (needsUpdate) {
-        // Also transfer historical stats to the new key
-        const updatedStats = { ...h };
-        for (const [stripped, emojiName] of Object.entries(strippedToSessionName)) {
-          if (updatedStats[stripped] && !updatedStats[emojiName]) {
-            updatedStats[emojiName] = updatedStats[stripped];
-            delete updatedStats[stripped];
-            console.log(`[Highscore] Transferred historical stats: "${stripped}" → "${emojiName}"`);
-          }
-        }
-        const sortedPlayers = updatedPlayers.sort((a, b) => a.localeCompare(b, "sv"));
-        await Promise.all([
-          saveHighscorePlayers(sortedPlayers),
-          saveHistoricalStats(updatedStats),
-        ]);
-        setPlayers(sortedPlayers);
-        setHistoricalStats(updatedStats);
-        p = sortedPlayers;
-        h = updatedStats;
-      }
-
-      localStorage.setItem(EMOJI_RECONCILE_KEY, "done");
-    }
-
-    // Migration: move legacy flat sessions to monthly keys (one-time)
-    const MIGRATION_KEY = "rpk-monthly-migration-v1";
-    const alreadyMigrated = localStorage.getItem(MIGRATION_KEY);
-    if (!alreadyMigrated) {
-      const legacySessions = await fetchHighscoreSessions();
-      if (legacySessions.length > 0) {
-        console.log("[Highscore] Migrating legacy sessions to monthly keys");
-        // Group sessions by month
-        const grouped: Record<string, GameSession[]> = {};
-        for (const s of legacySessions) {
-          const d = new Date(s.date);
-          const m = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
-          if (!grouped[m]) grouped[m] = [];
-          grouped[m].push(s);
-        }
-        const migratedMonths = Object.keys(grouped).sort();
-        await Promise.all([
-          ...migratedMonths.map((m) => saveMonthlySessions(m, grouped[m])),
-          saveMonthList(migratedMonths),
-          saveHighscoreSessions([]), // clear legacy
-        ]);
-      }
-      localStorage.setItem(MIGRATION_KEY, "done");
-    }
-
-    // Fetch updated month list
-    const months = alreadyMigrated ? ml : await fetchMonthList();
+    const months = [...ml];
     // Recovery: always merge in any months discovered from underlying session
     // data on the server, in case monthList is stale (e.g. wiped by a prior
     // re-seed but the session keys still exist).
@@ -403,15 +239,10 @@ export function HighscorePage() {
     if (recovered) {
       console.log("[Highscore] Recovered months from session data:", discovered);
     }
-    // Ensure current month + archived stat months are all in the list
+    // Ensure the current month is in the list
     const updatedMonths = [...months];
     let monthListChanged = recovered;
     if (!updatedMonths.includes(thisMonth)) { updatedMonths.push(thisMonth); monthListChanged = true; }
-    for (const am of ARCHIVED_STAT_MONTHS) {
-      if (!updatedMonths.includes(am)) { updatedMonths.push(am); monthListChanged = true; }
-    }
-    // Ensure the historical baseline month (March 2026) is also included
-    if (!updatedMonths.includes(HISTORICAL_DATA_MONTH)) { updatedMonths.push(HISTORICAL_DATA_MONTH); monthListChanged = true; }
     if (monthListChanged) {
       await saveMonthList(updatedMonths);
     }
@@ -469,53 +300,14 @@ export function HighscorePage() {
 
   const activePlayers = players;
 
-  // Historical stats apply to "total" view and the month the data originates from (March 2026).
-  // Archived month stats apply when viewing a specific archived month (e.g. Feb 2026).
-  // For "total", we aggregate ALL archived months + the KV baseline (March 2026).
-  const activeHistorical: HistoricalStats = useMemo(() => {
-    if (selectedMonth === "total") {
-      // Merge all archived month data + KV baseline into one cumulative object
-      const merged: HistoricalStats = {};
-      const mergeInto = (name: string, data: { wins: number; finals: number; gamesPlayed: number; h2h?: Record<string, { wins: number; losses: number }> }) => {
-        if (!merged[name]) {
-          merged[name] = { wins: 0, finals: 0, gamesPlayed: 0 };
-        }
-        merged[name].wins += data.wins;
-        merged[name].finals += data.finals;
-        merged[name].gamesPlayed += data.gamesPlayed;
-        if (data.h2h) {
-          if (!merged[name].h2h) merged[name].h2h = {};
-          for (const [opp, record] of Object.entries(data.h2h)) {
-            if (!merged[name].h2h![opp]) merged[name].h2h![opp] = { wins: 0, losses: 0 };
-            merged[name].h2h![opp].wins += record.wins;
-            merged[name].h2h![opp].losses += record.losses;
-          }
-        }
-      };
-      // First, add all archived months
-      for (const monthKey of ARCHIVED_STAT_MONTHS) {
-        const monthData = ARCHIVED_MONTH_STATS[monthKey];
-        for (const [name, data] of Object.entries(monthData)) {
-          mergeInto(name, data);
-        }
-      }
-      // Then add the KV baseline (March 2026 data)
-      for (const [name, data] of Object.entries(historicalStats)) {
-        mergeInto(name, data);
-      }
-      return merged;
-    }
-    if (selectedMonth === HISTORICAL_DATA_MONTH) {
-      return historicalStats;
-    }
-    if (ARCHIVED_MONTH_STATS[selectedMonth]) {
-      return ARCHIVED_MONTH_STATS[selectedMonth];
-    }
-    return {};
-  }, [selectedMonth, historicalStats]);
+  // Imported baseline stats (from before rounds were registered here) have no month, so they
+  // only count towards the all-time view.
+  const activeHistorical: HistoricalStats = useMemo(
+    () => (selectedMonth === "total" ? historicalStats : {}),
+    [selectedMonth, historicalStats],
+  );
 
   const isViewingCurrentMonth = selectedMonth === currentMonth;
-  const isArchivedStatMonth = typeof selectedMonth === "string" && !!ARCHIVED_MONTH_STATS[selectedMonth];
 
   const stats = useMemo(
     () => computeStats(activeSessions, activePlayers, activeHistorical, playerCards, tournamentHistory),
@@ -737,10 +529,9 @@ export function HighscorePage() {
     const prevY = m === 1 ? y - 1 : y;
     const prevKey = `${prevY}-${String(prevM).padStart(2, "0")}`;
     const prevSessions = allMonthlySessions[prevKey] || [];
-    const prevHistorical = ARCHIVED_MONTH_STATS[prevKey] || (prevKey === HISTORICAL_DATA_MONTH ? historicalStats : {});
-    if (prevSessions.length === 0 && Object.keys(prevHistorical).length === 0) return undefined;
-    return computeStats(prevSessions, activePlayers, prevHistorical, playerCards, tournamentHistory);
-  }, [selectedMonth, allMonthlySessions, activePlayers, historicalStats, playerCards, tournamentHistory]);
+    if (prevSessions.length === 0) return undefined;
+    return computeStats(prevSessions, activePlayers, {}, playerCards, tournamentHistory);
+  }, [selectedMonth, allMonthlySessions, activePlayers, playerCards, tournamentHistory]);
 
   const funFacts = useMemo(() => generateFunFacts(stats, activeSessions, prevMonthStats), [stats, activeSessions, prevMonthStats]);
 
@@ -1402,24 +1193,6 @@ export function HighscorePage() {
         handleAddPlayer={handleAddPlayer}
         duplicateError={duplicateError}
       />
-
-      {/* ── Archived month info banner ── */}
-      {isArchivedStatMonth && (
-        <div
-          className="mt-4 md:mt-6 flex items-start gap-3 px-4 py-3 rounded-lg border border-border"
-          style={{ background: "var(--surface-container)", borderRadius: "var(--radius-card)" }}
-        >
-          <Archive className="w-4 h-4 text-muted-foreground shrink-0 mt-0.5" />
-          <div>
-            <span className="text-foreground block" style={{ fontSize: "var(--text-sm)", fontWeight: "var(--font-weight-semibold)" }}>
-              Arkiverad statistik
-            </span>
-            <span className="text-muted-foreground" style={{ fontSize: "var(--text-xs)" }}>
-              Den här månaden har sammanställd statistik — inga detaljerade speltillfällen.
-            </span>
-          </div>
-        </div>
-      )}
 
       {/* ── Recent Sessions — only shown when there are sessions ── */}
       <RecentSessions

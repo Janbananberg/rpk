@@ -11,7 +11,6 @@ import { computeStats } from "../src/app/lib/stats";
 export interface StatsInput {
   players: string[];
   sessionsByMonth: Record<string, GameSession[]>;
-  legacySessions: GameSession[];
   historicalStats: HistoricalStats;
   playerCards: PlayerCards;
   tournamentHistory: TournamentHistoryEntry[];
@@ -22,7 +21,7 @@ const pct = (part: number, whole: number) => (whole > 0 ? Math.round((part / who
 
 /** Stats for one month ("YYYY-MM") or for all time ("total"). Elo always counts every session. */
 export function computePublicStats(month: string, input: StatsInput) {
-  const allSessions = [...Object.values(input.sessionsByMonth).flat(), ...input.legacySessions];
+  const allSessions = Object.values(input.sessionsByMonth).flat();
   const sessions = month === "total" ? allSessions : (input.sessionsByMonth[month] ?? []);
 
   const elo = applyEloDecay(

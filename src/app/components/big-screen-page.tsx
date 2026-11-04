@@ -7,7 +7,6 @@ import {
   discoverMonths,
   fetchEloResetTimestamp,
   fetchHighscorePlayers,
-  fetchHistoricalStats,
   fetchMonthList,
   fetchMonthlySessions,
 } from "./api";
@@ -44,11 +43,10 @@ export function BigScreenPage() {
   // Read-only: only fetchers and pure lib functions, never the highscore page's seeding/migration.
   const load = useCallback(async () => {
     const month = getCurrentMonth();
-    const [players, monthList, discovered, historical, eloReset] = await Promise.all([
+    const [players, monthList, discovered, eloReset] = await Promise.all([
       fetchHighscorePlayers(),
       fetchMonthList(),
       discoverMonths(),
-      fetchHistoricalStats(),
       fetchEloResetTimestamp(),
     ]);
     const months = Array.from(new Set([...monthList, ...discovered, month])).sort();
@@ -56,7 +54,7 @@ export function BigScreenPage() {
     const sessionsByMonth: Record<string, GameSession[]> = {};
     months.forEach((m, i) => { sessionsByMonth[m] = perMonth[i]; });
 
-    const next = computeBigScreenData(sessionsByMonth, players, historical, eloReset, month);
+    const next = computeBigScreenData(sessionsByMonth, players, eloReset, month);
     // The fetchers answer empty on network errors; don't blank the TV over a failed poll.
     if (!hasContent(next) && dataRef.current && hasContent(dataRef.current)) return;
     dataRef.current = next;

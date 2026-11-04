@@ -7,7 +7,7 @@ import { PlayerSetup } from "./player-setup";
 import { Trophy, Lock, RotateCcw, AlertTriangle, Save, Check } from "lucide-react";
 import { saveTournamentHistoryEntry, saveActiveTournament, deleteActiveTournament, fetchActiveTournament, fetchTournamentHistory } from "./api";
 import type { ActiveTournament, ActiveTournamentMatch, TournamentHistoryEntry } from "./api";
-import { fetchHighscorePlayers, fetchMonthlySessions, fetchMonthList, fetchHighscoreSessions, fetchEloResetTimestamp, fetchHistoricalStats } from "./api";
+import { fetchHighscorePlayers, fetchMonthlySessions, fetchMonthList, fetchEloResetTimestamp, fetchHistoricalStats } from "./api";
 import type { GameSession, HistoricalStats } from "./api";
 import {
   ChampionConfetti,
@@ -101,9 +101,6 @@ export function TournamentBracket({ onTournamentSaved }: { onTournamentSaved?: (
           const sessions = await fetchMonthlySessions(month);
           allSess.push(...sessions);
         }
-        // Also fetch legacy sessions
-        const legacySessions = await fetchHighscoreSessions();
-        allSess.push(...legacySessions);
         // Deduplicate by id
         const seen = new Set<string>();
         const deduped = allSess.filter(s => {
@@ -357,29 +354,15 @@ export function TournamentBracket({ onTournamentSaved }: { onTournamentSaved?: (
         }
       }
 
-      // Merge historical stats into totalRounds (historical data is from HISTORICAL_DATA_MONTH = "2026-03")
-      // The highscore page adds historicalStats.gamesPlayed to the player's gamesPlayed,
-      // so we must do the same to match the ≥30 total rounds filter.
-      const HISTORICAL_DATA_MONTH = "2026-03";
+      // Merge historical stats into totalRounds: the highscore page adds historicalStats.gamesPlayed
+      // to the player's gamesPlayed, so we must do the same to match the ≥30 total rounds filter.
       for (const [name, hist] of Object.entries(historicalStats)) {
         if (hist.gamesPlayed > 0) {
           totalRounds[name] = (totalRounds[name] || 0) + hist.gamesPlayed;
         }
       }
 
-      // Also ensure players from historicalStats appear in monthlyRounds if they have
-      // session data for this month (they might only be in round.players which we now track),
-      // AND add historical gamesPlayed to monthlyRounds when viewing the historical month
-      if (targetMonth === HISTORICAL_DATA_MONTH) {
-        for (const [name, hist] of Object.entries(historicalStats)) {
-          if (hist.gamesPlayed > 0) {
-            monthlyRounds[name] = (monthlyRounds[name] || 0) + hist.gamesPlayed;
-          }
-        }
-      }
-
       // Build candidate list from BOTH monthlyRounds AND players who have Elo delta
-      // (some players may only exist in historicalStats for the historical month)
       const candidateNames = new Set(Object.keys(monthlyRounds));
       // Also include players from eloAtMonthEnd who have different Elo from month start
       for (const name of Object.keys(eloAtMonthEnd)) {

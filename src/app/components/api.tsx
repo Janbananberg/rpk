@@ -328,14 +328,6 @@ export interface GameSession {
   rounds: GameRound[];
 }
 
-export interface ArchivedSeason {
-  id: string;
-  name: string;
-  archivedAt: number;
-  sessions: GameSession[];
-  players: string[];
-}
-
 export async function fetchHighscorePlayers(): Promise<string[]> {
   try {
     const res = await fetch(`${BASE}/highscore/players`, { headers: baseHeaders() });
@@ -357,66 +349,6 @@ export async function saveHighscorePlayers(players: string[]): Promise<void> {
     });
   } catch (e) {
     console.log("API saveHighscorePlayers error:", e);
-  }
-}
-
-export async function fetchHighscoreSessions(): Promise<GameSession[]> {
-  try {
-    const res = await fetch(`${BASE}/highscore/sessions`, { headers: baseHeaders() });
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const data = await res.json();
-    return data.sessions || [];
-  } catch (e) {
-    console.log("API fetchHighscoreSessions error:", e);
-    return [];
-  }
-}
-
-export async function saveHighscoreSessions(sessions: GameSession[]): Promise<void> {
-  try {
-    await fetch(`${BASE}/highscore/sessions`, {
-      method: "POST",
-      headers: baseHeaders(),
-      body: JSON.stringify({ sessions }),
-    });
-  } catch (e) {
-    console.log("API saveHighscoreSessions error:", e);
-  }
-}
-
-export async function fetchArchivedSeasons(): Promise<ArchivedSeason[]> {
-  try {
-    const res = await fetch(`${BASE}/highscore/seasons`, { headers: baseHeaders() });
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const data = await res.json();
-    return data.seasons || [];
-  } catch (e) {
-    console.log("API fetchArchivedSeasons error:", e);
-    return [];
-  }
-}
-
-export async function saveArchivedSeasons(seasons: ArchivedSeason[]): Promise<void> {
-  try {
-    await fetch(`${BASE}/highscore/seasons`, {
-      method: "POST",
-      headers: baseHeaders(),
-      body: JSON.stringify({ seasons }),
-    });
-  } catch (e) {
-    console.log("API saveArchivedSeasons error:", e);
-  }
-}
-
-export async function deleteHighscoreSession(sessionId: string): Promise<void> {
-  try {
-    await fetch(`${BASE}/highscore/delete-session`, {
-      method: "POST",
-      headers: baseHeaders(),
-      body: JSON.stringify({ sessionId }),
-    });
-  } catch (e) {
-    console.log("API deleteHighscoreSession error:", e);
   }
 }
 
@@ -586,33 +518,6 @@ export async function savePlayerAchievements(achievements: SavedPlayerAchievemen
     });
   } catch (e) {
     console.log("API savePlayerAchievements error:", e);
-  }
-}
-
-// ── Server-side seed check ──
-
-export async function fetchSeedStatus(): Promise<boolean> {
-  try {
-    const res = await fetch(`${BASE}/highscore/seed-status`, { headers: baseHeaders() });
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const data = await res.json();
-    return !!data.seeded;
-  } catch (e) {
-    console.log("API fetchSeedStatus error:", e);
-    // IMPORTANT: return true on error so we never accidentally re-seed
-    // and overwrite players that were added after the initial seed.
-    return true;
-  }
-}
-
-export async function markSeeded(): Promise<void> {
-  try {
-    await fetch(`${BASE}/highscore/seed-status`, {
-      method: "POST",
-      headers: baseHeaders(),
-    });
-  } catch (e) {
-    console.log("API markSeeded error:", e);
   }
 }
 

@@ -22,7 +22,7 @@ describe("Storbild", () => {
       session(nov(2), PLAYERS, [["Bert", "Anna", "Bert"], ["David", "Eva", "Eva"]]),
       session(nov(4), PLAYERS, [["Bert", "Cecilia", "Bert"], ["Cecilia", "Anna", "Cecilia"]]),
     ];
-    const data = computeBigScreenData({ "2026-10": october, "2026-11": november }, PLAYERS, {}, null, "2026-11");
+    const data = computeBigScreenData({ "2026-10": october, "2026-11": november }, PLAYERS, null, "2026-11");
 
     expect(data.leaderboardIsMonthly).toBe(true);
     expect(data.leaderboard.length).toBe(5);
@@ -48,7 +48,7 @@ describe("Storbild", () => {
     vi.useFakeTimers();
     vi.setSystemTime(oct(25));
     const october = [session(oct(20), PLAYERS, [["Anna", "Bert", "Anna"]])];
-    const data = computeBigScreenData({ "2026-10": october }, PLAYERS, {}, null, "2026-11");
+    const data = computeBigScreenData({ "2026-10": october }, PLAYERS, null, "2026-11");
     expect(data.leaderboardIsMonthly).toBe(false);
     expect(data.leaderboard[0].name).toBe("Anna");
     expect(data.leaderboard[0].monthDelta).toBeNull();
@@ -56,7 +56,7 @@ describe("Storbild", () => {
   });
 
   it("visar ingenting utan data", () => {
-    const data = computeBigScreenData({}, [], {}, null, "2026-11");
+    const data = computeBigScreenData({}, [], null, "2026-11");
     expect(data.leaderboard).toEqual([]);
     expect(data.latestSession).toBeNull();
     expect(data.funFacts).toEqual([]);
