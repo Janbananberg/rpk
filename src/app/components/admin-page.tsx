@@ -1,5 +1,6 @@
 import { useState, useCallback } from "react";
 import { usePolling } from "../hooks/use-polling";
+import { ThemePicker } from "./theme-picker";
 import { motion, AnimatePresence } from "motion/react";
 import {
   Shield, Lock, Eye, EyeOff, Users, Ticket, TrendingUp, Trophy,
@@ -11,7 +12,6 @@ import type { PlacedBet, TournamentState, TournamentHistoryEntry, ActiveTourname
 import {
   adminLogin,
   adminLogout,
-  adminChangePassword,
   adminDeleteBettor,
   adminResetAll,
   adminFetchAllBets,
@@ -61,8 +61,6 @@ export function AdminPage() {
   const [confirmClearHistory, setConfirmClearHistory] = useState(false);
   const [confirmDeleteTournament, setConfirmDeleteTournament] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
-  const [changePw, setChangePw] = useState(false);
-  const [newPw, setNewPw] = useState("");
   const [expandedBettor, setExpandedBettor] = useState<string | null>(null);
   const [confirmEloReset, setConfirmEloReset] = useState(false);
   const [eloResetTs, setEloResetTs] = useState<number | null>(null);
@@ -153,12 +151,6 @@ export function AdminPage() {
     await publishTournamentWinnerOdds(updated);
     setTournamentOdds(updated);
     showToast("Odds sparade & publicerade");
-  };
-
-  const handleChangePw = async () => {
-    if (!newPw || newPw.length < 4) return;
-    const result = await adminChangePassword(newPw);
-    if (result.ok) { setNewPw(""); setChangePw(false); showToast("Lösenord ändrat"); }
   };
 
   const handleDeleteActiveTournament = async () => {
@@ -680,23 +672,7 @@ export function AdminPage() {
         {/* ── Settings ── */}
         {activeTab === "settings" && (
           <motion.div key="settings" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col gap-5">
-            <div className="rounded-[var(--radius-card)] border border-border/50 p-5 flex flex-col gap-4" style={{ background: "var(--surface-container-low)" }}>
-              <div className="flex items-center gap-2">
-                <Lock className="w-4 h-4 text-primary" />
-                <span style={{ fontFamily: FONT, fontSize: "var(--text-base)", fontWeight: "var(--font-weight-semibold)" }} className="text-foreground">Byt lösenord</span>
-              </div>
-              {changePw ? (
-                <div className="flex flex-col gap-3">
-                  <input type="password" value={newPw} onChange={(e) => setNewPw(e.target.value)} placeholder="Nytt lösenord (minst 4 tecken)..." className="w-full px-4 py-2.5 rounded-[var(--radius-card)] border border-border bg-surface-container text-foreground placeholder:text-muted-foreground/50 outline-none focus:border-primary transition-colors" style={{ fontFamily: FONT, fontSize: "var(--text-base)" }} autoComplete="new-password" />
-                  <div className="flex gap-2">
-                    <button onClick={() => { setChangePw(false); setNewPw(""); }} className="px-4 py-2 rounded-[var(--radius-button)] border border-border/50 text-foreground hover:bg-surface-container-high transition-all cursor-pointer" style={{ fontFamily: FONT, fontSize: "var(--text-label)", fontWeight: "var(--font-weight-semibold)" }}>Avbryt</button>
-                    <button onClick={handleChangePw} disabled={newPw.length < 4} className="px-4 py-2 rounded-[var(--radius-button)] bg-primary text-primary-foreground disabled:opacity-30 hover:opacity-90 transition-all cursor-pointer disabled:cursor-not-allowed" style={{ fontFamily: FONT, fontSize: "var(--text-label)", fontWeight: "var(--font-weight-semibold)" }}>Spara</button>
-                  </div>
-                </div>
-              ) : (
-                <button onClick={() => setChangePw(true)} className="self-start px-4 py-2 rounded-[var(--radius-button)] border border-border/50 text-foreground hover:border-primary/40 transition-all cursor-pointer" style={{ fontFamily: FONT, fontSize: "var(--text-label)", fontWeight: "var(--font-weight-semibold)" }}>Byt lösenord</button>
-              )}
-            </div>
+            <ThemePicker />
             {/* Elo Reset */}
             <div className="rounded-[var(--radius-card)] border border-border/50 p-5 flex flex-col gap-4" style={{ background: "var(--surface-container-low)" }}>
               <div className="flex items-center gap-2">

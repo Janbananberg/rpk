@@ -4,9 +4,10 @@
  * Backend URL is read from VITE_API_URL (see .env.example). No backend is
  * configured yet, so requests fail until one is provided.
  *
- * - Admin actions send an admin session token (X-Admin-Token), kept in sessionStorage.
+ * - Admin login is checked in the browser (config.ts); admin actions send X-Admin-Token.
  * - Bettor writes send a per-user token (X-Bettor-Token), kept in localStorage.
  */
+import { ADMIN_PASSWORD } from "../config";
 import type { BettorProfile } from "./betting-store";
 import type { MatchOdds } from "./betting-store";
 import type { TournamentWinnerOdds } from "./betting-store";
@@ -289,50 +290,48 @@ export async function purchaseCosmetic(name: string, itemId: string, price: numb
 
 // ════════════════════════════════════════════════════════════════════════
 //  ADMIN AUTHENTICATION
-//  Admin login returns a session token stored in sessionStorage.
-//  The password is NEVER stored or sent again after login.
-//  All admin writes use the X-Admin-Token header.
+//  The password is checked in the browser (see config.ts) — it only keeps
+//  casual visitors out of the admin view. The session marker is kept in
+//  sessionStorage and sent as X-Admin-Token on admin writes.
 // ════════════════════════════════════════════════════════════════════════
 
+const LOCAL_ADMIN_TOKEN = "local-admin";
+
 export async function adminLogin(password: string): Promise<{ ok: boolean; error?: string }> {
-  try {
-    const res = await fetch(`${BASE}/admin/login`, {
-      method: "POST",
-      headers: baseHeaders(),
-      body: JSON.stringify({ password }),
-    });
-    const data = await res.json();
-    if (!res.ok) return { ok: false, error: data.error };
-    if (data.token) setAdminToken(data.token);
-    return { ok: true };
-  } catch (e) {
-    console.log("API adminLogin error:", e);
-    return { ok: false, error: String(e) };
-  }
+  if (password !== ADMIN_PASSWORD) return { ok: false, error: "Felaktigt lösenord" };
+  setAdminToken(LOCAL_ADMIN_TOKEN);
+  return { ok: true };
 }
 
 export async function adminLogout(): Promise<void> {
-  try {
-    await fetch(`${BASE}/admin/logout`, {
-      method: "POST",
-      headers: adminHeaders(),
-    });
-  } catch {}
   setAdminToken(null);
 }
 
-export async function adminChangePassword(newPassword: string): Promise<{ ok: boolean; error?: string }> {
+// ════════════════════════════════════════════════════════════════════════
+//  SITE SETTINGS
+// ════════════════════════════════════════════════════════════════════════
+
+export async function fetchSiteTheme(): Promise<string | null> {
   try {
-    const res = await fetch(`${BASE}/admin/change-password`, {
+    const res = await fetch(`${BASE}/settings/theme`, { headers: baseHeaders() });
+    if (!res.ok) return null;
+    const data = await res.json();
+    return typeof data.theme === "string" ? data.theme : null;
+  } catch (e) {
+    console.log("API fetchSiteTheme error:", e);
+    return null;
+  }
+}
+
+export async function saveSiteTheme(theme: string): Promise<void> {
+  try {
+    await fetch(`${BASE}/settings/theme`, {
       method: "POST",
       headers: adminHeaders(),
-      body: JSON.stringify({ newPassword }),
+      body: JSON.stringify({ theme }),
     });
-    const data = await res.json();
-    if (!res.ok) return { ok: false, error: data.error };
-    return { ok: true };
   } catch (e) {
-    return { ok: false, error: String(e) };
+    console.log("API saveSiteTheme error:", e);
   }
 }
 

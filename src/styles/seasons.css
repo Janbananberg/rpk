@@ -1,0 +1,97 @@
+/* ─── Seasonal themes ─────────────────────────────────────────────────
+   Set with data-season on <html> (see src/app/theme.tsx). Each theme only
+   overrides color tokens, so every component follows without changes.
+   :root[data-season] outranks the .dark class the base theme uses. */
+
+:root[data-season="jul"] {
+  /* Night-time spruce forest */
+  --background: #0b1a14;
+  --foreground: #f3f7f1;
+  --card: #132a20;
+  --card-foreground: #f3f7f1;
+  --popover: #1a3629;
+  --popover-foreground: #f3f7f1;
+
+  --surface-container-lowest: #08140f;
+  --surface-container-low: #0f2119;
+  --surface-container: #132a20;
+  --surface-container-high: #1a3629;
+  --surface-container-highest: #224334;
+
+  /* Gold as the main accent, red for festive highlights */
+  --primary: #f2c14e;
+  --primary-foreground: #2b1d00;
+  --primary-container: #4a3a10;
+  --on-primary-container: #ffe7a8;
+  --secondary: #efe3c4;
+  --secondary-foreground: #3a2e10;
+  --accent: #c8363f;
+  --accent-foreground: #fff1f1;
+
+  --muted: #224334;
+  --muted-foreground: #c2d6ca;
+  --on-surface-variant: #c2d6ca;
+
+  --border: #2b4a3a;
+  --border-strong: #4c7a62;
+  --outline-variant: #2b4a3a;
+  --input: #0f2119;
+  --input-background: #0f2119;
+  --ring: #f2c14e;
+
+  --success: #6fd49a;
+  --warning: #f2c14e;
+  --info: #9fd3ff;
+  --destructive: #ff7a7f;
+  --destructive-foreground: #3a0306;
+
+  --chart-1: #f2c14e;
+  --chart-2: #ff7a7f;
+  --chart-3: #6fd49a;
+  --chart-4: #efe3c4;
+  --chart-5: #9fd3ff;
+}
+
+/* String of lights under the header */
+.season-lights {
+  display: none;
+}
+:root[data-season="jul"] .season-lights {
+  display: block;
+  height: 6px;
+  background-image:
+    radial-gradient(circle, #ff5a5f 2px, transparent 3px),
+    radial-gradient(circle, #f2c14e 2px, transparent 3px),
+    radial-gradient(circle, #6fd49a 2px, transparent 3px),
+    radial-gradient(circle, #9fd3ff 2px, transparent 3px);
+  background-size: 96px 6px;
+  background-position: 0 0, 24px 0, 48px 0, 72px 0;
+  background-repeat: repeat-x;
+  animation: season-twinkle 2.4s ease-in-out infinite alternate;
+}
+
+@keyframes season-twinkle {
+  from { opacity: 0.55; filter: brightness(0.85); }
+  to { opacity: 1; filter: brightness(1.25); }
+}
+
+/* Snowfall (src/app/components/snowfall.tsx) */
+.snowflake {
+  position: absolute;
+  top: -12px;
+  border-radius: 9999px;
+  background: #ffffff;
+  animation-name: snow-fall;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+@keyframes snow-fall {
+  from { transform: translate3d(0, -12px, 0); }
+  to { transform: translate3d(var(--drift, 20px), 105vh, 0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .snowflake { display: none; }
+  :root[data-season="jul"] .season-lights { animation: none; }
+}

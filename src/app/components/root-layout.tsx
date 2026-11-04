@@ -5,16 +5,16 @@ import { getAdminToken } from "./api";
 import { RpkLogo } from "./rpk-logo";
 import { NavigationGuardProvider, useNavigationGuard } from "./navigation-guard";
 import { ConfirmDialog } from "./confirm-dialog";
-
-const FONT = "'Titillium Web', sans-serif";
+import { Snowfall } from "./snowfall";
+import { useTheme } from "../theme";
 
 type TabKey = "turnering" | "bet" | "highscore" | "admin";
 
 const ALL_TABS: { key: TabKey; path: string; label: string; icon: typeof Trophy; adminOnly?: boolean; mobileVisible?: boolean }[] = [
   { key: "highscore", path: "/", label: "Spela", icon: Gamepad2, mobileVisible: true },
-  { key: "turnering", path: "/turnering", label: "Turnering", icon: Trophy },
-  { key: "bet", path: "/bet", label: "Betting", icon: Ticket, adminOnly: true },
-  { key: "admin", path: "/admin", label: "Admin", icon: Shield },
+  { key: "turnering", path: "/turnering", label: "Turnering", icon: Trophy, mobileVisible: true },
+  { key: "bet", path: "/bet", label: "Betting", icon: Ticket, adminOnly: true, mobileVisible: true },
+  { key: "admin", path: "/admin", label: "Admin", icon: Shield, mobileVisible: true },
 ];
 
 function getActiveTab(pathname: string): TabKey {
@@ -38,6 +38,7 @@ function RootLayoutInner() {
   const activeTab = getActiveTab(location.pathname);
   const [isAdmin, setIsAdmin] = useState(() => !!getAdminToken());
   const { isBlocked, pendingPath, setPendingPath } = useNavigationGuard();
+  const { theme } = useTheme();
 
   // Re-check admin token periodically and on navigation
   useEffect(() => {
@@ -114,50 +115,44 @@ function RootLayoutInner() {
         onCancel={cancelNavigation}
       />
 
-      {/* Top navigation bar — desktop only shows tabs, mobile shows title only */}
+      {theme === "jul" && <Snowfall />}
+
+      {/* Top bar — logo and title, with the tabs beside them on desktop (mobile uses the bottom nav) */}
       <header
         className="shrink-0 z-50 border-b border-border"
         style={{ background: "var(--surface-container)" }}
       >
-        <div className="max-w-4xl mx-auto px-4">
-          {/* Title row */}
-          <div className="flex items-center justify-center h-12 gap-2.5">
-            <RpkLogo
-              className="h-7 w-auto shrink-0"
-              style={{ aspectRatio: "786 / 690" }}
-            />
+        <div className="max-w-4xl mx-auto px-4 flex items-center justify-center md:justify-between h-14 gap-6">
+          <button
+            onClick={() => handleNavigate("/")}
+            className="flex items-center gap-2.5 shrink-0 cursor-pointer"
+            aria-label="Till startsidan"
+          >
+            <RpkLogo className="h-8 w-auto shrink-0" style={{ aspectRatio: "786 / 690" }} />
             <span
-              className="text-foreground tracking-widest uppercase"
-              style={{
-                fontFamily: FONT,
-                fontSize: "var(--text-label)",
-                fontWeight: "var(--font-weight-semibold)",
-                letterSpacing: "0.2em",
-              }}
+              className="text-foreground uppercase"
+              style={{ fontSize: "var(--text-label)", fontWeight: "var(--font-weight-semibold)", letterSpacing: "0.2em" }}
             >
               Rundpingisklubben
             </span>
-          </div>
+          </button>
 
-          {/* Desktop tab bar — hidden on mobile */}
-          <div className="hidden md:flex gap-0">
+          <nav className="hidden md:flex items-center gap-1" aria-label="Huvudmeny">
             {TABS.map(({ key, path, label, icon: Icon }) => {
               const isActive = activeTab === key;
               return (
                 <button
                   key={key}
                   onClick={() => handleNavigate(path)}
-                  className={`flex-1 flex items-center justify-center gap-2 py-3 border-b-2 transition-all duration-200 cursor-pointer ${
+                  aria-current={isActive ? "page" : undefined}
+                  className={`flex items-center gap-2 px-3.5 py-2 rounded-[var(--radius-button)] transition-all duration-200 cursor-pointer ${
                     isActive
-                      ? "border-primary text-primary"
-                      : "border-transparent text-muted-foreground hover:text-foreground"
+                      ? "bg-primary/15 text-primary"
+                      : "text-muted-foreground hover:text-foreground hover:bg-surface-container-high"
                   }`}
                   style={{
-                    fontFamily: FONT,
                     fontSize: "var(--text-label)",
-                    fontWeight: isActive
-                      ? "var(--font-weight-semibold)"
-                      : "var(--font-weight-normal)",
+                    fontWeight: isActive ? "var(--font-weight-semibold)" : "var(--font-weight-normal)",
                   }}
                 >
                   <Icon className="w-4 h-4" />
@@ -165,13 +160,14 @@ function RootLayoutInner() {
                 </button>
               );
             })}
-          </div>
+          </nav>
         </div>
+        <div className="season-lights" aria-hidden />
       </header>
 
       {/* Page content — scrollable area, bottom padding on mobile for bottom nav */}
       <main
-        className="flex-1 min-h-0 overflow-y-auto mobile-nav-padding overscroll-y-contain"
+        className="relative z-10 flex-1 min-h-0 overflow-y-auto mobile-nav-padding overscroll-y-contain"
         id="main-scroll-area"
         style={{ WebkitOverflowScrolling: "touch" }}
       >
@@ -199,7 +195,6 @@ function RootLayoutInner() {
                     : "text-muted-foreground"
                 }`}
                 style={{
-                  fontFamily: FONT,
                   fontSize: "var(--text-xs)",
                   fontWeight: isActive
                     ? "var(--font-weight-semibold)"

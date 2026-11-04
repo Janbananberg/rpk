@@ -11,8 +11,8 @@
   --text-lg: 18px;
   --text-base: 16px;
   --text-label: 14px;
-  --text-sm: 12px;
-  --text-xs: 11px;
+  --text-sm: 13px;
+  --text-xs: 12px;
   
   /* Font weights */
   --font-weight-normal: 400;
@@ -130,6 +130,8 @@
   /* Muted → dark-neutral tonal */
   --muted: var(--lkab-dark-neutral-22);
   --muted-foreground: var(--lkab-dark-neutral-variant-80);
+  --on-surface-variant: var(--lkab-dark-neutral-variant-80);
+  --outline-variant: var(--lkab-dark-neutral-variant-30);
 
   /* Accent → secondary-container dark tonal */
   --accent: var(--lkab-secondary-40);

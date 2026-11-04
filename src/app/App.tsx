@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { RouterProvider } from "react-router";
 import { router } from "./routes";
+import { ThemeProvider } from "./theme";
 
 export default function App() {
   useEffect(() => {
@@ -9,5 +10,9 @@ export default function App() {
     document.documentElement.classList.add("dark");
   }, []);
 
-  return <RouterProvider router={router} />;
+  return (
+    <ThemeProvider>
+      <RouterProvider router={router} />
+    </ThemeProvider>
+  );
 }
