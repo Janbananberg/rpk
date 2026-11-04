@@ -237,12 +237,11 @@ describe("applyEloDecay", () => {
     expect(r.A.elo).toBe(970);
   });
 
-  it("räknar från 1 februari 2026 för den som aldrig spelat", () => {
+  it("rör inte den som aldrig spelat", () => {
     vi.useFakeTimers();
-    const baseline = Date.UTC(2026, 1, 1);
-    vi.setSystemTime(baseline + FOUR_WEEKS + 3 * DAY);
+    vi.setSystemTime(NOW);
     const r = applyEloDecay({ A: entry("A", 1000) }, {});
-    expect(r.A.elo).toBe(955);
+    expect(r.A.elo).toBe(1000);
   });
 });
 

@@ -59,9 +59,6 @@ export interface EloEntry {
 export const ELO_DECAY_PER_DAY = 15;
 export const ELO_DECAY_MIN = 700;
 export const INACTIVE_THRESHOLD_MS = 4 * 7 * 24 * 60 * 60 * 1000; // 4 weeks
-// Fallback "registered since" date for decay — players who never played
-// get decay calculated from this date instead of being exempt.
-export const ELO_DECAY_BASELINE_DATE = new Date("2026-02-01T00:00:00Z").getTime();
 
 export function computeLastPlayed(sessions: GameSession[]): Record<string, number> {
   const lp: Record<string, number> = {};
@@ -83,10 +80,11 @@ export function applyEloDecay(ratings: Record<string, EloEntry>, lastPlayed: Rec
   const result: Record<string, EloEntry> = {};
   for (const [name, entry] of Object.entries(ratings)) {
     let lp = lastPlayed[name];
+    // A player who has never played has no rating to lose: decay is for inactivity, and
+    // there is no date to count it from.
     if (!lp) {
-      // Player never played — use the baseline date (Feb 1, 2026) for decay.
-      // Their Elo is 1000 from start, but decay should still apply.
-      lp = ELO_DECAY_BASELINE_DATE;
+      result[name] = entry;
+      continue;
     }
     // If there's an Elo reset and the player last played before it,
     // use the reset timestamp as effective "last active" date so decay
