@@ -74,7 +74,7 @@ export function ProfileStreakAndTrophies({
                     fontSize: "var(--text-label)",
                   }}
                 >
-                  raka vinster
+                  {selectedPlayer.bestStreak === 1 ? "vinst i rad" : "raka vinster"}
                 </span>
               </div>
             </div>

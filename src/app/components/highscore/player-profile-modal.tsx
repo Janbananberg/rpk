@@ -1,5 +1,6 @@
+import { useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
-import { ArrowLeft, Check, X, Pencil, UserMinus, Flame, Snowflake } from "lucide-react";
+import { ArrowLeft, Check, X, Pencil, UserMinus, Flame, Snowflake, Info } from "lucide-react";
 import { ELO_START } from "../../lib/elo";
 import type { EloEntry } from "../../lib/elo";
 import { computePlayerAchievements, ALL_ACHIEVEMENTS, MYTHIC_COMPLETIONIST } from "../../lib/achievements";
@@ -55,6 +56,28 @@ interface PlayerProfileModalProps {
   setConfirmRemovePlayer: React.Dispatch<React.SetStateAction<string | null>>;
 }
 
+type ProfileTab = "oversikt" | "statistik" | "rivaler" | "achievements";
+
+const PROFILE_TABS: { id: ProfileTab; label: string }[] = [
+  { id: "oversikt", label: "Översikt" },
+  { id: "statistik", label: "Statistik" },
+  { id: "rivaler", label: "Rivaler" },
+  { id: "achievements", label: "Achievements" },
+];
+
+/** Shown after a tab panel only when every card in it rendered nothing (peer-empty). */
+function ProfileTabEmpty({ text }: { text: string }) {
+  return (
+    <p
+      className="hidden peer-empty:flex flex-col items-center gap-2 py-8 text-center text-muted-foreground"
+      style={{ fontSize: "var(--text-sm)" }}
+    >
+      <Info className="w-5 h-5" aria-hidden />
+      {text}
+    </p>
+  );
+}
+
 export function PlayerProfileModal({
   selectedPlayer,
   setSelectedPlayer,
@@ -93,6 +116,9 @@ export function PlayerProfileModal({
   handleRemovePlayer,
   setConfirmRemovePlayer,
 }: PlayerProfileModalProps) {
+  // The chosen tab belongs to one player; opening another profile starts on Översikt.
+  const [tabState, setTabState] = useState<{ player: string | null; tab: ProfileTab }>({ player: null, tab: "oversikt" });
+  const activeTab: ProfileTab = tabState.player === selectedPlayer?.name ? tabState.tab : "oversikt";
   return (
     <>
       <AnimatePresence>
@@ -265,23 +291,49 @@ export function PlayerProfileModal({
                     <X className="w-5 h-5" />
                   </button>
                 </div>
+                {/* Tabs */}
+                <div role="tablist" aria-label="Spelarprofil" className="flex gap-1 mt-3 -mb-3 overflow-x-auto">
+                  {PROFILE_TABS.map((t) => {
+                    const active = activeTab === t.id;
+                    return (
+                      <button
+                        key={t.id}
+                        id={`profile-tab-${t.id}`}
+                        type="button"
+                        role="tab"
+                        aria-selected={active}
+                        aria-controls={`profile-panel-${t.id}`}
+                        onClick={() => setTabState({ player: selectedPlayer.name, tab: t.id })}
+                        className="relative flex-1 md:flex-none px-3 py-2.5 whitespace-nowrap cursor-pointer transition-colors hover:text-foreground"
+                        style={{
+                          fontSize: "var(--text-sm)",
+                          fontWeight: active ? "var(--font-weight-semibold)" : "var(--font-weight-normal)",
+                          color: active ? "var(--primary)" : "var(--muted-foreground)",
+                        }}
+                      >
+                        {t.label}
+                        {active && (
+                          <motion.span
+                            layoutId="profile-tab-underline"
+                            className="absolute left-2 right-2 bottom-0 h-0.5 rounded-full"
+                            style={{ background: "var(--primary)" }}
+                          />
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
 
               <div className="p-4 md:p-6 space-y-5">
+                {/* Each panel is shown on its own tab; a panel whose cards all render nothing shows the hint after it */}
+                {activeTab === "oversikt" && (
+                <div role="tabpanel" id="profile-panel-oversikt" aria-labelledby="profile-tab-oversikt" className="space-y-5">
                 {/* Stats grid — count + integrated percentage per card + delta from prev month */}
                 <ProfileStatsGrid
                   selectedPlayer={selectedPlayer}
                   prevPlayerStats={prevPlayerStats}
                   sessionAttendance={sessionAttendance}
-                />
-
-                {/* ── Utveckling sedan förra månaden ── */}
-                <ProfileMonthTrend
-                  prevPlayerStats={prevPlayerStats}
-                  selectedPlayer={selectedPlayer}
-                  selectedMonth={selectedMonth}
-                  setDevSectionOpen={setDevSectionOpen}
-                  devSectionOpen={devSectionOpen}
                 />
 
                 {/* ── Elo Rating Card with Gruvrank ── */}
@@ -302,12 +354,33 @@ export function PlayerProfileModal({
                   handleRemoveCard={handleRemoveCard}
                   handleGiveCard={handleGiveCard}
                 />
+                </div>
+                )}
+
+                {activeTab === "statistik" && (
+                <div role="tabpanel" id="profile-panel-statistik" aria-labelledby="profile-tab-statistik">
+                <div className="peer space-y-5">
+                {/* ── Utveckling sedan förra månaden ── */}
+                <ProfileMonthTrend
+                  prevPlayerStats={prevPlayerStats}
+                  selectedPlayer={selectedPlayer}
+                  selectedMonth={selectedMonth}
+                  setDevSectionOpen={setDevSectionOpen}
+                  devSectionOpen={devSectionOpen}
+                />
 
                 {/* ── Time & Weekday Insights ── */}
                 <ProfileTimeInsights
                   playerInsights={playerInsights}
                 />
+                </div>
+                <ProfileTabEmpty text="Ingen fördjupad statistik än. Den fylls på när spelaren har spelat omgångar i den här vyn." />
+                </div>
+                )}
 
+                {activeTab === "rivaler" && (
+                <div role="tabpanel" id="profile-panel-rivaler" aria-labelledby="profile-tab-rivaler">
+                <div className="peer space-y-5">
                 {/* Nemesis & Prey — only show when there's actual session data */}
                 <ProfileRivals
                   hasFormData={hasFormData}
@@ -315,7 +388,13 @@ export function PlayerProfileModal({
                   revengeData={revengeData}
                   h2hElo={h2hElo}
                 />
+                </div>
+                <ProfileTabEmpty text="Inga finalmöten än. Rivalerna dyker upp här när spelaren har mött någon i en final." />
+                </div>
+                )}
 
+                {activeTab === "achievements" && (
+                <div role="tabpanel" id="profile-panel-achievements" aria-labelledby="profile-tab-achievements">
                 {/* ── Achievements (persistent) ── */}
                 <AchievementDisplay
                   unlocked={computePlayerAchievements(selectedPlayer, allSessions, eloRatings, stats, savedAchievements, eloResetTimestamp)}
@@ -324,6 +403,8 @@ export function PlayerProfileModal({
                   showLocked={showLockedAchievements}
                   onToggleLocked={() => setShowLockedAchievements(!showLockedAchievements)}
                 />
+                </div>
+                )}
 
                 {/* ── Remove player ── */}
                 {isViewingCurrentMonth && (

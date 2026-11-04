@@ -66,7 +66,7 @@ export function TitleRow({
           <button
             onClick={() => setShowRankingInfoModal(true)}
             className="flex items-center justify-center w-8 h-8 rounded-full border border-border text-muted-foreground hover:text-primary hover:border-primary transition-all cursor-pointer"
-            title="Hur fungerar rankingen?"
+            title="Hur fungerar rankningen?"
           >
             <Info className="w-4 h-4" />
           </button>
