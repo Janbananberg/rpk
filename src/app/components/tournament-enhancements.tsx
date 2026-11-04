@@ -29,7 +29,7 @@ interface ConfettiParticle {
   shape: "rect" | "circle" | "star";
 }
 
-export function ChampionConfetti({ active }: { active: boolean }) {
+export function ChampionConfetti({ active, duration = 5000 }: { active: boolean; duration?: number }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const particlesRef = useRef<ConfettiParticle[]>([]);
   const animRef = useRef<number>(0);
@@ -80,7 +80,6 @@ export function ChampionConfetti({ active }: { active: boolean }) {
     }
 
     const startTime = Date.now();
-    const duration = 5000;
 
     const animate = () => {
       const elapsed = Date.now() - startTime;
@@ -137,7 +136,7 @@ export function ChampionConfetti({ active }: { active: boolean }) {
       window.removeEventListener("resize", resize);
       if (animRef.current) cancelAnimationFrame(animRef.current);
     };
-  }, [active]);
+  }, [active, duration]);
 
   if (!active) return null;
 

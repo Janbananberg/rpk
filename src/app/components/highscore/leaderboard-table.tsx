@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { motion } from "motion/react";
 import { ChevronRight, Target, ClipboardList, Moon, Trophy, Flame, Snowflake, TrendingDown, Columns3 } from "lucide-react";
 import type { PlayerStats, SortTab } from "../../lib/stats";
 import { SEED_MIN_ROUNDS, ELO_START, weightedDelta } from "../../lib/elo";
@@ -7,6 +8,7 @@ import { FONT, INACTIVE_WEEKS } from "./constants";
 import { getRankIcon } from "./rank-icon";
 import { EloSparkline } from "./elo-sparkline";
 import { FormDots } from "./form-dots";
+import { AnimatedNumber } from "./animated-number";
 
 interface LeaderboardTableProps {
   sortedStats: PlayerStats[];
@@ -24,6 +26,12 @@ interface LeaderboardTableProps {
   monthlyRoundsPlayed: Record<string, number> | undefined;
   eloHistory: Record<string, number[]>;
   hasStreakData: boolean;
+  /** Let Elo numbers tick to new values (after a saved round). */
+  animateChanges?: boolean;
+  /** Rows animate to new positions when this changes. */
+  layoutKey?: string;
+  /** Briefly highlighted row, e.g. the winner of the round just saved. */
+  highlightPlayer?: string | null;
 }
 
 const SHOW_ALL_STATS_KEY = "rpk-highscore-show-all-stats";
@@ -60,6 +68,9 @@ export function LeaderboardTable({
   monthlyRoundsPlayed,
   eloHistory,
   hasStreakData,
+  animateChanges = false,
+  layoutKey = "idle",
+  highlightPlayer = null,
 }: LeaderboardTableProps) {
   // Default view: placering, spelare, Elo (+Δ), form, vinster. The rest behind "Visa all statistik".
   const [showAllStats, setShowAllStats] = useState(readShowAllStats);
@@ -78,21 +89,20 @@ export function LeaderboardTable({
   const renderEloCell = (s: PlayerStats, compact: boolean, muted = false) => {
     const elo = eloRatings[s.name]?.elo ?? ELO_START;
     let delta: number | null = null;
-    let deltaText = "";
+    let deltaDecimals = 0;
     let deltaTitle: string | undefined;
     if (isMonthView && monthlyEloDelta) {
       const d = monthlyEloDelta[s.name] ?? 0;
       const rounds = monthlyRoundsPlayed?.[s.name] ?? 0;
       if (rounds > 0) {
         delta = weightedDelta(d, rounds);
-        deltaText = `${delta > 0 ? "+" : ""}${delta.toFixed(1)}`;
+        deltaDecimals = 1;
         deltaTitle = `Viktat Elo-delta denna månad: Δ ${d > 0 ? "+" : ""}${d} / √${rounds}`;
       }
     } else {
       const d = eloRatings[s.name]?.delta ?? 0;
       if (d !== 0) {
         delta = d;
-        deltaText = `${d > 0 ? "+" : ""}${d}`;
         deltaTitle = "Elo-förändring i senaste rundan";
       }
     }
@@ -108,19 +118,30 @@ export function LeaderboardTable({
             color: muted ? "var(--muted-foreground)" : "var(--foreground)",
           }}
         >
-          {elo}
+          <AnimatedNumber value={elo} animateChanges={animateChanges} />
         </span>
         {delta !== null && (
           <span
             style={{ fontSize: "var(--text-xs)", fontWeight: "var(--font-weight-semibold)", color: deltaColor }}
             title={deltaTitle}
           >
-            {deltaText}
+            <AnimatedNumber value={delta} decimals={deltaDecimals} signed animateChanges={animateChanges} />
           </span>
         )}
       </span>
     );
   };
+
+  // Row wrapper: slides to its new place when layoutKey changes, and can flash a highlight.
+  const rowMotion = (name: string) => ({
+    layout: "position" as const,
+    layoutDependency: layoutKey,
+    transition: { layout: { duration: 0.6, ease: "easeInOut" as const } },
+    style: {
+      background: highlightPlayer === name ? "color-mix(in srgb, var(--primary) 14%, transparent)" : "transparent",
+      transition: "background-color 0.6s ease",
+    },
+  });
 
   const renderSparkline = (s: PlayerStats, width: number, height: number, strokeWidth?: number) =>
     eloHistory[s.name] && eloHistory[s.name].length >= 2 ? (
@@ -328,7 +349,7 @@ export function LeaderboardTable({
                 const unseeded = active.filter((s) => s.gamesPlayed < SEED_MIN_ROUNDS);
 
                 const renderRow = (s: PlayerStats, rank: number, isSeeded: boolean) => (
-                  <div key={s.name}>
+                  <motion.div key={s.name} {...rowMotion(s.name)}>
                     {/* Desktop row */}
                     <div
                       className="hidden md:grid px-4 py-3 border-b border-border last:border-b-0 hover:bg-muted/20 transition-colors cursor-pointer items-center"
@@ -589,7 +610,7 @@ export function LeaderboardTable({
                         )}
                       </div>
                     </div>
-                  </div>
+                  </motion.div>
                 );
 
                 return (
@@ -677,7 +698,7 @@ export function LeaderboardTable({
                         ? Math.floor((Date.now() - lastPlayedMap[s.name]) / (7 * 24 * 60 * 60 * 1000))
                         : null;
                       return (
-                        <div key={s.name}>
+                        <motion.div key={s.name} {...rowMotion(s.name)}>
                           {/* Desktop row — inactive */}
                           <div
                             className="hidden md:grid px-4 py-3 border-b border-border last:border-b-0 hover:bg-muted/20 transition-colors cursor-pointer items-center opacity-50"
@@ -776,7 +797,7 @@ export function LeaderboardTable({
                               </span>
                             </div>
                           </div>
-                        </div>
+                        </motion.div>
                       );
                     })}
                   </>
